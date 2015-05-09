@@ -1,0 +1,9 @@
+<!DOCTYPE addrbook [
+
+<!ELEMENT addrbook (person*)>
+<!ELEMENT person (name,email+,tel)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT tel (#PCDATA)>
+
+]>

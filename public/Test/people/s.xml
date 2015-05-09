@@ -1,0 +1,14 @@
+<people>
+	<person>
+		<name>Hugo</name>
+		<city>Tokyo</city>
+	</person>
+	<person>
+		<name>Sebastian</name>
+		<city>Kiel</city>
+	</person>
+	<person>
+		<name>Zhenjiang</name>
+		<city>Tokyo</city>
+	</person>
+</people>

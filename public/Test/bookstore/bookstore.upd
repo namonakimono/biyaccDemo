@@ -1,0 +1,22 @@
+
+import "bookstore.dtd" as s
+import "books.dtd" as v
+
+$source = doc("s.xml")
+$view   = doc("v.xml")
+START = updateBookStore($source/bookstore, $view/books)
+
+PROCEDURE updateBookStore(source $source AS s:bookstore, view $view AS v:books) =
+UPDATE $book IN $source/book BY
+{
+	MATCH    -> REPLACE price WITH $price
+|	UNMATCHV -> CREATE VALUE <book category='undefined'>
+                           		<title/>
+                           		<author>??</author>
+                           		<year>??</year>
+                           		<price/>
+                             </book>
+}
+FOR VIEW book[$title  AS v:title, $price AS v:price] IN $view/*
+MATCHING SOURCE BY $book/title VIEW BY $title
+

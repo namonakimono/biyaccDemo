@@ -1,0 +1,6 @@
+<!DOCTYPE initials [
+<!ELEMENT initials (initial+)>
+<!ELEMENT initial EMPTY>
+<!ATTLIST initial name CDATA #REQUIRED>
+]>
+

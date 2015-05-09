@@ -1,0 +1,9 @@
+<!DOCTYPE observations [
+<!ELEMENT observations (observation+)>
+<!ELEMENT observation (normal?, exceptional*)>
+<!ELEMENT normal EMPTY>
+<!ELEMENT exceptional EMPTY>
+<!ATTLIST exceptional name CDATA #REQUIRED>
+<!ATTLIST normal return CDATA #REQUIRED>
+]>
+

@@ -1,0 +1,21 @@
+<!DOCTYPE expr[
+
+<!ELEMENT expr (a0|a1|a2|null)>
+<!ELEMENT a0 (expr, term)>
+<!ELEMENT a1 (expr, term)>
+<!ELEMENT a2 (term)>
+
+<!ELEMENT term (a3|a4|a5|null)>
+<!ELEMENT a3 (term, factor)>
+<!ELEMENT a4 (term, factor)>
+<!ELEMENT a5 (factor)>
+
+<!ELEMENT factor (a6|a7|a8|null)>
+<!ELEMENT a6 (factor)>
+<!ELEMENT a7 (biyaccpcdata)>
+<!ELEMENT a8 (expr)>
+
+<!ELEMENT biyaccpcdata (#PCDATA)>
+<!ELEMENT null EMPTY>
+
+]>

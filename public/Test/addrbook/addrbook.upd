@@ -1,0 +1,27 @@
+(: Given a sequence of people with name, email* and tel :)
+(: Return a view with an index of names and people only :)
+(: with their first email address :)
+(: Lexer has a bug need to be fixed. inside UExpr, <a> {Path} {Path} </a> :) 
+
+import "addrbook.dtd" as s
+import "index.dtd" as v
+$source = doc("s.xml")
+$view   = doc("v.xml")
+START = updateAddrbook($source/addrbook,$view/addrbook)
+
+PROCEDURE updateAddrbook(source $src AS s:addrbook, view $vw AS v:addrbook) =
+UPDATE $s IN $src BY
+{
+ MATCH -> UPDATE $sperson IN $s/person BY
+ {
+    MATCH    -> LET ($e AS s:email,$es AS s:email*) := email IN REPLACE $e WITH $email
+ |  UNMATCHV -> CREATE VALUE <person> <name/> <email/> <email>foo@default.com</email> <tel>+81 0000000</tel> </person>
+ |  UNMATCHS -> DELETE .
+ }
+ FOR VIEW person[$name AS v:name, $email AS v:email] IN $people
+ MATCHING SOURCE BY $sperson/name VIEW BY $name	
+}
+FOR VIEW addrbook[index[$index AS v:name*],$people AS v:person*] IN $vw
+WHERE $index := $people/name
+
+

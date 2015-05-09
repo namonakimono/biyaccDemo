@@ -1,0 +1,105 @@
+process.on:[Thu May 07 2015 21:59:10 GMT+0900 (JST)]
+ReferenceError: cwd is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:16:19
+    at FSReqWrap.oncomplete (fs.js:95:15)
+process.on:[Thu May 07 2015 22:04:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:06:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:07:56 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:09:56 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:12:06 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Socket.<anonymous> (child_process.js:1183:11)
+    at Socket.emit (events.js:107:17)
+    at Pipe.close (net.js:485:12)
+process.on:[Thu May 07 2015 22:15:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:17:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:19:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Thu May 07 2015 22:21:29 GMT+0900 (JST)]
+ReferenceError: config is not defined
+    at /Users/zhuzirun/Downloads/bifluxProjectWebsite/routes/bx.js:21:16
+    at ChildProcess.exithandler (child_process.js:742:7)
+    at ChildProcess.emit (events.js:110:17)
+    at maybeClose (child_process.js:1015:16)
+    at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+process.on:[Fri May 08 2015 16:43:24 GMT+0000 (UTC)]
+Error: listen EADDRINUSE
+    at errnoException (net.js:901:11)
+    at Server._listen2 (net.js:1039:14)
+    at listen (net.js:1061:10)
+    at Server.listen (net.js:1135:5)
+    at Object.<anonymous> (/home/ubuntu/biyaccweb/app.js:45:24)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+process.on:[Fri May 08 2015 16:43:27 GMT+0000 (UTC)]
+Error: listen EADDRINUSE
+    at errnoException (net.js:901:11)
+    at Server._listen2 (net.js:1039:14)
+    at listen (net.js:1061:10)
+    at Server.listen (net.js:1135:5)
+    at Object.<anonymous> (/home/ubuntu/biyaccweb/app.js:45:24)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)
+process.on:[Fri May 08 2015 16:44:18 GMT+0000 (UTC)]
+Error: listen EADDRINUSE
+    at errnoException (net.js:901:11)
+    at Server._listen2 (net.js:1039:14)
+    at listen (net.js:1061:10)
+    at Server.listen (net.js:1135:5)
+    at Object.<anonymous> (/home/ubuntu/biyaccweb/app.js:45:24)
+    at Module._compile (module.js:456:26)
+    at Object.Module._extensions..js (module.js:474:10)
+    at Module.load (module.js:356:32)
+    at Function.Module._load (module.js:312:12)
+    at Function.Module.runMain (module.js:497:10)

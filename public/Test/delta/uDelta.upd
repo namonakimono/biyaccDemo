@@ -1,0 +1,37 @@
+import "code.dtd" as s
+import "model.dtd" as v
+
+$source   = doc('s.xml')
+$view     = doc('v.xml')
+START     = uTransition($source/code, $view/deltas)
+
+PROCEDURE uTransition(source $code AS s:code, view $deltas AS v:deltas) =
+	LET $assignments := $code/assignment[left/text()='state'] IN
+	LET $ifs := $code/if[code/assignment/left/text()='state'] IN
+	CASE $deltas OF 
+	{
+   		deltas[$d AS v:delta] -> uOneDelta($assignments, $d); DELETE $ifs
+ 	|	deltas[$ds AS v:delta+] -> uManyDeltas($ifs, $ds); DELETE $assignments
+	}
+
+PROCEDURE uOneDelta(source $assignment AS s:assignment, view $delta AS v:delta) =
+	LET delta[@target[$targetName AS String]] := $delta IN
+	REPLACE IN $assignment/right WITH $targetName
+
+PROCEDURE uManyDeltas(source $ifs AS s:if+, view $deltas AS v:delta+) =
+	UPDATE $if IN $ifs BY
+	{
+   		MATCH    -> {}
+ 	|	UNMATCHV -> CREATE VALUE
+                    <if>
+                      <condition/>
+		        	  <code>
+                        <assignment>
+                           <left>state</left>
+                           <right/>
+                         </assignment>
+		              </code>
+                    </if>
+}
+FOR VIEW delta[@target[$deltaName AS String]] IN $deltas
+MATCHING SOURCE BY $if/code/assignment[left/text()='state']/right/text() VIEW BY $deltaName

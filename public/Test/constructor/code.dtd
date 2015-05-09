@@ -1,0 +1,62 @@
+<!DOCTYPE mainclass [
+
+<!ELEMENT mainclass (interface, constructor, (field)+, (class)+, method*)>   
+<!-- assumption that there is only one constructor? order of fields?-->
+
+<!ELEMENT field (init?)>
+<!ELEMENT init (#PCDATA)>
+
+<!ELEMENT interface (methoddecl+)>
+<!ELEMENT methoddecl (param*)>
+<!ELEMENT param EMPTY>
+
+<!ELEMENT constructor (param*, code)>     
+<!ELEMENT class (field*, method+)>
+
+<!ELEMENT method (param*, code)>
+
+<!ELEMENT code ((statement | if | throw | return | assignment | declaration)*)> 
+
+<!ELEMENT statement (#PCDATA)>
+<!ELEMENT if (condition, code, else?)>
+<!ELEMENT condition (#PCDATA)>
+<!ELEMENT else (code)>
+<!ELEMENT throw (#PCDATA)>
+<!ELEMENT return (#PCDATA)>
+<!ELEMENT assignment (left,right)>
+<!ELEMENT declaration (left,right)>
+<!ELEMENT left (#PCDATA)>
+<!ELEMENT right (#PCDATA)>
+
+
+<!ATTLIST mainclass name CDATA #REQUIRED>
+<!ATTLIST mainclass public (true|false) #IMPLIED>
+<!ATTLIST mainclass private (true|false) #IMPLIED>
+
+<!ATTLIST field name CDATA #REQUIRED>
+<!ATTLIST field type CDATA #IMPLIED>
+<!ATTLIST field final (true|false) #REQUIRED>
+<!ATTLIST field public (true|false) #IMPLIED>
+<!ATTLIST field private (true|false) #IMPLIED>
+
+<!ATTLIST interface name CDATA #REQUIRED>
+<!ATTLIST interface public (true|false) #IMPLIED>
+<!ATTLIST interface private (true|false) #IMPLIED>
+
+<!ATTLIST methoddecl name CDATA #REQUIRED>
+<!ATTLIST methoddecl type CDATA #REQUIRED>
+
+<!ATTLIST param name CDATA #REQUIRED>
+<!ATTLIST param type CDATA #REQUIRED>
+<!ATTLIST param final (true|false) #IMPLIED>
+
+<!ATTLIST class name CDATA #REQUIRED>
+<!ATTLIST class implements CDATA #REQUIRED>
+<!ATTLIST class public (true|false) #REQUIRED>
+<!ATTLIST class private (true|false) #IMPLIED>
+
+<!ATTLIST method name CDATA #REQUIRED>
+<!ATTLIST method type CDATA #REQUIRED>
+
+<!ATTLIST declaration type CDATA #REQUIRED>
+]>

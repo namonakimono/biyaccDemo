@@ -1,0 +1,10 @@
+Now, we want to make the app run forever. Even in some cases, it occures some problems and shut down. We hope it can be restarted automaically.
+
+1. sudo npm install forever -g
+   here '-g' means globally installing forever module. 
+
+2. Command:
+   1)start:
+   forever start app.js
+   2)stop:
+   forever stop app.js

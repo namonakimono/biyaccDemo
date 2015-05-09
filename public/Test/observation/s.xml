@@ -1,0 +1,11 @@
+<reths>
+  <if>
+    <condition/>
+    <code>
+      <throw>
+	EmptyStackException
+      </throw>
+    </code>
+  </if>
+</reths>
+

@@ -1,0 +1,12 @@
+<!DOCTYPE arith[
+
+<!ELEMENT arith (add|sub|mul|div|num)>
+<!ELEMENT add (arith, arith)>
+<!ELEMENT sub (arith, arith)>
+<!ELEMENT mul (arith, arith)>
+<!ELEMENT div (arith, arith)>
+<!ELEMENT num (biyaccpcdata)>
+
+<!ELEMENT biyaccpcdata (#PCDATA)>
+
+]>

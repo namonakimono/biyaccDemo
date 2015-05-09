@@ -1,0 +1,84 @@
+Express server listening on port 3000
+render index page
+[90mGET / [36m304 [90m9ms[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m7ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m1ms[0m
+[90mGET /javascripts/execution.js [36m304 [90m2ms[0m
+[90mGET /javascripts/script.js [36m304 [90m3ms[0m
+[90mGET /ubx/framework.png [36m304 [90m1ms[0m
+[90mGET /images/gradient_light.jpg [33m404 [90m4ms[0m
+[90mGET /images/new_arrow.jpg [36m304 [90m1ms[0m
+[90mGET /images/form_bg.jpg [36m304 [90m0ms[0m
+render index page
+[90mGET / [32m200 [90m5ms - 10.46kb[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m3ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/script.js [36m304 [90m3ms[0m
+[90mGET /javascripts/execution.js [36m304 [90m3ms[0m
+[90mGET /ubx/framework.png [36m304 [90m1ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m28290ms[0m
+render index page
+[90mGET / [32m200 [90m6ms - 10.46kb[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m3ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/script.js [36m304 [90m2ms[0m
+[90mGET /javascripts/execution.js [32m200 [90m8ms - 5.44kb[0m
+[90mGET /ubx/framework.png [36m304 [90m1ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120005ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120005ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120008ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120005ms[0m
+render index page
+[90mGET / [32m200 [90m2ms - 10.46kb[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m3ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/execution.js [36m304 [90m4ms[0m
+[90mGET /javascripts/script.js [36m304 [90m3ms[0m
+[90mGET /ubx/framework.png [36m304 [90m1ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m754ms[0m
+render index page
+[90mGET / [32m200 [90m1ms - 10.46kb[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m2ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/script.js [36m304 [90m4ms[0m
+[90mGET /javascripts/execution.js [36m304 [90m2ms[0m
+[90mGET /ubx/framework.png [36m304 [90m0ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120004ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120004ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m45574ms[0m
+render index page
+[90mGET / [32m200 [90m1ms - 10.46kb[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m1ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m2ms[0m
+[90mGET /javascripts/script.js [36m304 [90m1ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m3ms[0m
+[90mGET /javascripts/execution.js [32m200 [90m4ms - 5.53kb[0m
+[90mGET /ubx/framework.png [36m304 [90m0ms[0m
+compilation
+update file generated
+[90mGET /compile?sourceDTD=Concrete%0A%0AExpr+-%3E+Expr+'%2B'+Term%0A++++++%7C+Expr+'-'+Term%0A++++++%7C+Term%0A%0ATerm+-%3E+Term+'*'+Factor%0A++++++%7C+Term+'%2F'+Factor%0A++++++%7C+Factor%0A%0AFactor+-%3E+'-'+Factor%0A++++++++%7C+String%0A++++++++%7C+'('+Expr+')'%0A&targetDTD=Abstract%0A%0AArith+%3D+ADD+Arith+Arith%0A++++++%7C+SUB+Arith+Arith%0A++++++%7C+MUL+Arith+Arith%0A++++++%7C+DIV+Arith+Arith%0A++++++%7C+NUM+String%0A&actions=Actions%0A%0AArith+%2B%3E+Expr%0AADD+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'%2B'+(rhs+%3D%3E+Term)%0ASUB+lhs+++++++rhs++-%3E+(lhs+%3D%3E+Expr)+'-'+(rhs+%3D%3E+Term)%0Aarith+++++++++++++++++++++-%3E+(arith+%3D%3E+Term)%0A%0A%0AArith+%2B%3E+Term%0AMUL+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'*'+(rhs+%3D%3E+Factor)%0ADIV+lhs+rhs+-%3E+(lhs+%3D%3E+Term)+'%2F'+(rhs+%3D%3E+Factor)%0Aarith+++++++-%3E+(arith+%3D%3E+Factor)%0A%0AArith+%2B%3E+Factor%0ASUB+(NUM+%220%22)+rhs+-%3E+'-'+(rhs+%3D%3E+Factor)%0ANUM+n+++++++++++++-%3E+(n+%3D%3E+String)%0Aarith+++++++++++++-%3E+'('+(arith+%3D%3E+Expr)+')'%0A [32m200 [90m120004ms[0m
+compilation
+update file generated

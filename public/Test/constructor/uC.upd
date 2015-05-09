@@ -1,0 +1,40 @@
+import "code.dtd" as s
+import "model.dtd" as v
+
+$source   = doc('s.xml')
+$view     = doc('v.xml')
+START     = uMainClass($source/mainclass, $view/initials)
+
+PROCEDURE uMainClass(source $mainclass AS s:mainclass, view $initials AS v:initials) = 
+  uConstructor($mainclass/constructor, $mainclass/field[@name='state'], $initials)
+
+PROCEDURE uConstructor(source $constructor AS s:constructor, source $statefield AS s:field, view $initials AS v:initials) =
+	LET $stateassignments := $constructor/code/assignment[left/text()='state'] IN
+	LET $stateifs := $constructor/code/if[code/assignment/left/text()='state'] IN
+	CASE $initials OF
+	{
+    	initials[$i AS v:initial] -> uOneInitial($stateassignments, $statefield, $i); DELETE $stateifs
+	|	initials[$is AS v:initial+] -> uManyInitials($stateifs, $is); DELETE $stateassignments
+	}
+
+PROCEDURE uOneInitial(source $stateassignments AS s:assignment*, source $statefield AS s:field, view $i AS v:initial) =
+	LET initial[@name[$initName AS String]] := $i IN 
+	IF $stateassignments
+		THEN REPLACE IN $stateassignments/right WITH $initName
+		ELSE REPLACE IN $statefield/init WITH $initName
+
+PROCEDURE uManyInitials(source $stateifs AS s:if+, view $inis AS v:initial+) = 
+UPDATE $if IN $stateifs BY
+{
+	MATCH -> {}
+|	UNMATCHV -> CREATE VALUE
+                     <if> 
+                        <condition>?</condition>
+                        <code>
+                            <assignment><left>state</left><right/>
+                            </assignment>
+                        </code> 
+                    </if>
+}
+FOR VIEW initial[@name[$initName AS String]] IN $inis 
+MATCHING SOURCE BY $if/code/assignment[left/text()='state']/right/text() VIEW BY $initName

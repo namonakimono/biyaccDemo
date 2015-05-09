@@ -1,0 +1,19 @@
+<addrbook>
+	<index>
+		<name>Zhenjiang Hu</name>
+		<name>Hugo Pacheco</name>
+		<name>Masato Takeichi</name>
+	</index>
+	<person>
+		<name>Zhenjiang Hu</name>
+		<email>hu@nii.ac.jp</email>
+	</person>
+	<person>
+		<name>Hugo Pacheco</name>
+		<email>hpacheco@nii.ac.jp</email>
+	</person>
+	<person>
+		<name>Masato Takeichi</name>
+		<email>takeichi@acm.org</email>
+	</person>
+</addrbook>

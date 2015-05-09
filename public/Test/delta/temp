@@ -1,0 +1,23 @@
+PROCEDURE uTransition(source $transes AS s:code, view $deltas AS v:deltas) =
+UPDATE $if IN $transes/if BY
+{
+   MATCH    -> {}
+ | UNMATCHV -> CREATE VALUE
+                    <if>
+                      <condition/>
+		        <code>
+                          <assignment>
+                             <left>state</left>
+                             <right>$deltaName</right>
+                           </assignment>
+		        </code>
+                    </if>
+}
+FOR VIEW delta[@target[$deltaName AS String]] IN $deltas/delta
+MATCHING SOURCE BY $if/code/assignment[left/text()='state']/right/text() VIEW BY $deltaName
+
+
+
+
+
+

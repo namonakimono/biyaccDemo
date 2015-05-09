@@ -1,0 +1,5 @@
+For constructor:
+ --all assignments /ifs (which have ass) are only for state variables, not others.
+ 2. we only have assignments/ifs. and ifs only have one assignment inside, also without else condition;
+ 3. only either one assignment or ifs.
+ 4  order doesn't care for us.

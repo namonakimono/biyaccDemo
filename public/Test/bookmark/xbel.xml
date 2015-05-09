@@ -1,0 +1,11 @@
+<xbel>
+  <title>NII bookmarks</title>
+  <folder><title>National Institute of Informatics</title>
+     <bookmark href="http://www.nii.ac.jp/en"><title>English</title></bookmark>
+	 <bookmark href="http://www.nii.ac.jp"><title>Japanese</title></bookmark>
+  </folder>
+  <folder><title>my folder</title>
+  	 <bookmark href="stefanzan.com"><title>stefanzan</title></bookmark>
+  </folder>
+  <bookmark href="bar.edu"><title>Bar’s</title></bookmark>
+</xbel>

@@ -1,0 +1,8 @@
+assupmtion: sum of all ifs are exhaustive. == 1.
+
+state transition always use if-then condition.
+   e.g. s0 --> s0, s0 --> s1 : we have if c0 then s0; if c1 then s1
+        s0 --> s0 : if c0 then s0, you can substitute c0 to true in this situation.
+        s0 --> s1: if c1 then s1.  this one c1 is also true in fact.
+
+but we preserve the condition in the original source if exists.

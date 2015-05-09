@@ -1,0 +1,58 @@
+import "code.dtd" as s
+import "model.dtd" as v
+
+$source   = doc('s.xml')
+$view     = doc('v.xml')
+START     = uMainClass($source/mainclass, $view/initials)
+
+PROCEDURE uMainClass(source $mainclass AS s:mainclass, view $initials AS v:initials) = 
+UPDATE $mainclass BY
+  uConstructor(./constructor, ./field[@name='state'], $initials)
+
+PROCEDURE uConstructor(source $constructor AS s:constructor, view $initials AS v:initials) =
+ LET $assign := $constructor/code/assignment IN 
+ LET $if := $constructor/if IN 
+ IF ($assign or $ifs)
+    THEN   CASE $initials OF {
+                  initials[$i AS v:initial] -> uOneInitial($constructor, $i)
+                | initials[$is AS v:initial+]  -> uManyInitials($constructor, $is); DELETE ./assignment
+                  }
+    ELSE   CASE $initials OF {
+                  initials[$i AS v:initial] -> uStateField($statefield, $i) 
+                | initials[$is AS v:initial+]  -> uManyInitials($constructor, $is); DELETE ./assignment
+                  }
+
+
+
+PROCEDURE uOneInitial(source $constructor AS s:constructor, view $i AS v:initial) =
+UPDATE $constructor BY
+{
+	REPLACE IN ./code/assignment/right WITH $initName; DELETE ./if
+}
+FOR VIEW initial[@name[$initName AS String]] IN $i
+
+
+PROCEDURE uStateField(source $statefield AS s:field, view $i AS v:initial) =
+UPDATE $statefield BY
+{
+  REPLACE IN ./init WITH $initName
+}
+FOR VIEW initial[@name[$initName AS String]] IN $i
+
+
+
+PROCEDURE uManyInitials(source $constructor AS s:constructor, view $inis AS v:initial+) = 
+UPDATE $l IN $constructor/code/if BY
+{
+	MATCH -> REPLACE IN $l/code/assignment/right WITH $initName
+|	UNMATCHV -> CREATE VALUE
+                     <if> 
+                        <condition/>
+                        <code>
+                            <assignment><left>state</left><right>$initName</right>
+                            </assignment>
+                        </code> 
+                    </if>
+}
+FOR VIEW initial[@name[$initName AS String]] IN $inis 
+MATCHING SOURCE BY $l/code/assignment/right/text() VIEW BY $initName

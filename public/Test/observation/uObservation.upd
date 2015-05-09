@@ -1,0 +1,34 @@
+import "code.dtd" as s
+import "model.dtd" as v
+
+$source   = doc('s.xml')
+$view     = doc('v.xml')
+START     = uReths($source/reths, $view/observs)
+
+PROCEDURE uReths(source $reths AS s:reths, $observs AS v:observs) = 
+UPDATE $if IN $reths/if BY
+{
+  MATCH -> {}
+| UNMATCHV -> 
+      CASE $norE OF
+      {
+        normal[@return [$returnVal AS String]]  -> 
+		        CREATE VALUE 
+                    	<if>
+		       	 <condition/>
+		         <code>
+                           <return>$returnName</return>
+		         </code>
+		       </if>
+      | exceptional[@name [$excepName AS String]] ->
+                 CREATE VALUE
+                    <if>
+		       <condition/>
+		       <code>
+                         <throw> $excepName </throw>
+		       </code>
+                    </if>
+      }
+}
+FOR VIEW $norE IN $observs/*
+MATCHING SOURCE BY $if/code/return/text() VIEW BY ($norE//@return| $norE//@name)

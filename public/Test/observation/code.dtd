@@ -1,0 +1,9 @@
+<!DOCTYPE returns [
+<!ELEMENT returns (if*)>
+<!ELEMENT if (condition, code, else?)>
+<!ELEMENT condition (#PCDATA)>
+<!ELEMENT code (return|throw)> 
+<!ELEMENT else (code)>
+<!ELEMENT throw (#PCDATA)>
+<!ELEMENT return (#PCDATA)>
+]>

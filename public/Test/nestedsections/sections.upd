@@ -1,0 +1,29 @@
+
+import "section.dtd" as s
+import "sec.dtd" as v
+
+$source = doc("s.xml")
+$view   = doc("v.xml")
+START   = sections($source/sections, $view/secs)
+
+PROCEDURE sections(source $source AS s:sections, view $view AS v:secs) =
+UPDATE $section IN $source/section BY
+{
+	MATCH    -> subsections($section/subsection,$subsecs)
+|	UNMATCHV -> CREATE VALUE <section> <title/> <paragraph>this section is new</paragraph> </section>
+}
+FOR VIEW sec[$title AS @title[String], $subsecs AS v:subsec*] IN $view/sec
+MATCHING SOURCE BY title/text() VIEW BY $title/string()
+
+PROCEDURE subsections(source $subsections AS s:subsection*, view $subsecs AS v:subsec*) =
+UPDATE $subsection IN $subsections BY
+{
+	MATCH    -> {}
+|	UNMATCHV -> CREATE VALUE <subsection>
+							 	<title/>
+							    <paragraph>this subsection is new</paragraph>
+					 	     </subsection>
+}
+FOR VIEW $subsec IN $subsecs
+MATCHING SOURCE BY title/text() VIEW BY @title/string()
+

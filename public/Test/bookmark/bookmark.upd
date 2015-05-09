@@ -1,0 +1,27 @@
+
+import "netscape.dtd" as s
+import "xbel.dtd" as v
+
+$source = doc("netscape.xml") 
+$view   = doc("xbel.xml") 
+
+START = top($source/html,$view/xbel) 
+
+PROCEDURE top(source $html AS s:html, view $xbel AS v:xbel) =
+UPDATE html[$h AS head[String], body[$h1 AS s:h1, dl[$nc AS Nc]]] IN $html BY
+	{ REPLACE IN $h1 WITH $t ; contents($nc,$xc) }
+FOR VIEW xbel[title[$t AS String], $xc AS Xc] IN $xbel
+
+type Nc = (s:dt|s:dd)*
+type Xc = (v:bookmark|v:folder)*
+
+PROCEDURE contents(source $nc AS Nc, view $xc AS Xc) =
+UPDATE $nc BY
+{	
+	CASE $v OF
+	{	bookmark[@href[$url AS String], title[$title AS String]]    -> REPLACE . WITH <dt> <a href={$url}>{$title}</a> </dt>
+	|	folder[title[$title AS String], $fxc AS Xc]                 -> REPLACE IN h3 WITH $title ; contents(dl/*,$fxc)
+	}
+}
+FOR VIEW $v IN $xc
+

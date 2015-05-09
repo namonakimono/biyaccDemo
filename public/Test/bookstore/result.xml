@@ -1,0 +1,55 @@
+<?xml version='1.0' ?>
+<bookstore
+  ><book
+    ><title
+    >Harry Potter</title
+    ><author
+    >J K. Rowling</author
+    ><year
+    >2005</year
+    ><price
+    >19.99</price></book
+  ><book category="Programming"
+    ><title
+    >XQuery Kick Start</title
+    ><author
+    >James McGovern</author
+    ><author
+    >Per Bothner</author
+    ><author
+    >Kurt Cagle</author
+    ><author
+    >James Linn</author
+    ><author
+    >Vaidyanathan Nagarajan</author
+    ><year
+    >2003</year
+    ><price
+    >29.99</price></book
+  ><book category="undefined"
+    ><title
+    >XPath for Dummies</title
+    ><author
+    >??</author
+    ><year
+    >??</year
+    ><price
+    >10.00</price></book
+  ><book category="Food"
+    ><title
+    >Everyday Italian</title
+    ><author
+    >Giada De Laurentiis</author
+    ><year
+    >2005</year
+    ><price
+    >20.00</price></book
+  ><book category="Programming"
+    ><title
+    >Learning XML</title
+    ><author
+    >Erik T. Ray</author
+    ><year
+    >2003</year
+    ><price
+    >19.95</price></book></bookstore>

@@ -1,0 +1,18 @@
+
+import "people.dtd" as s
+import "fromtokyo.dtd" as v
+
+$source = doc("s.xml")
+$view   = doc("v.xml")
+
+START = updatePeople($source/people, $view/fromtokyo)
+
+PROCEDURE updatePeople(source $source AS s:people, view $view AS v:fromtokyo) =
+UPDATE $sperson IN $source/person BY
+{
+	MATCH    ->  {}
+|	UNMATCHV ->  CREATE VALUE <person> <name/> <city>Tokyo</city> </person>
+}
+FOR VIEW $vname IN $view/name
+MATCHING SOURCE BY name VIEW BY $vname
+WHERE city/text() = 'Tokyo'
