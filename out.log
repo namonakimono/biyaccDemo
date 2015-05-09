@@ -493,3 +493,14 @@ cstring.txt saved
 { [Error: Command failed: ExprPPP: (line 1, column 1):
 unexpected end of input
 ] killed: false, code: 1, signal: null }
+Express server listening on port 8080
+render index page
+[90mGET / [36m304 [90m10ms[0m
+[90mGET /stylesheets/styles.css [36m304 [90m8ms[0m
+[90mGET /javascripts/exampleChoose.js [36m304 [90m2ms[0m
+[90mGET /javascripts/script.js [36m304 [90m2ms[0m
+[90mGET /javascripts/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js [36m304 [90m2ms[0m
+[90mGET /javascripts/execution.js [36m304 [90m3ms[0m
+[90mGET /images/gradient_light.jpg [33m404 [90m2ms[0m
+[90mGET /images/new_arrow.jpg [36m304 [90m1ms[0m
+[90mGET /images/form_bg.jpg [36m304 [90m1ms[0m

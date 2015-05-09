@@ -5,14 +5,14 @@ var config = require('../config');
 
 exports.compile = function(req, res){
   console.log("compilation");
-  var sourceDTD = req.query.sourceDTD;
-  var targetDTD = req.query.targetDTD;
+  var concreteSyntax = req.query.concreteSyntax;
+  var abstractSyntax = req.query.abstractSyntax;
   var actions = req.query.actions;
-  // console.log(targetDTD);
-  // console.log(sourceDTD);
+  // console.log(abstractSyntax);
+  // console.log(concreteSyntax);
   // console.log(actions);
 
-  fs.writeFile("/tmp/expr.by", targetDTD + "\n" + sourceDTD + "\n" + actions, function(err){
+  fs.writeFile("/tmp/expr.by", abstractSyntax + "\n" + concreteSyntax + "\n" + actions, function(err){
     if(err){console.log(err); res.send({success: "falied", error : err.toString() })}
     else {
       console.log("biyacc file generated");

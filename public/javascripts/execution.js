@@ -3,14 +3,10 @@
 
 function exeUpdate() {
     console.log("execute the update query.");
-    var sourceDTD = document.getElementById("sourceDTD").value;
-    var targetDTD = document.getElementById("targetDTD").value;
+    var concreteSyntax = document.getElementById("concreteSyntax").value;
+    var abstractSyntax = document.getElementById("abstractSyntax").value;
     var actions   = document.getElementById("actions").value;
-    // console.log("sourceDTD");
-    // console.log(actions);
-    // console.log(targetDTD);
-    // console.log(sourceDTD);
-    if(!sourceDTD || !targetDTD  || !actions){
+    if(!concreteSyntax || !abstractSyntax  || !actions){
       alert("Please check whether DTD,  Update Query are all filled in.");
       return;
     }
@@ -21,8 +17,8 @@ function exeUpdate() {
       url: "/compile",
       type: 'get',
       data: {
-          sourceDTD: sourceDTD,
-          targetDTD: targetDTD,
+          concreteSyntax: concreteSyntax,
+          abstractSyntax: abstractSyntax,
           actions  : actions,
       },
       success: function(data){
@@ -36,10 +32,10 @@ function exeUpdate() {
             //this one is for unsuccessful situation added.
             $('#consoleLog0').remove();
             //add a new sec
-            $('<li style="float:left" id="step5">Execution of Bidirectional Transformation<p class="NotGood">You can execute either forward transformation or backward transformation. Note: changes only can be propagated from one side to another side. Changes on both sides cannot be preserved at the same time.</p> </li>').insertAfter('#step4');
+            $('<li style="float:left" id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p> </li>').insertAfter('#step4');
             $('<div class="ResultSource" id="updatedSource"> <p>Source</p>  <textarea id="sourceText"> </textarea> </div>').insertAfter("#step5 > p");
 
-            $('<div class="Target" id="target"> <p>Target</p>  <textarea id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
+            $('<div class="Target" id="target"> <p>View</p>  <textarea id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
             $('<hr id="hrline" style="height:10px; width=800px; display:none">').insertAfter('#target')
             $('<div class="FBButton" id="fbButton""><input style="float:left" type="submit" value="Forward Transformation" onclick="forward()"/><input style="float:left" type="submit" value="Backward Transformation" onclick="backward()"/></div>').insertAfter('#hrline');
             //todo: add Console info

@@ -6,8 +6,6 @@ function chooseExample(value) {
 
 
     if(value =="expr"){
-    // console.log("expression example");
-    // console.log(document.getElementById("sourceDTD").value);
     $('select option[value="expr"]').attr("selected", "selected");
     $('select option[value="empty"]').attr("selected", false);
     //remove upload dialog
@@ -18,13 +16,13 @@ function chooseExample(value) {
     // $('#mulNQ').remove();
     // $('#mulQ').remove();
     // $('#step5').remove();
-    document.getElementById("sourceDTD").innerHTML = concreteSyntax;
-    document.getElementById("targetDTD").innerHTML = abstractSyntax;
-    document.getElementById("actions").innerHTML= exprActions;
+    document.getElementById("concreteSyntax").value = concreteSyntax;
+    document.getElementById("abstractSyntax").value = abstractSyntax;
+    document.getElementById("actions").value= exprActions;
     }
     if(value =="empty"){
     // console.log("expression example");
-    // console.log(document.getElementById("sourceDTD").value);
+    // console.log(document.getElementById("concreteSyntax").value);
     $('select option[value="empty"]').attr("selected", "selected");
     $('select option[value="expr"]').attr("selected", false);
     //remove upload dialog
@@ -35,14 +33,14 @@ function chooseExample(value) {
     // $('#mulNQ').remove();
     // $('#mulQ').remove();
     // $('#step5').remove();
-    document.getElementById("sourceDTD").innerHTML = "";
-    document.getElementById("targetDTD").innerHTML = "";
-    document.getElementById("actions").innerHTML= "";
+    document.getElementById("concreteSyntax").value = "";
+    document.getElementById("abstractSyntax").value = "";
+    document.getElementById("actions").value = "";
     }
     // add Tiger later.
     // else if(value =="bookmark"){
     // console.log("bookmark DTD");
-    // console.log(document.getElementById("sourceDTD").value);
+    // console.log(document.getElementById("concreteSyntax").value);
     // $('select option[value="people"]').attr("selected", false);
     // $('select option[value="bookmark"]').attr("selected", "selected");
     // $('select option[value="nestedsections"]').attr("selected", false);
@@ -58,8 +56,8 @@ function chooseExample(value) {
     // $('#mulNQ').remove();
     // $('#mulQ').remove();
     // $('#step5').remove();
-    // document.getElementById("sourceDTD").value = bookmarkSourceDTD;
-    // document.getElementById("targetDTD").value = bookmarkTargetDTD;
+    // document.getElementById("concreteSyntax").value = bookmarkSourceDTD;
+    // document.getElementById("abstractSyntax").value = bookmarkTargetDTD;
     // document.getElementById("actions").value= bookmarkQuery;
     // }
 }

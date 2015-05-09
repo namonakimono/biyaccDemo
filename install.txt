@@ -1,29 +1,21 @@
-1. git clone the document.
-2. in the root folder biflux, first run:
-   sudo npm install
-   this command will install all the needed packages specified in the package.json
-3. there is a bash called biflux in the folder.
+A demonstration website for BiYacc
 
-   you first need to make sure it is executable.
-   otherwise chmod +x biflux
-4. Before run the shell script mentioned bellow.
-   first make sure the path is correct in the file named biflux
-   (1) APP_DIR
-   (2) NODE_EXEC
-       e.g. Professor Hu would be : /usr/hu/bin/node
+1. in the root folder, run: 
+sudo npm install 
+this command will install all the needed packages specified in the package.json
 
-   Then: 
-     modify ghc and biflux executable path in config.js
-   
+2. in the haskell folder, run the shell genexe.sh to generate parsers/pretty-printers for the arithmetic expression example. (parser/pretty-printers for xml <-> string, xml <-> AST).
 
-5. execute the command
-      ./biflux start
+3. modify biyacc, BiFluX, ghc executable path in config.js to your own path. 
+Hint: use "which" to get the path directly in your terminal. E.g. # which ghc
 
-   OK. succesfully started.
-   If not succesful, you would see error info in app.log
-   you can also use
-   .biflux stop or ./biflux restart to stop or restart it.
+4. Run "node app" to start it. 
+If not succesfully, you would see error info in app.log.
 
-   
+Note: this app is runs at port 8080. You can change the port in app.js.
 
-Note: this app is running on port 3000. 
+If you want to make the app running forever: even in some cases, it occurs some problems and shut down. We hope it can be restarted automatically.
+
+1. Use sudo npm install forever -g to install the needed modules. here '-g' means globally installing forever module.
+
+2. Use ./start to run it and ./stop to stop it.
