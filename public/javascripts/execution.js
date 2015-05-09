@@ -1,5 +1,5 @@
-    var sourceStr = "(1+2*(0-4))"
-    var viewAST = "please run forward transformation"
+    var sourceStr = "(2 * (0 - 4))"
+    var viewAST = "please run forward transformation firstly"
 
 function exeUpdate() {
     console.log("execute the update query.");

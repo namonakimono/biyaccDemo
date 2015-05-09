@@ -26,58 +26,73 @@ exports.bx = function (req, res){
                 exec("/tmp/expr -f -s /tmp/concrete.xml -o /tmp/abstract.xml", {timeout:60000},function(err){
                   if(err){
                     console.log("error 01"); console.log(err); res.contentType('json');
-                    res.send({resultXML: "", success: "falied", error: err.toString() });
+                    res.send({resultXML: "", success: "failed", error: err.toString() });
                   }
                   else {
-                    console.log("successfully generated result target xml file(abstract.xml)");
-                    fs.readFile("/tmp/abstract.xml", 'utf-8', function(err, data){
+                    console.log("successfully generated abstract.xml file")
+                    exec("./exe/ASTPPP -pp /tmp/abstract.xml /tmp/ast.txt",
+                    function(err){
                       if(err){
-                         console.log("error reading result xml file"); console.log(err); res.contentType('json');
-                         res.send({resultXML: "", success: "falied", error: err.toString() });
+                       console.log("error saving AST string file"); console.log(err); res.contentType('json');
+                       res.send({resultXML: "", success: "failed", error: err.toString() });
                       }
                       else {
-                        console.log("send updated source to client"); res.contentType('json');
-                        res.send({resultXML: data, success: "success", error: "Forward transformation successfully done!\n" });
+                        console.log("successfully generated ast.txt file");
+                        fs.readFile("/tmp/ast.txt", 'utf-8', function(err, data){
+                          if(err){
+                             console.log("error reading result ast.txt file"); console.log(err); res.contentType('json');
+                             res.send({resultXML: "", success: "failed", error: err.toString() });
+                          }
+                          else {
+                            console.log("send updated source to client"); res.contentType('json');
+                            res.send({resultXML: data, success: "success", error: "Forward transformation successfully done!\n" });
+                          }
+                        });//end fs.readFile("/tmp/abstract.xml"...)
                       }
-                    });//end fs.readFile("/tmp/abstract.xml"...)
+                    }) // end exec("./exe/ASTPPP -pp ...)
                   }// end else
                 }); // end exec("/tmp/expr -f -s /tmp/concrete.xml ...)
               }// end (if flag == "f")
 
               else {
                 if (flag == "b"){//backward transformation
-                  fs.writeFile("/tmp/abstract.xml", targetXML, function(err){
-                    if(err){console.log("error in writing abstract.xml, in a backward transformation")}
+                  fs.writeFile("/tmp/ast.txt", targetXML, function(err){
+                    if(err){console.log("error in writing ast.txt, in a backward transformation")}
                     else {
-                      exec("/tmp/expr -b -s /tmp/concrete.xml -t /tmp/abstract.xml -o /tmp/concrete.xml",{timeout:60000}, function(err){
-                        if(err){
-                          console.log("error 02"); console.log(err); res.contentType('json');
-                          res.send({resultXML: "", success: "falied", error: err.toString() });
-                        }
-                        else {
-                          console.log("successfully generated result target xml file(concrete.xml)");
-                          exec("./exe/ExprPPP -pp /tmp/concrete.xml /tmp/cstring.txt", function(err){
+                      exec("./exe/ASTPPP -p /tmp/ast.txt /tmp/abstract.xml", function(err){
+                        if(err){console.log("error in writing abstract.xml, in a backward transformation")}
+                        else{
+                          exec("/tmp/expr -b -s /tmp/concrete.xml -t /tmp/abstract.xml -o /tmp/concrete.xml",{timeout:60000}, function(err){
                             if(err){
-                              console.log("error 03"); console.log(err); res.contentType('json');
+                              console.log("error 02"); console.log(err); res.contentType('json');
                               res.send({resultXML: "", success: "falied", error: err.toString() });
                             }
                             else {
-                              fs.readFile("/tmp/cstring.txt", 'utf-8', function(err, data){
+                              console.log("successfully generated result target xml file(concrete.xml)");
+                              exec("./exe/ExprPPP -pp /tmp/concrete.xml /tmp/cstring.txt", function(err){
                                 if(err){
-                                   console.log("error reading result string file"); console.log(err); res.contentType('json');
-                                   res.send({resultXML: "", success: "falied", error: err.toString() });
+                                  console.log("error 03"); console.log(err); res.contentType('json');
+                                  res.send({resultXML: "", success: "falied", error: err.toString() });
                                 }
                                 else {
-                                  console.log("send updated source to client"); res.contentType('json');
-                                  res.send({resultXML: data, success: "success", error: "Backward transformation successfully done!\n" });
+                                  fs.readFile("/tmp/cstring.txt", 'utf-8', function(err, data){
+                                    if(err){
+                                       console.log("error reading result string file"); console.log(err); res.contentType('json');
+                                       res.send({resultXML: "", success: "falied", error: err.toString() });
+                                    }
+                                    else {
+                                      console.log("send updated source to client"); res.contentType('json');
+                                      res.send({resultXML: data, success: "success", error: "Backward transformation successfully done!\n" });
+                                    }
+                                  });//end fs.readFile("/tmp/abstract.xml"...)
                                 }
-                              });//end fs.readFile("/tmp/abstract.xml"...)
-                            }
-                          });// end exec("/exe/ExprPPP -pp /tmp ...)
-                        }// end else
-                      }); // end exec("/tmp/expr -b -s /tmp/concrete.xml ...)
-                    }
-                  });
+                              });// end exec("/exe/ExprPPP -pp /tmp ...)
+                            }// end else
+                          }); // end exec("/tmp/expr -b -s /tmp/concrete.xml ...)
+                        }
+                      }) // end exec("./exe/ASTPPP -p /tmp/ast.txt  ...)
+                    } // end else
+                  }) // end fs.writeFile("/tmp/ast.txt", targetXML,...)
                 }// end if flag == "b"
                 else {console.log("error flag, must me forward or backword transformation");}
               }

@@ -21,7 +21,8 @@ exports.compile = function(req, res){
         else {
           console.log("BiFluX upd file generated");
           exec(config.BiFluX + " --sdtd=/tmp/concrete.dtd --vdtd=/tmp/abstract.dtd --shs=/tmp/Concrete.hs --vhs=/tmp/Abstract.hs  --bx=/tmp/expr.upd  --bxhs=/tmp/expr.hs", function(err){
-            if(err){console.log("generating BiFluX executable failed"); console.log(err);res.send({success: "falied", error : err.toString() })}
+            if(err){console.log("generating BiFluX executable failed"); console.log(err);
+              res.send({success: "falied", error : err.toString() })}
             else {
               console.log("BiFluX hs file generated");
               exec(config.ghc + " -i/tmp /tmp/expr.hs", function(err, stdout, stderr){
