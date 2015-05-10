@@ -1,2 +1,6 @@
-exe
 node_modules
+config.js
+error.log
+out.log
+exe
+

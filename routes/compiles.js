@@ -30,7 +30,7 @@ exports.compile = function(req, res){
                   res.send({success: "failed", error : err.toString() })}
                 else {
                   console.log("BiFluX hs file generated");
-                  exec(config.ghc + " -i/tmp /tmp/" + rdirectory + "/expr.hs", function(err, stdout, stderr){
+                  exec(config.ghc + " -i/tmp/" + rdirectory + " /tmp/" + rdirectory + "/expr.hs", function(err, stdout, stderr){
                     if(err) {console.log(err); res.contentType('json');
                       res.send({resultXML : "", success: "failed", error : err.toString() });}
                     else {

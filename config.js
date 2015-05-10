@@ -1,6 +1,6 @@
-// for mac os
+// for ubuntu
 module.exports = {
-    biyacc : '/Users/zhuzirun/Library/Haskell/bin/biyacc',
-    BiFluX : '/Users/zhuzirun/Library/Haskell/bin/BiFluX',
+    biyacc : '/home/ubuntu/.cabal/bin/biyacc',
+    BiFluX : '/home/ubuntu/.cabal/bin/BiFluX',
     ghc : '/usr/bin/ghc',
 }
