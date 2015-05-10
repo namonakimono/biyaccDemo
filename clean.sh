@@ -1,5 +1,6 @@
-npm uninstall jade
-npm uninstall ejs
-npm uninstall express
-npm uninstall html
+./stop
+sudo npm uninstall jade
+sudo npm uninstall ejs
+sudo npm uninstall express
+sudo npm uninstall html
 rm ./exe/*
