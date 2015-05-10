@@ -151,64 +151,11 @@ div.nav, div.article, div.nav ul li a,div.figure{
 }
 
 div.article{
-	margin:3em 0;
-	padding:20px;
+	margin:1em 0;
+	padding:1em;
 	text-shadow:0 0px 0 black;
 }
 
-/*************************************/
-/*
-Personal Information
-*/
-
-div.article .BasicInfo{
-      float:left;
-      width: 300px;
-}
-div.article .Name {
-     font-size : 16px;
-}
-
-div.article .AdressInfo{
-     width: 300px;
-
-}
-
-div.article .AddressInfo ul
-{
-     margin-left: 320px;
-     padding-left : 80px;    
-     padding-top: 50px;
-     list-style:none;
-}
-/*******************/
-/*
-  Education Part
-*/
-div.article .Education
-{
-   padding-right : 0px;
-   margin-right: 0px;
-}
-
-div.article .SchoolName
-{
-   width : 500px;
-   height: 26px;
-   padding-top : 2px;
-  /* margin-left : 20px;*/
-   font-size : 18px;
-   background:url(/images/gradient_light.jpg) repeat-x 50% 50% #f8f8f8;
-
-}
-
-div.article .Year {
-  float : right;
-  width : 200px;
-  font-size : 14px;
-  padding-right : 0px;
-  margin-right : 0px;
-}
 
 /*****************************/
 /*
@@ -222,6 +169,16 @@ div.article .RTopicDetail {
   font-size : 1.2em;
 }
 
+#abstract_contents{
+  /*margin-top: 1em;*/
+/*  margin-left: 10em;
+  margin-right: 10em;*/
+  font-size:1em;
+  /*word-wrap: break-word;*/
+  /*word-break: break-all;*/
+  /*white-space:wrap;*/
+  text-align: justify;
+}
 
 div.article .BLRTContent {
   margin-left : 0.8em;
@@ -245,9 +202,6 @@ div.article .RObjective  li {
   font-size : 1.2em;
 }
 /**********************************/
-div.article .Content {
-}
-
 div.article ul {
     padding-left : 20px;
 }
