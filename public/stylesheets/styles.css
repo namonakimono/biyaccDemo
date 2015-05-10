@@ -156,10 +156,6 @@ div.article{
 	text-shadow:0 0px 0 black;
 }
 
-div.article p{
-
-        
-}
 /*************************************/
 /*
 Personal Information
@@ -185,9 +181,6 @@ div.article .AddressInfo ul
      padding-top: 50px;
      list-style:none;
 }
-
-
-
 /*******************/
 /*
   Education Part
@@ -223,12 +216,10 @@ Research Topic
 */
 div.article .RTopic {
   font-size : 1.5em;
-  margin-bottom : 0.8em;
 }
 
 div.article .RTopicDetail {
   font-size : 1.2em;
-  margin-bottom : 0.8em;
 }
 
 
@@ -246,7 +237,6 @@ div.article .BRRTContent {
 div.article .RObjective {
   font-size : 1.2em;
   margin-top : 0.8em;
-  margin-bottom : 0.8em;
 }
 
 div.article .RObjective  li {
@@ -256,11 +246,6 @@ div.article .RObjective  li {
 }
 /**********************************/
 div.article .Content {
- margin-top : 20px;
-}
-
-div.article .Content p {
-/* padding-left :20px;*/
 }
 
 div.article ul {
