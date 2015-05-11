@@ -13,15 +13,17 @@
       <script type="text/javascript" src="/javascripts/execution.js"></script>
   </head>
   
-  <body>
+  <body onload = "chooseExample('expr')">
     <div id="page">
-      <div class="header"> <!-- Defining the header section of the page with the appropriate tag -->
+      <div class="header" id = "fheader"> <!-- Defining the header section of the page with the appropriate tag -->
         <h1>BiYacc</h1>
-        <div class="nav clear"> <!-- The nav link semantically marks your main site navigation -->
+        <div class="nav clear" id="fnav"> <!-- The nav link semantically marks your main site navigation -->
           <ul>
             <li><a href="#article1">Abstract</a></li>
             <li><a href="#article2">Demonstration</a></li>
             <li><a href="#article3">Sources</a></li>
+            <li><a href="#article4">Members</a></li>
+            <li><a href="#article5">Acknowledgments</a></li>
           </ul>
         </div>
       </div>
@@ -29,15 +31,16 @@
       <div id="articles">
         <div class="line"></div>
           <h3>BiYacc: Roll Your Parser and Pretty-Printer into One</h3>
-          <div class="hnav">
-            <ul>
-              <li><a href="#abstract">Abstract</a></li>
-              <li><a href="#article2">Test Cases</a></li>
-              <li><a href="#article3">Source</a></li>
-              <li><a href="#article4">Members</a></li>
-              <li><a href="#article6">Acknowledgments</a></li>
-            </ul>
-          </div>
+        <div class="line"></div>
+          <!-- <div class="hnav"> -->
+          <!--   <ul> -->
+          <!--     <li><a href="#abstract">Abstract</a></li> -->
+          <!--     <li><a href="#article2">Test Cases</a></li> -->
+          <!--     <li><a href="#article3">Source</a></li> -->
+          <!--     <li><a href="#article4">Members</a></li> -->
+          <!--     <li><a href="#article6">Acknowledgments</a></li> -->
+          <!--   </ul> -->
+          <!-- </div> -->
           <div class="article" id="article1">
             <div class="RTopic" id="abstract">Abstract </div>
             <div class="RTContent" id = "abstract_contents">
@@ -54,7 +57,10 @@ Language designers usually need to implement parsers and pretty-printers. Despit
           A few notes:
           <ul>
             <li>
-              The forward transformation may take much time, since it must try all the cases. <br />
+              <font color = "red">The server will do cleaning every 30 minutes. Your compliled program may be removed at that time.</font>
+            </li>
+            <li>
+              <font color = "red"> The transformation may take much time, since it must try all the cases.</font> <br />
               We set the time limit for one transformation to 60 seconds. <br />
               If run time exceeds 60 seconds, it will show "transformation failed".
             </li>
@@ -65,8 +71,8 @@ Language designers usually need to implement parsers and pretty-printers. Despit
           </ul>
           </p>
           <div class="styled-select">
-            <select name="exampleChoice" onchange="chooseExample(value)">
-              <option value="empty">Select one</option>
+            <select name="exampleChoice" onchange="chooseExample(value)" onclick="chooseExample(value)">
+              <!-- <option value="empty">Select one</option> -->
               <option value="expr">arithmetic expression</option>
             </select>
           </div>
@@ -121,7 +127,7 @@ Language designers usually need to implement parsers and pretty-printers. Despit
         <div class="RTopic">Source </div>
         <ul>
           <li>Source code of BiYacc. <a href="src/biyacc.tar.gz">BiYacc source</a></li>
-          <li>A Browser-based GUI. <a href="src/webgui.tar.gz">Web-GUI source</a></li>
+          <li>A Browser-based GUI. <a href="src/webgui.tar.gz">Web-GUI source (this site)</a></li>
         </ul>
         <br />
         <b>Installation Guide</b>
@@ -149,7 +155,7 @@ Language designers usually need to implement parsers and pretty-printers. Despit
         <div class="articleBody clear"></div>
       </div>
 
-      <div class="article" id="article6">
+      <div class="article" id="article5">
       <div class="RTopic">Acknowledgments</div>
          <p>
            Thanks to all.

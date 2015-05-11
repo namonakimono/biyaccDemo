@@ -1,4 +1,4 @@
-var sourceStr = "(2 * (0 - 4))"
+var sourceStr = "(2) * (0 - 4)"
 var viewAST = "please run forward transformation firstly"
 var rdirectory = Math.random().toString(36).substring(7);
 
@@ -71,74 +71,76 @@ function exeUpdate() {
 
 
 function forward(rdirectory) {
-    var sourceString = document.getElementById("sourceText").value;
-    var targetXML = document.getElementById("targetText").value;
-    console.log("forward")
+  var sourceString = document.getElementById("sourceText").value;
+  var targetXML = document.getElementById("targetText").value;
+  console.log("forward")
 
-    console.log("source:")
-    console.log(sourceString)
-    // console.log(targetXML)
-    if(!sourceString || !targetXML){
+  console.log("source:")
+  console.log(sourceString)
+  // console.log(targetXML)
+  if(!sourceString || !targetXML){
     alert("Please check whether DTD, XML, Update Query are all filled in.");
     return;
-    }
+  }
+  document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" + "Transformation starts... Please wait...";
 
-    $.ajax({
-    url: "/bx",
-    type: 'get',
-    data: {
-      sourceString: sourceString,
-      targetXML: targetXML,
-      flag: "f",
-      rdirectory: rdirectory
-    },
-    success: function(data){
-      //split the data into log and data
-      data = JSON.parse(data);
-      document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" +data.error;
-      if(data.success == "success"){
-      document.getElementById("targetText").value = data.resultXML;
-      }
-      else {
-        document.getElementById("targetText").value = "transformation failed";
-      }
+  $.ajax({
+  url: "/bx",
+  type: 'get',
+  data: {
+    sourceString: sourceString,
+    targetXML: targetXML,
+    flag: "f",
+    rdirectory: rdirectory
+  },
+  success: function(data){
+    //split the data into log and data
+    data = JSON.parse(data);
+    document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" +data.error;
+    if(data.success == "success"){
+    document.getElementById("targetText").value = data.resultXML;
     }
-    });
+    else {
+      document.getElementById("targetText").value = "transformation failed";
+    }
+  }
+  });
 }
 
 
 function backward(rdirectory) {
-    var sourceString = document.getElementById("sourceText").value;
-    var targetXML = document.getElementById("targetText").value;
-    console.log("backward");
-    console.log("sourceString");
-    console.log(sourceString);
-    if(!sourceString || !targetXML){
+  var sourceString = document.getElementById("sourceText").value;
+  var targetXML = document.getElementById("targetText").value;
+  console.log("backward");
+  console.log("sourceString");
+  console.log(sourceString);
+  if(!sourceString || !targetXML){
     alert("Please check whether DTD, XML, Update Query are all filled in.");
     return;
-    }
+  }
+  document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" + "Transformation starts... Please wait...";
 
-    $.ajax({
-    url: "/bx",
-    type: 'get',
-    data: {
-      sourceString: sourceString,
-      targetXML: targetXML,
-      flag: "b",
-      rdirectory: rdirectory
-    },
-    success: function(data){
-        data = JSON.parse(data);
-        document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n"+ data.error;
-        if (data.success == "success"){
-          console.log("finally success");
-          console.log(data.resultXML);
-          document.getElementById("sourceText").value = data.resultXML;
-        }
-        else {
-          document.getElementById("sourceText").value = "transformation failed";
-        }
-    }
-    });
+  $.ajax({
+  url: "/bx",
+  type: 'get',
+  data: {
+    sourceString: sourceString,
+    targetXML: targetXML,
+    flag: "b",
+    rdirectory: rdirectory
+  },
+  success: function(data){
+      data = JSON.parse(data);
+      document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n"+ data.error;
+      if (data.success == "success"){
+        console.log("finally success");
+        console.log(data.resultXML);
+        document.getElementById("sourceText").value = data.resultXML;
+      }
+      else {
+        document.getElementById("sourceText").value = "transformation failed";
+      }
+  }
+  });
 
 }

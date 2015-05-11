@@ -19,7 +19,8 @@ exports.bx = function (req, res){
       // console.log('Current directory: ' + process.cwd());
       exec("./exe/ExprPPP -p /tmp/" + rdirectory + "/cstring.txt /tmp/" + rdirectory + "/concrete.xml",
       function(err){
-        if(err){console.log(err);}
+        if(err){console.log("error when parse concrete xml to string."); console.log(err); res.contentType('json');
+                res.send({resultXML: "", success: "falied", error: err.toString() });}
         else {
           console.log("concrete.xml generated");
             if(err){console.log("generating concrete xml failed"); console.log(err);}
@@ -36,7 +37,7 @@ exports.bx = function (req, res){
                     exec("./exe/ASTPPP -pp /tmp/" + rdirectory + "/abstract.xml /tmp/" + rdirectory + "/ast.txt",
                     function(err){
                       if(err){
-                       console.log("error saving AST string file"); console.log(err); res.contentType('json');
+                       console.log("error saving AST file"); console.log(err); res.contentType('json');
                        res.send({resultXML: "", success: "failed", error: err.toString() });
                       }
                       else {
@@ -48,7 +49,7 @@ exports.bx = function (req, res){
                           }
                           else {
                             console.log("send updated source to client"); res.contentType('json');
-                            res.send({resultXML: data, success: "success", error: "Forward transformation successfully done!\n" });
+                            res.send({resultXML: data, success: "success", error: "Forward transformation successfully done\n" });
                           }
                         });//end fs.readFile("/tmp/" + rdirectory + "/abstract.xml"...)
                       }
@@ -63,7 +64,9 @@ exports.bx = function (req, res){
                     if(err){console.log("error in writing ast.txt, in a backward transformation")}
                     else {
                       exec("./exe/ASTPPP -p /tmp/" + rdirectory + "/ast.txt /tmp/" + rdirectory + "/abstract.xml", function(err){
-                        if(err){console.log("error in writing abstract.xml, in a backward transformation")}
+                        if(err){
+                         console.log("error when parsing AST to abstract xml file"); console.log(err); res.contentType('json');
+                         res.send({resultXML: "", success: "failed", error: err.toString() });}
                         else{
                           exec("/tmp/" + rdirectory + "/expr -b -s /tmp/" + rdirectory + "/concrete.xml -t /tmp/" + rdirectory + "/abstract.xml -o /tmp/" + rdirectory + "/concrete.xml",{timeout:60000}, function(err){
                             if(err){
@@ -74,7 +77,7 @@ exports.bx = function (req, res){
                               console.log("successfully generated result target xml file(concrete.xml)");
                               exec("./exe/ExprPPP -pp /tmp/" + rdirectory + "/concrete.xml /tmp/" + rdirectory + "/cstring.txt", function(err){
                                 if(err){
-                                  console.log("error 03"); console.log(err); res.contentType('json');
+                                  console.log("error when parsing concrete xml to string."); console.log(err); res.contentType('json');
                                   res.send({resultXML: "", success: "falied", error: err.toString() });
                                 }
                                 else {
@@ -85,7 +88,7 @@ exports.bx = function (req, res){
                                     }
                                     else {
                                       console.log("send updated source to client"); res.contentType('json');
-                                      res.send({resultXML: data, success: "success", error: "Backward transformation successfully done!\n" });
+                                      res.send({resultXML: data, success: "success", error: "Backward transformation successfully done\n" });
                                     }
                                   });//end fs.readFile("/tmp/" + rdirectory + "/abstract.xml"...)
                                 }
