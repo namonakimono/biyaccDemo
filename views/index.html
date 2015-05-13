@@ -57,6 +57,9 @@ Language designers usually need to implement parsers and pretty-printers. Despit
           A few notes:
           <ul>
             <li>
+              You can specify your own interesting updating strategies such as "arith -> '-' (Factor -> '-' (arith => Factor))", which means keep the double negation on the source.
+            </li>
+            <li>
               <font color = "red">The server will do cleaning every 30 minutes. Your compliled program may be removed at that time.</font>
             </li>
             <li>
