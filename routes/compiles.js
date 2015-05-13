@@ -15,8 +15,7 @@ exports.compile = function(req, res){
   console.log("compile, random directory:");
   console.log(rdirectory);
   exec("mkdir /tmp/" + rdirectory,function(err){
-    if (err){console.log(err); res.send({success: "failed", error : err.toString() });}
-    else {
+    if (err){console.log(err); console.log("folder exists. it does not matter. please go on.")}
       fs.writeFile("/tmp/" + rdirectory + "/expr.by", abstractSyntax + "\n" + concreteSyntax + "\n" + actions, function(err){
         if(err){console.log(err); res.send({success: "failed", error : err.toString() })}
         else {
@@ -44,6 +43,5 @@ exports.compile = function(req, res){
           });//exec(config.biyacc + " /tmp/" + rdirectory + "/expr.by...)
         }//else
       }); // end fs.writeFile("/tmp/" + rdirectory + "/expr.by...)
-    }
   }) // end exec("mkdir /tmp/" + rdirectory ... )
 }
