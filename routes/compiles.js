@@ -9,9 +9,6 @@ exports.compile = function(req, res){
   var abstractSyntax = req.query.abstractSyntax;
   var actions = req.query.actions;
   var rdirectory = req.query.rdirectory;
-  // console.log(abstractSyntax);
-  // console.log(concreteSyntax);
-  // console.log(actions);
   console.log("compile, random directory:");
   console.log(rdirectory);
   exec("mkdir /tmp/" + rdirectory,function(err){

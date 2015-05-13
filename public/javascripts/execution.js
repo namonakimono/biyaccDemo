@@ -9,8 +9,8 @@ function exeUpdate() {
   var concreteSyntax = document.getElementById("concreteSyntax").value;
   var abstractSyntax = document.getElementById("abstractSyntax").value;
   var actions   = document.getElementById("actions").value;
-  if(!concreteSyntax || !abstractSyntax  || !actions){
-    alert("Please check whether DTD,  Update Query are all filled in.");
+  if(!actions){
+    alert("Please check whether actions are filled in.");
     return;
   }
 
@@ -78,10 +78,10 @@ function forward(rdirectory) {
   console.log("source:")
   console.log(sourceString)
   // console.log(targetXML)
-  if(!sourceString || !targetXML){
-    alert("Please check whether DTD, XML, Update Query are all filled in.");
-    return;
-  }
+  // if(!sourceString){
+  //   alert("Please check whether DTD, XML, Update Query are all filled in.");
+  //   return;
+  // }
   document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" + "Transformation starts... Please wait...";
 
   $.ajax({
@@ -114,8 +114,8 @@ function backward(rdirectory) {
   console.log("backward");
   console.log("sourceString");
   console.log(sourceString);
-  if(!sourceString || !targetXML){
-    alert("Please check whether DTD, XML, Update Query are all filled in.");
+  if(!targetXML){
+    alert("Please check whether view is filled in.");
     return;
   }
   document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" + "Transformation starts... Please wait...";
