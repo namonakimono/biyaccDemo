@@ -1,0 +1,218 @@
+Abstract
+
+Arith = ArithString                      String
+      | ArithNumber                      String
+      | ArithNil
+      | ArithFunctionApplication String  Arith
+      | ArithCreateRecordInstance        String  Arith
+      | ArithCreateArray                 String  Arith Arith
+      | ArithIfThenElse                  Arith   Arith Arith
+      | ArithWhile                       Arith   Arith
+      | ArithFor                         String  Arith Arith Arith
+      | ArithBreak
+      | ArithLetIn                       Arith   Arith
+      | ArithRecordField                Arith   String
+      | ArithArrayField                 Arith   Arith
+      | ArithTypeDeclaration             String  Arith
+      | ArithNewArray                    String
+      | ArithTypeField                   String  Arith
+      | ArithVarDeclWithType             String  String Arith
+      | ArithFunctionDeclaration         String  Arith  Arith
+      | ArithFunctionDeclarationWithType String  Arith  String Arith
+      | ArithOR          Arith Arith
+      | ArithAND         Arith Arith
+      | ArithEqual       Arith Arith
+      | ArithGT          Arith Arith
+      | ArithLT          Arith Arith
+      | ArithDiff        Arith Arith
+      | ArithGET         Arith Arith
+      | ArithLET         Arith Arith
+      | ArithPlus        Arith Arith
+      | ArithMinus       Arith Arith
+      | ArithMult        Arith Arith
+      | ArithDiv         Arith Arith
+      | ArithEXPRLIST    Arith Arith
+      | ArithSEQ         Arith Arith
+      | ArithParentheses Arith
+      | ArithAssignment  String Arith
+      | ArithAssignmentLIST Arith Arith
+      | ArithStruct      Arith
+
+Concrete
+
+EXPR -> 'nil'
+      | 'break'
+      | BINARYOP
+      | LVALUE ':=' EXPR
+      | 'for' String ':=' EXPR 'to' EXPR 'do' EXPR
+      | 'while' EXPR 'do' EXPR
+      | 'let' DECLARATIONLIST 'in' EXPRSEQ 'end'
+      | '(' EXPRSEQ ')'
+      | String '(' EXPRLIST ')'
+      | String '{' FIELDLIST '}'
+      | 'if' EXPR 'then' EXPR 'else' EXPR
+      | 'if' EXPR 'then' EXPR
+
+EXPRLIST -> EXPR
+          | EXPRLIST ',' EXPR
+
+FIELDLIST -> String '=' EXPR
+           | FIELDLIST ',' String '=' EXPR
+
+DECLARATIONLIST -> DECLARATION
+                 |  DECLARATION DECLARATIONLIST
+
+DECLARATION -> TYPEDECLARATION
+            | VARIABLEDECLARATION
+            | FUNCTIONDECLARATION
+
+EXPRSEQ -> EXPR
+         | EXPRSEQ ';' EXPR
+
+VARIABLEDECLARATION -> 'var' String ':=' EXPR
+                     | 'var' String ':' String ':=' EXPR
+
+FUNCTIONDECLARATION -> 'function' String '(' TYPEFIELDS ')' '=' EXPR
+                     | 'function' String '(' TYPEFIELDS ')' ':' String '=' EXPR
+
+TYPEDECLARATION -> 'type' String '=' PTYPE
+
+PTYPE -> String
+       | '{' TYPEFIELDS '}'
+       | 'array' 'of' String
+
+TYPEFIELDS -> TYPEFIELD
+            | TYPEFIELD ',' TYPEFIELDS
+
+TYPEFIELD -> String ':' String
+
+BINARYOP -> BINARYOP '|' BINARYOP1
+          | BINARYOP1
+
+BINARYOP1 -> BINARYOP1 '&' BINARYOP2
+           | BINARYOP2
+
+BINARYOP2 -> BINARYOP2 '='  BINARYOP3
+           | BINARYOP2 '>'  BINARYOP3
+           | BINARYOP2 '<'  BINARYOP3
+           | BINARYOP2 '<>' BINARYOP3
+           | BINARYOP2 '>=' BINARYOP3
+           | BINARYOP2 '<=' BINARYOP3
+           | BINARYOP3
+
+BINARYOP3 -> BINARYOP3 '+' BINARYOP4
+           | BINARYOP3 '-' BINARYOP4
+           | BINARYOP4
+
+BINARYOP4 -> BINARYOP4 '*' BINARYOP5
+           | BINARYOP4 '/' BINARYOP5
+           | BINARYOP5
+
+BINARYOP5 -> String
+           | LVALUE
+           | '-' BINARYOP5
+           | '(' BINARYOP ')'
+
+LVALUE -> String
+       | LVALUE '.' String
+       | LVALUE '[' EXPR ']'
+
+Actions
+Arith +> EXPR
+ArithNil                          -> 'nil'
+ArithBreak                        -> 'break'
+ArithFor x0 x1 x2 x3              -> 'for' (x0 => String) ':=' (x1 => EXPR) 'to' (x2 => EXPR) 'do' (x3 => EXPR)
+ArithWhile lhs rhs                -> 'while' (lhs => EXPR) 'do' (rhs => EXPR)
+ArithLetIn lhs rhs                -> 'let' (lhs => DECLARATIONLIST) 'in' (rhs => EXPRSEQ) 'end'
+ArithFunctionApplication lhs rhs  -> (lhs => String) '(' (rhs => EXPRLIST) ')'
+ArithCreateRecordInstance lhs rhs -> (lhs => String) '{' (rhs => FIELDLIST) '}'
+ArithIfThenElse lhs mhs rhs       -> 'if' (lhs => EXPR) 'then' (mhs => EXPR) 'else' (rhs => EXPR)
+ArithIfThenElse lhs mhs ArithNil  -> 'if' (lhs => EXPR) 'then' (mhs => EXPR)
+arith                             -> '(' (arith => EXPRSEQ) ')'
+arith                             -> (arith => BINARYOP)
+
+Arith +> EXPRLIST
+ArithEXPRLIST lhs rhs -> (lhs => EXPRLIST) ',' (rhs => EXPR)
+arith                 -> (arith => EXPR)
+
+Arith +> FIELDLIST
+ArithAssignmentLIST lhs (ArithAssignment mhs rhs) -> (lhs => FIELDLIST) ',' (mhs => String) '=' (rhs => EXPR)
+ArithAssignment      lhs rhs                      -> (lhs => String) '=' (rhs => EXPR)
+
+Arith +> DECLARATIONLIST
+ArithTypeDeclaration lhs rhs -> (lhs => DECLARATION ) (rhs => DECLARATIONLIST)
+arith                        -> (arith => DECLARATION)
+
+Arith +> DECLARATION
+arith -> (arith => TYPEDECLARATION)
+arith -> (arith => VARIABLEDECLARATION)
+arith -> (arith => FUNCTIONDECLARATION)
+
+Arith +> EXPRSEQ
+arith             -> (arith => EXPRSEQ) ';' (EXPR -> 'nil')
+ArithSEQ seq expr -> (seq => EXPRSEQ) ';' (expr => EXPR)
+arith             -> (arith => EXPR)
+
+Arith +> VARIABLEDECLARATION
+ArithTypeField       lhs rhs     -> 'var' (lhs => String) ':=' (rhs => EXPR)
+ArithVarDeclWithType lhs mhs rhs -> 'var' (lhs => String) ':' (mhs => String) ':=' (rhs => EXPR)
+
+Arith +> FUNCTIONDECLARATION
+ArithFunctionDeclaration lhs mhs rhs             -> 'function' (lhs => String) '(' (mhs => TYPEFIELDS) ')' '=' (rhs => EXPR)
+ArithFunctionDeclarationWithType ch1 ch2 ch3 ch4 -> 'function' (ch1 => String) '(' (ch2 => TYPEFIELDS) ')' ':' (ch3 => String) '=' (ch4 => EXPR)
+
+Arith +> TYPEDECLARATION
+ArithTypeDeclaration lhs rhs -> 'type' (lhs => String) '=' (rhs => PTYPE)
+
+Arith +> PTYPE
+ArithString   lhs -> (lhs => String)
+ArithStruct   lhs -> '{' (lhs => TYPEFIELDS) '}'
+ArithNewArray lhs -> 'array' 'of' (lhs => String)
+
+Arith +> TYPEFIELDS
+ArithTypeField lhs rhs -> (lhs => TYPEFIELD) ',' (rhs => TYPEFIELDS)
+arith                  -> (arith => TYPEFIELD)
+
+Arith +> TYPEFIELD
+ArithTypeField lhs rhs -> (lhs => String) ':' (rhs => String)
+
+Arith +> BINARYOP
+ArithOR lhs rhs -> (lhs => BINARYOP) '|' (rhs => BINARYOP1)
+arith           -> (arith => BINARYOP1)
+
+Arith +> BINARYOP1
+ArithAND lhs rhs -> (lhs => BINARYOP1) '&' (rhs => BINARYOP2)
+arith            -> (arith => BINARYOP2)
+
+Arith +> BINARYOP2
+ArithEqual lhs rhs -> (lhs => BINARYOP2) '='  (rhs => BINARYOP3)
+ArithGT    lhs rhs -> (lhs => BINARYOP2) '>'  (rhs => BINARYOP3)
+ArithLT    lhs rhs -> (lhs => BINARYOP2) '<'  (rhs => BINARYOP3)
+ArithDiff  lhs rhs -> (lhs => BINARYOP2) '<>' (rhs => BINARYOP3)
+ArithGET   lhs rhs -> (lhs => BINARYOP2) '>=' (rhs => BINARYOP3)
+ArithLET   lhs rhs -> (lhs => BINARYOP2) '<=' (rhs => BINARYOP3)
+arith              -> (arith => BINARYOP3)
+
+Arith +> BINARYOP3
+ArithPlus  lhs rhs               -> (lhs => BINARYOP3) '+' (rhs => BINARYOP4)
+ArithMinus (ArithNumber "0") rhs -> (rhs => BINARYOP4)
+ArithMinus lhs rhs               -> (lhs => BINARYOP3) '-' (rhs => BINARYOP4)
+arith                            -> (arith => BINARYOP4)
+
+Arith +> BINARYOP4
+ArithMult lhs rhs -> (lhs => BINARYOP4) '*' (rhs => BINARYOP5)
+ArithDiv  lhs rhs -> (lhs => BINARYOP4) '/' (rhs => BINARYOP5)
+arith             -> (arith => BINARYOP5)
+
+Arith +> BINARYOP5
+ArithMinus (ArithNumber "0") rhs -> '-' (rhs => BINARYOP5)
+ArithNumber lhs                  -> (lhs => String)
+ArithParentheses rhs             -> '(' (rhs => BINARYOP) ')'
+arith                            -> (arith => LVALUE)
+
+Arith +> LVALUE
+ArithString lhs          -> (lhs => String)
+ArithRecordField lhs rhs -> (lhs => LVALUE) '.' (rhs => String)
+ArithArrayField  lhs rhs -> (lhs => LVALUE) '[' (rhs => EXPR) ']'
+
+
