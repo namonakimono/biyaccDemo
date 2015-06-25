@@ -1,5 +1,5 @@
 var sourceStr = "(2) * (0 - 4)"
-var viewAST = "please run forward transformation firstly"
+var viewAST = "please run forward transformation first"
 var rdirectory = Math.random().toString(36).substring(7);
 
 function exeUpdate() {
@@ -27,7 +27,7 @@ function exeUpdate() {
     },
     success: function(data){
       // console.log("XD here success");
-      data = JSON.parse(data);
+      // data = JSON.parse(data);
       console.log(data);
       console.log(data.success);
       if(data.success  == "success"){
@@ -95,7 +95,7 @@ function forward(rdirectory) {
   },
   success: function(data){
     //split the data into log and data
-    data = JSON.parse(data);
+    // data = JSON.parse(data);
     document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" +data.error;
     if(data.success == "success"){
     document.getElementById("targetText").value = data.resultXML;
@@ -130,7 +130,7 @@ function backward(rdirectory) {
     rdirectory: rdirectory
   },
   success: function(data){
-      data = JSON.parse(data);
+      // data = JSON.parse(data);
       document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n"+ data.error;
       if (data.success == "success"){
         console.log("finally success");
