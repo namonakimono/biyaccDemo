@@ -17,7 +17,7 @@ exports.compile = function(req, res){
         if(err){console.log(err); res.send({success: "failed", error : err.toString() })}
         else {
           console.log("biyacc file generated");
-          exec(config.biyacc + " /tmp/" + rdirectory + "/expr.by /tmp/" + rdirectory + "/expr.upd", function(err){
+          exec(config.biyacc + " -g /tmp/" + rdirectory + "/expr.by" + "," + "/tmp/" + rdirectory + "/expr.upd", function(err){
             if(err){console.log(err); res.send({success: "failed", error : err.toString() });}
             else {
               console.log("BiFluX upd file generated");
