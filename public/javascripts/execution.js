@@ -71,12 +71,14 @@ function exeUpdate() {
 
 
 function forward(rdirectory) {
+  x = 1;
+  
   var sourceString = document.getElementById("sourceText").value;
   var targetXML = document.getElementById("targetText").value;
-  console.log("forward")
+  console.log("forward");
 
-  console.log("source:")
-  console.log(sourceString)
+  console.log("source:");
+  console.log(sourceString);
   // console.log(targetXML)
   // if(!sourceString){
   //   alert("Please check whether DTD, XML, Update Query are all filled in.");

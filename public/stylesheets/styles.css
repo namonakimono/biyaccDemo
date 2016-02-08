@@ -20,7 +20,7 @@ body{
 
 /* fixed width font for code class*/
 .code {
-  font-size:0.8em;
+  font-size:1.6em;
   font-family:Consolas, Monaco, Menlo, Courier;
 }
 
@@ -352,19 +352,21 @@ div.footer a.up{
 }
 
 .ResultSource textarea {
-    float: left;
-    margin-top: 2px;
-    margin-right: 20px;
-    width : 390px;
-    /*max-width: 450px;*/
-    height: 300px;
-    max-height:  300px;
-    overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
-    background-repeat:repeat-x;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
+  font-family: Consolas;
+  font-size: 1.8em;
+  float: left;
+  margin-top: 2px;
+  margin-right: 20px;
+  width : 390px;
+  /*max-width: 450px;*/
+  height: 300px;
+  max-height:  300px;
+  overflow-y: scroll;
+  background-image:url(/images/form_bg.jpg);
+  background-repeat:repeat-x;
+  border:1px solid #d1c7ac;
+  color:#333333;
+  padding:3px;
 }
 
 .Target {
@@ -374,19 +376,21 @@ div.footer a.up{
 }
 
 .Target textarea {
-    float: right;
-    margin-top: 2px;
-    margin-right: 20px;
-    width : 380px;
-    height: 300px;
-    max-height:  350px;
-    max-width:  3200px;
-    overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
-    background-repeat:repeat-x;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
+  font-family: Consolas;
+  font-size: 1.8em;
+  float: right;
+  margin-top: 2px;
+  margin-right: 20px;
+  width : 380px;
+  height: 300px;
+  max-height:  350px;
+  max-width:  3200px;
+  overflow-y: scroll;
+  background-image:url(/images/form_bg.jpg);
+  background-repeat:repeat-x;
+  border:1px solid #d1c7ac;
+  color:#333333;
+  padding:3px;
 }
 
 

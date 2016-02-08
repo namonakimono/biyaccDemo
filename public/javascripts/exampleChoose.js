@@ -2,7 +2,7 @@ function chooseExample(value) {
 
     var concreteSyntax = "Concrete\n\nExpr -> Expr '+' Term\n      | Expr '-' Term\n      | Term\n\nTerm -> Term '*' Factor\n      | Term '/' Factor\n      | Factor\n\nFactor -> '-' Factor\n        | String\n        | '(' Expr ')'\n";
     var abstractSyntax = "Abstract\n\nArith = ADD Arith Arith\n      | SUB Arith Arith\n      | MUL Arith Arith\n      | DIV Arith Arith\n      | NUM String\n";
-    var exprActions = "Actions\n\nArith +> Expr\nADD lhs       rhs  -> (lhs => Expr) '+' (rhs => Term)\nSUB lhs       rhs  -> (lhs => Expr) '-' (rhs => Term)\narith                     -> (arith => Term)\n\n\nArith +> Term\nMUL lhs rhs -> (lhs => Term) '*' (rhs => Factor)\nDIV lhs rhs -> (lhs => Term) '/' (rhs => Factor)\narith       -> (arith => Factor)\n\nArith +> Factor\nSUB (NUM \"0\") rhs -> '-' (rhs => Factor)\nNUM n             -> (n => String)\narith             -> '(' (arith => Expr) ')'\n";
+    var exprActions = "Actions\n\nArith +> Expr\nADD lhs       rhs  -> (lhs => Expr) '+' (rhs => Term)\nSUB lhs       rhs  -> (lhs => Expr) '-' (rhs => Term)\narith              -> (arith => Term)\n\nArith +> Term\nMUL lhs rhs -> (lhs => Term) '*' (rhs => Factor)\nDIV lhs rhs -> (lhs => Term) '/' (rhs => Factor)\narith       -> (arith => Factor)\n\nArith +> Factor\nSUB (NUM \"0\") rhs -> '-' (rhs => Factor)\nNUM n             -> (n => String)\narith             -> '(' (arith => Expr) ')'\n";
 
 
     if(value =="expr"){
