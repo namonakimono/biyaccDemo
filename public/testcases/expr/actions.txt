@@ -1,0 +1,18 @@
+Actions
+
+Arith +> Expr
+Add x   y +> (x +> Expr) '+' (y +> Term);
+-- a@(Sub (Num #0) _)    +> (a +> Term);
+Sub x   y +> (x +> Expr) '-' (y +> Term);
+arith     +> (arith +> Term);
+
+Arith +> Term
+Mul x y  +>  (x +> Term) '*' (y +> Factor);
+Div x y  +>  (x +> Term) '/' (y +> Factor);
+arith    +>  (arith +> Factor);
+
+Arith +> Factor
+Sub (Num #0) y    +> '-' (y +> Factor);
+Num n             +> (n +> Int);
+arith             +> '(' (arith +> Expr) ')';
+

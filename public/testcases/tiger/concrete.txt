@@ -1,0 +1,83 @@
+Concrete
+
+%right ';' ;
+%nonassoc 'of' ;
+%right 'then' 'else' 'do';
+%nonassoc ':=' ;
+%left '|' ;
+%left '&' ;
+%left '=' '<>' '>' '<' '>=' '<=' ;
+%left '+' '-' ;
+%left '*' '/' ;
+
+Program -> Exp ;
+
+Exp -> LValue    | 'nil'     | Int       | String
+     | SeqExp    | Negation  | CallExp   | InfixExp
+     | ArrCreate | RecCreate | Assignment
+     | WhileExp  | ForExp    | IfThen    | IfThenElse
+     | 'break'   | LetExp    | Guard
+     ;
+
+Decs  -> Dec Decs | Dec ;
+Dec   -> TyDec | VarDec | FunDec ;
+TyDec -> 'type' Name '=' Ty ;
+Ty    -> Name | ArrTy | RecTy ;
+ArrTy -> 'array' 'of' Name ;
+RecTy -> '{' FieldDecs '}' ;
+
+FieldDecs -> FieldDec ',' FieldDecs | FieldDec ;
+FieldDec  -> Name ':' Name ;
+
+FunDec -> 'function' Name '(' FieldDecs ')'          '=' Exp
+        | 'function' Name '('           ')'          '=' Exp
+        | 'function' Name '(' FieldDecs ')' ':' Name '=' Exp
+        | 'function' Name '('           ')' ':' Name '=' Exp
+        ;
+VarDec -> 'var' Name          ':=' Exp
+        | 'var' Name ':' Name ':=' Exp
+        ;
+
+LValue -> Name | OtherLValue ;
+OtherLValue -> Name '[' Exp ']' | Subscript | FieldExp;
+Subscript -> OtherLValue '[' Exp ']';
+FieldExp  -> LValue '.' Name;
+
+SeqExp -> '(' ')' | '(' ExpSeq ')' ;
+ExpSeq  -> Exp ';' ExpSeq  | Exp;
+ExpList -> Exp ',' ExpList | Exp;
+
+Negation -> '-' Exp ;
+CallExp  -> Name '(' ExpList ')' | Name '(' ')';
+
+InfixExp -> Exp '*'  Exp
+          | Exp '/'  Exp
+          | Exp '+'  Exp
+          | Exp '-'  Exp
+          | Exp '='  Exp
+          | Exp '<>' Exp
+          | Exp '>'  Exp
+          | Exp '<'  Exp
+          | Exp '>=' Exp
+          | Exp '<=' Exp
+          | Exp '&'  Exp
+          | Exp '|'  Exp
+          ;
+
+ArrCreate -> Name '[' Exp ']' 'of' Exp ;
+RecCreate -> Name '{' FieldCreates '}' ;
+FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
+FieldCreate  -> Name '=' Exp;
+Assignment -> LValue ':=' Exp;
+
+IfThenElse -> 'if' Exp 'then' Exp 'else' Exp;
+IfThen     -> 'if' Exp 'then' Exp;
+WhileExp   -> 'while' Exp 'do' Exp ;
+ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
+LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
+
+--Switch       -> 'switch' Name 'of' CaseBs ;
+Guard       -> 'guard' CaseBs 'end';
+CaseBs -> CaseB CaseBs | CaseB ;
+CaseB  -> Name '=' Int '->' Exp ; -- remember to change Name and Int to Exp
+

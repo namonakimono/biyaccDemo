@@ -1,0 +1,63 @@
+Abstract
+
+data Tiger =
+    TigerStrLit String
+  | TigerIntLit Int
+  | TigerName   Name
+  | TigerEmptySeq    -- '(' ')'
+  | TigerSeqNil      -- handle all nil condition for ExpList, ExpSeq, Decs, etc
+  | TigerTypeNil     -- 'nil'
+  | TigerBreak
+
+
+  | TigerExpSeq        Tiger Tiger   -- SeqExp and ExpSeq (lifted)
+  | TigerExpList       Tiger Tiger   -- ExpList -> Exp ',' ExpList | Exp;
+  | TigerNegation      Tiger
+  | TigerCall          Tiger Tiger
+  | TigerArrCreate     Tiger Tiger Tiger
+  | TigerRecCreate     Tiger Tiger
+  | TigerFieldCreates  Tiger Tiger Tiger -- lifted problematic
+  | TigerAssign        Tiger Tiger
+  | TigerWhile         Tiger Tiger
+  | TigerFor           Tiger Tiger Tiger Tiger
+  | TigerIfThenElse    Tiger Tiger Tiger
+  | TigerLet           Tiger Tiger
+
+
+  | TigerDecs Tiger Tiger
+  | TigerDecTyDec   Tiger
+  | TigerDecVarDec  Tiger
+  | TigerDecFunDec  Tiger
+  | TigerTyDec      Tiger Tiger
+  | TigerTyName     Tiger
+  | TigerTyArrTy    Tiger
+  | TigerTyRecTy    Tiger
+  | TigerArrTy      Tiger
+  | TigerRecTy      Tiger
+  | TigerVarDec     Tiger Tiger Tiger
+  | TigerFunDec     Tiger Tiger Tiger Tiger
+  | TigerFieldDecs  Tiger Tiger
+  | TigerFieldDec   Tiger Tiger
+
+  | TigerLValueName  Tiger
+  | TigerLValueOther Tiger
+  | TigerOtherLValNameExp   Tiger Tiger  -- Name '[' Exp ']'
+  | TigerOtherLValSubscript Tiger Tiger -- lifted
+  | TigerOtherLValFieldExp  Tiger Tiger -- lifted
+--  | TigerSubscript Tiger Tiger
+--  | TigerFieldExp  Tiger Tiger
+
+
+  | TigerMul  Tiger Tiger
+  | TigerDiv  Tiger Tiger
+  | TigerAdd  Tiger Tiger
+  | TigerSub  Tiger Tiger
+  | TigerEq   Tiger Tiger
+  | TigerNEq  Tiger Tiger -- not equal, <>
+  | TigerGT   Tiger Tiger
+  | TigerLT   Tiger Tiger
+  | TigerGTE  Tiger Tiger -- >=
+  | TigerLTE  Tiger Tiger -- <=
+  deriving (Show, Eq, Read)
+
+deriveBiGULGeneric ''Tiger

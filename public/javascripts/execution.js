@@ -1,11 +1,8 @@
-var sourceStr = "(2) * (0 - 4)"
+var sourceStr = "(-2) * ((2+3) /  (0 - 4))"
 var viewAST = "please run forward transformation first"
 var rdirectory = Math.random().toString(36).substring(7);
 
 function exeUpdate() {
-  console.log("random directory:");
-  console.log(rdirectory);
-  console.log("now execute the update query.");
   var concreteSyntax = document.getElementById("concreteSyntax").value;
   var abstractSyntax = document.getElementById("abstractSyntax").value;
   var actions   = document.getElementById("actions").value;
@@ -14,33 +11,28 @@ function exeUpdate() {
     return;
   }
 
-  //when do compilation, remove this part.
-  $('#step5').remove();
   $.ajax({
     url: "/compile",
     type: 'get',
     data: {
         concreteSyntax: concreteSyntax,
         abstractSyntax: abstractSyntax,
-        actions  : actions,
-        rdirectory : rdirectory
+        actions :       actions,
+        rdirectory :    rdirectory
     },
     success: function(data){
-      // console.log("XD here success");
-      // data = JSON.parse(data);
       console.log(data);
       console.log(data.success);
       if(data.success  == "success"){
-        // console.log("success");
         $('#step5').remove();
         //this one is for unsuccessful situation added.
         $('#consoleLog0').remove();
         //add a new sec
-        $('<li style="float:left" id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p> </li>').insertAfter('#step4');
-        $('<div class="ResultSource" id="updatedSource"> <p>Source</p>  <textarea id="sourceText"> </textarea> </div>').insertAfter("#step5 > p");
+        $('<li id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p> </li>').insertAfter('#step4');
+        $('<div class="ResultSource" id="updatedSource"> <p>Source</p>  <textarea class="code" id="sourceText"> </textarea> </div>').insertAfter("#step5 > p");
 
-        $('<div class="Target" id="target"> <p>View</p>  <textarea id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
-        $('<hr id="hrline" style="height:10px; width=800px; display:none">').insertAfter('#target')
+        $('<div class="Target" id="target"> <p>View</p>  <textarea class="code" id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
+        $('<hr id="hrline" style="height:10px; width=800px; display:none">').insertAfter('#target');
         $('<div class="FBButton" id="fbButton""><input style="float:left" type="submit" value="Forward Transformation" onclick="forward(rdirectory)"/><input style="float:left" type="submit" value="Backward Transformation" onclick="backward(rdirectory)"/></div>').insertAfter('#hrline');
         //todo: add Console info
         $('<hr id="conhrline" style="height:10px; width=800px; display:none">').insertAfter('#fbButton');
@@ -52,7 +44,15 @@ function exeUpdate() {
           document.getElementById("targetText").value= viewAST;
           document.getElementById("sourceText").value= sourceStr;
         }
-        else {
+
+        else if ($('select option[value="tiger"]').attr('selected')){
+          console.log("output tiger");
+          $("#actions").load("./testcases/tiger/queens.tig", function(data){
+          document.getElementById("sourceText").value = data;});
+          document.getElementById("targetText").value= viewAST;
+          // document.getElementById("sourceText").value= sourceStr;
+        }
+        else{
           console.log("output empty");
           document.getElementById("targetText").value= "";
           document.getElementById("sourceText").value= "";
@@ -71,19 +71,13 @@ function exeUpdate() {
 
 
 function forward(rdirectory) {
-  x = 1;
-  
   var sourceString = document.getElementById("sourceText").value;
   var targetXML = document.getElementById("targetText").value;
   console.log("forward");
 
   console.log("source:");
   console.log(sourceString);
-  // console.log(targetXML)
-  // if(!sourceString){
-  //   alert("Please check whether DTD, XML, Update Query are all filled in.");
-  //   return;
-  // }
+
   document.getElementById('consoleText').value = document.getElementById('consoleText').value + "\n" + "Transformation starts... Please wait...";
 
   $.ajax({

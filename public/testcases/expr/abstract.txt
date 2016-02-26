@@ -1,0 +1,11 @@
+Abstract
+
+data Arith = Add Arith Arith
+           | Sub Arith Arith
+           | Mul Arith Arith
+           | Div Arith Arith
+           | Num Int
+  deriving (Show, Eq, Read)
+
+deriveBiGULGeneric ''Arith
+

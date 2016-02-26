@@ -6,10 +6,10 @@
 
 body{
 	/* Setting the default text color, size, page background and a font stack: */
-	font-size:0.825em;
+	font-size: 1em;
 	/*color:#fcfcfc;*/
 	/*background-color:#355664;*/
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: Georgia, Helvetica, Arial, sans-serif;
 }
 
 #fheader{
@@ -20,8 +20,8 @@ body{
 
 /* fixed width font for code class*/
 .code {
-  font-size:1.6em;
-  font-family:Consolas, Monaco, Menlo, Courier;
+  font-size:1.25em;
+  font-family: Consolas, Monaco, Menlo, Courier;
 }
 
 /* Hyperlink Styles: */
@@ -43,8 +43,8 @@ a img{
 /* Headings: */
 
 h1,h2,h3{
-	font-family:"Myriad Pro","Helvetica Neue",Helvetica,Arial,Sans-Serif;
-	text-shadow:0 1px 1px black;
+	font-family: Georgia, Helvetica, Arial, Sans-Serif;
+	text-shadow: 0 1px 1px black;
 }
 
 h1{
@@ -94,12 +94,11 @@ div.footer .line{
 }
 
 div.nav{
-	background:url(/images/gradient_light.jpg) repeat-x 50% 50% #f8f8f8;
 	padding:0 5px;
 	position:absolute;
 	right:0;
 	top:4em;
-	
+
 	border:1px solid #FCFCFC;
 
 	-moz-box-shadow:0 1px 1px #333333;
@@ -162,17 +161,10 @@ div.article{
 	text-shadow:0 0px 0 black;
 }
 
-
 /*****************************/
-/*
-Research Topic
-*/
-div.article .RTopic {
-  font-size : 1.5em;
-}
-
-div.article .RTopicDetail {
-  font-size : 1.2em;
+.RTopic {
+  font-size : 2.5em;
+  margin-bottom: 0.25em;
 }
 
 #abstract_contents{
@@ -186,27 +178,6 @@ div.article .RTopicDetail {
   text-align: justify;
 }
 
-div.article .BLRTContent {
-  margin-left : 0.8em;
-  width : 400px;
-}
-
-div.article .BRRTContent {
-  margin-right : 0.8em;
-  width : 400px;
-}
-
-
-div.article .RObjective {
-  font-size : 1.2em;
-  margin-top : 0.8em;
-}
-
-div.article .RObjective  li {
-  margin-top : 4px;
-  margin-left : 4px;
-  font-size : 1.2em;
-}
 /**********************************/
 div.article ul {
     padding-left : 20px;
@@ -289,36 +260,28 @@ div.footer a.up{
     margin-bottom: 10px;
 }
 
-.LeftDTD {
-  float: left;
-}
-.LeftDTD textarea {
+#tdtd textarea {
     margin-top: 2px;
     margin-right: 20px;
-    width : 400px;
+    width : 800px;
     height: 300px;
     max-height:  300px;
     resize: none;
     overflow-y: scroll;
-    background-image:url("/images/form_bg.jpg");
     background-repeat:repeat-x;
     border:1px solid #d1c7ac;
     color:#333333;
     padding:3px;
 }
 
-.RightXML {
-  float: right;
-}
-.RightXML textarea {
+#sdtd textarea {
     margin-top: 2px;
     margin-right: 20px;
-    width : 400px;
+    width : 800px;
     height: 300px;
     max-height:  300px;
     resize: none;
     overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
     background-repeat:repeat-x;
     border:1px solid #d1c7ac;
     color:#333333;
@@ -332,62 +295,54 @@ div.footer a.up{
 .UpdateQuery textarea {
     margin-top: 2px;
     margin-right: 20px;
-    width : 700px;
-    height: 300px;
-    max-height:  300px;
+    width : 800px;
+    height: 400px;
+    max-height:  400px;
    /* resize: none;*/
     overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
-    background-repeat:repeat-x;
     border:1px solid #d1c7ac;
     color:#333333;
     padding:3px;
 }
 
 
-.ResultSource {
+/*.ResultSource {
     float: left;
     margin-top: 2px;
     margin-right: 20px;
-}
+}*/
 
 .ResultSource textarea {
   font-family: Consolas;
-  font-size: 1.8em;
-  float: left;
+  font-size: 1.25em;
+  /*float: left;*/
   margin-top: 2px;
   margin-right: 20px;
-  width : 390px;
-  /*max-width: 450px;*/
-  height: 300px;
-  max-height:  300px;
+  width : 800px;
+  height: 250px;
+  max-height:  400px;
   overflow-y: scroll;
-  background-image:url(/images/form_bg.jpg);
-  background-repeat:repeat-x;
   border:1px solid #d1c7ac;
   color:#333333;
   padding:3px;
 }
 
-.Target {
+/*.Target {
     float: right;
     margin-top: 2px;
     margin-right: 20px;
-}
+}*/
 
 .Target textarea {
   font-family: Consolas;
-  font-size: 1.8em;
-  float: right;
+  font-size: 1.25em;
+  /*float: right;*/
   margin-top: 2px;
   margin-right: 20px;
-  width : 380px;
+  width : 800px;
   height: 300px;
-  max-height:  350px;
-  max-width:  3200px;
+  max-height:  400px;
   overflow-y: scroll;
-  background-image:url(/images/form_bg.jpg);
-  background-repeat:repeat-x;
   border:1px solid #d1c7ac;
   color:#333333;
   padding:3px;
@@ -398,23 +353,23 @@ div.footer a.up{
 input[type=submit] {
     margin-top: 10px;
     margin-left: 15px;
-    padding:5px  15px; 
-    background:#ccc; 
+    padding:5px  15px;
+    background:#ccc;
     border:0 none;
     cursor:pointer;
     -webkit-border-radius: 5px;
-    border-radius: 5px; 
+    border-radius: 5px;
     float: left;
 }
 input[type=submit] #submitTo {
     margin-top: 10px;
     margin-left: 15px;
-    padding:5px  15px; 
-    background:#ccc; 
+    padding:5px  15px;
+    background:#ccc;
     border:0 none;
     cursor:pointer;
     -webkit-border-radius: 5px;
-    border-radius: 5px; 
+    border-radius: 5px;
     float: left;
 }
 
@@ -446,15 +401,15 @@ input[type=submit] #submitTo {
 ::-webkit-scrollbar {
     width: 12px;
 }
- 
+
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     border-radius: 10px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
 .ForBackward {
@@ -478,13 +433,9 @@ input[type=submit] #submitTo {
 .ConsoleLog textarea {
     float: left;
     margin-right: 20px;
-    width : 600px;
-    height: 200px;
-    max-height:  350px;
-    max-width:  600px;
+    width : 800px;
+    height: 250px;
     overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
-    background-repeat:repeat-x;
     border:1px solid #d1c7ac;
     color:#333333;
     padding:3px;
@@ -548,8 +499,6 @@ input[type=submit] #submitTo {
     max-height:  350px;
     max-width:  3200px;
     overflow-y: scroll;
-    background-image:url(/images/form_bg.jpg);
-    background-repeat:repeat-x;
     border:1px solid #d1c7ac;
     color:#333333;
     padding:3px;

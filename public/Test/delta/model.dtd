@@ -1,5 +1,0 @@
-<!DOCTYPE deltas [
-<!ELEMENT deltas (delta+)>
-<!ELEMENT delta EMPTY>
-<!ATTLIST delta target CDATA #REQUIRED>
-]>

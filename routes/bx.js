@@ -8,103 +8,62 @@ exports.bx = function (req, res){
   var sourceString = req.query.sourceString;
   var targetXML = req.query.targetXML;
   var flag = req.query.flag;
-  // console.log("here source string:");
-  // console.log(sourceString);
-  console.log("bx trans, random directory:");
-  console.log(rdirectory);
-  fs.writeFile("/tmp/" + rdirectory + "/cstring.txt", sourceString, function(err){
-    if(err){console.log("writing cstring, error occured"); console.log(err);}
-    else {
-      console.log("cstring.txt saved");
-      // console.log('Current directory: ' + process.cwd());
-      exec("./exe/ExprPPP -p /tmp/" + rdirectory + "/cstring.txt /tmp/" + rdirectory + "/concrete.xml",
-      function(err){
-        if(err){console.log("error when parse concrete xml to string."); console.log(err); res.contentType('json');
-                res.send({resultXML: "", success: "falied", error: err.toString() });}
-        else {
-          console.log("concrete.xml generated");
-            if(err){console.log("generating concrete xml failed"); console.log(err);}
-            else {
+  // console.log("bx trans, random directory:");
+  // console.log(rdirectory);
 
-              if(flag == "f") { // forward transformation
-                exec("/tmp/" + rdirectory + "/expr -f -s /tmp/" + rdirectory + "/concrete.xml -o /tmp/" + rdirectory + "/abstract.xml", {timeout:60000},function(err){
+  fs.writeFile("/tmp/" + rdirectory + "/code.txt", sourceString, function(err){
+    if(err){console.log("generating code.txt failed"); console.log(err);}
+    else {
+      var prefixDir = "/tmp/" + rdirectory + "/";
+
+      if(flag == "f") { // forward transformation
+        exec(prefixDir + "expr get "    + prefixDir + "code.txt "   + prefixDir + "AST.txt", {timeout:10000}, function(err){
+          if(err){
+            res.contentType('json');
+            res.send({resultXML: "", success: "failed", error: err.toString() });
+          }
+          else {
+            fs.readFile(prefixDir + "AST.txt", 'utf-8', function(err, data){
+              if(err){
+                 res.contentType('json');
+                 res.send({resultXML: "", success: "failed", error: err.toString() });
+              }
+              else {
+                res.contentType('json');
+                res.send({resultXML: data, success: "success", error: "Forward transformation successfully done\n" });
+              }
+            });//end fs.readFile
+          }
+        }); // end exec prefixDir
+      }// end (if flag == "f")
+
+      //backward transformation
+      else if (flag == "b") {
+        fs.writeFile(prefixDir + "/AST.txt", targetXML, function(err){
+          if(err){console.log("error in writing AST.txt, in a backward transformation")}
+          else {
+            exec(prefixDir + "expr put "    + prefixDir + "code.txt "   + prefixDir + "AST.txt", {timeout:10000}, function(err){
+              if(err){
+                res.contentType('json');
+                res.send({resultXML: "", success: "falied", error: err.toString() });
+              }
+              else {
+                fs.readFile(prefixDir + "code.txt", 'utf-8', function(err, data){
                   if(err){
-                    console.log("error 01"); console.log(err); res.contentType('json');
-                    res.send({resultXML: "", success: "failed", error: err.toString() });
+                     res.contentType('json');
+                     res.send({resultXML: "", success: "falied", error: err.toString() });
                   }
                   else {
-                    console.log("successfully generated abstract.xml file")
-                    exec("./exe/ASTPPP -pp /tmp/" + rdirectory + "/abstract.xml /tmp/" + rdirectory + "/ast.txt",
-                    function(err){
-                      if(err){
-                       console.log("error saving AST file"); console.log(err); res.contentType('json');
-                       res.send({resultXML: "", success: "failed", error: err.toString() });
-                      }
-                      else {
-                        console.log("successfully generated ast.txt file");
-                        fs.readFile("/tmp/" + rdirectory + "/ast.txt", 'utf-8', function(err, data){
-                          if(err){
-                             console.log("error reading result ast.txt file"); console.log(err); res.contentType('json');
-                             res.send({resultXML: "", success: "failed", error: err.toString() });
-                          }
-                          else {
-                            console.log("send updated source to client"); res.contentType('json');
-                            res.send({resultXML: data, success: "success", error: "Forward transformation successfully done\n" });
-                          }
-                        });//end fs.readFile("/tmp/" + rdirectory + "/abstract.xml"...)
-                      }
-                    }) // end exec("./exe/ASTPPP -pp ...)
-                  }// end else
-                }); // end exec("/tmp/" + rdirectory + "/expr -f -s /tmp/" + rdirectory + "/concrete.xml ...)
-              }// end (if flag == "f")
-
-              else {
-                if (flag == "b"){//backward transformation
-                  fs.writeFile("/tmp/" + rdirectory + "/ast.txt", targetXML, function(err){
-                    if(err){console.log("error in writing ast.txt, in a backward transformation")}
-                    else {
-                      exec("./exe/ASTPPP -p /tmp/" + rdirectory + "/ast.txt /tmp/" + rdirectory + "/abstract.xml", function(err){
-                        if(err){
-                         console.log("error when parsing AST to abstract xml file"); console.log(err); res.contentType('json');
-                         res.send({resultXML: "", success: "failed", error: err.toString() });}
-                        else{
-                          exec("/tmp/" + rdirectory + "/expr -b -s /tmp/" + rdirectory + "/concrete.xml -t /tmp/" + rdirectory + "/abstract.xml -o /tmp/" + rdirectory + "/concrete.xml",{timeout:60000}, function(err){
-                            if(err){
-                              console.log("error 02"); console.log(err); res.contentType('json');
-                              res.send({resultXML: "", success: "falied", error: err.toString() });
-                            }
-                            else {
-                              console.log("successfully generated result target xml file(concrete.xml)");
-                              exec("./exe/ExprPPP -pp /tmp/" + rdirectory + "/concrete.xml /tmp/" + rdirectory + "/cstring.txt", function(err){
-                                if(err){
-                                  console.log("error when parsing concrete xml to string."); console.log(err); res.contentType('json');
-                                  res.send({resultXML: "", success: "falied", error: err.toString() });
-                                }
-                                else {
-                                  fs.readFile("/tmp/" + rdirectory + "/cstring.txt", 'utf-8', function(err, data){
-                                    if(err){
-                                       console.log("error reading result string file"); console.log(err); res.contentType('json');
-                                       res.send({resultXML: "", success: "falied", error: err.toString() });
-                                    }
-                                    else {
-                                      console.log("send updated source to client"); res.contentType('json');
-                                      res.send({resultXML: data, success: "success", error: "Backward transformation successfully done\n" });
-                                    }
-                                  });//end fs.readFile("/tmp/" + rdirectory + "/abstract.xml"...)
-                                }
-                              });// end exec("/exe/ExprPPP -pp /tmp ...)
-                            }// end else
-                          }); // end exec("/tmp/" + rdirectory + "/expr -b -s /tmp/" + rdirectory + "/concrete.xml ...)
-                        }
-                      }) // end exec("./exe/ASTPPP -p /tmp/" + rdirectory + "/ast.txt  ...)
-                    } // end else
-                  }) // end fs.writeFile("/tmp/" + rdirectory + "/ast.txt", targetXML,...)
-                }// end if flag == "b"
-                else {console.log("error flag, must me forward or backword transformation");}
-              }
-            }
-        }// end else
-      });// end exec(ExprPPP -p ...)
-    }// end else
-  });// end fs.writeFile("/tmp/" + rdirectory + "/cstring.txt", sourceString, function(err){...})
-}// end exports.bx = function (req, res){...}
+                    res.contentType('json');
+                    res.send({resultXML: data, success: "success", error: "Backward transformation successfully done\n" });
+                  }
+                }); //end fs.readFile
+              }// end else
+            }); // end exec
+          } // end else
+        }); // end fs.writeFile
+      }// end if flag == "b"
+      else {console.log("error flag, must me forward or backword transformation");}
+    } // end else ...
+  });// end fs.writeFile
+};// end exports.bx = function (req, res){...}

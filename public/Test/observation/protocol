@@ -1,8 +1,0 @@
-in the model, for a method either normal tag or exceptional tag. 
-1. can have more than one exceptional tag ? I think so.
-
-2. normal 
-   --> return 
-   --> nothing
-
-3. can both return and throw exist ? condition
