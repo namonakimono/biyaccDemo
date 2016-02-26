@@ -4,10 +4,10 @@ var exec = require('child_process').exec;
 var config = require('../config');
 
 exports.compile = function(req, res){
-  var concreteSyntax = req.query.concreteSyntax;
-  var abstractSyntax = req.query.abstractSyntax;
-  var actions = req.query.actions;
-  var rdirectory = req.query.rdirectory;
+  var concreteSyntax = req.body.concreteSyntax; // get --- req.query.xxx post --- req.body.xxx
+  var abstractSyntax = req.body.abstractSyntax;
+  var actions = req.body.actions;
+  var rdirectory = req.body.rdirectory;
   // console.log("compile, random directory:");
   // console.log(rdirectory);
   exec("mkdir /tmp/" + rdirectory,function(err){

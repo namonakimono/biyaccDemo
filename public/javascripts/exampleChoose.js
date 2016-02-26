@@ -9,6 +9,7 @@ function chooseExample(value) {
     document.getElementById("actions").value = data;});
 
     $('select option[value="expr"]').attr("selected", "selected");
+    $('select option[value="tiger"]').attr("selected", false);
     $('select option[value="empty"]').attr("selected", false);
 
     // document.getElementById("concreteSyntax").value = concreteSyntax;
@@ -26,6 +27,7 @@ function chooseExample(value) {
 
     $('select option[value="tiger"]').attr("selected", "selected");
     $('select option[value="expr"]').attr("selected", false);
+    $('select option[value="empty"]').attr("selected", false);
 
     // document.getElementById("concreteSyntax").value = "";
     // document.getElementById("abstractSyntax").value = "";

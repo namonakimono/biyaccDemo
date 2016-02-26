@@ -6,9 +6,10 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "ejs": "*",
     "express": "3.4.5",
-    "jade": "*",
-    "html" : "*",
-    "ejs": "*"
+    "html": "*",
+    "jade": "*"
   }
 }

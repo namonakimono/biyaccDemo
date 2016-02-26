@@ -13,7 +13,7 @@ function exeUpdate() {
 
   $.ajax({
     url: "/compile",
-    type: 'get',
+    type: 'post',
     data: {
         concreteSyntax: concreteSyntax,
         abstractSyntax: abstractSyntax,

@@ -1,9 +1,6 @@
-
-/**
- * Module dependencies.
- */
 var fs = require('fs');
-var express = require('express');
+var express    = require('express');
+var bodyParser = require("body-parser");
 var routes = require('./routes');
 var bx = require('./routes/bx');
 var compiles = require('./routes/compiles');
@@ -25,6 +22,9 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Here we are configuring express to use body-parser as middle-ware.
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 var errorLogFile = fs.createWriteStream('error.log', {flags: 'a'});
 
@@ -42,6 +42,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/bx', bx.bx);
 app.get('/compile', compiles.compile);
+app.post('/compile', compiles.compile);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

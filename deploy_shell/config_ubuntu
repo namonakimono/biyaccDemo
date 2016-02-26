@@ -2,5 +2,5 @@
 module.exports = {
     biyacc : '/home/ubuntu/.cabal/bin/biyacc',
     BiFluX : '/home/ubuntu/.cabal/bin/byStr2CST',
-    ghc :    '/usr/bin/ghc',
+    ghc :    '/usr/local/bin/ghc'
 }
