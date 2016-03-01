@@ -6,21 +6,16 @@
 
 body{
 	/* Setting the default text color, size, page background and a font stack: */
-	font-size: 1em;
+	font-size: 1.5em;
 	/*color:#fcfcfc;*/
 	/*background-color:#355664;*/
 	font-family: Georgia, Helvetica, Arial, sans-serif;
 }
 
-#fheader{
-  padding-top: 1em;
-  padding-bottom: 0em;
-}
-
 
 /* fixed width font for code class*/
 .code {
-  font-size:1.25em;
+  font-size:1em;
   font-family: Consolas, Monaco, Menlo, Courier;
 }
 
@@ -49,21 +44,20 @@ h1,h2,h3{
 
 h1{
 	/* The logo text */
-	font-size:4em;
-	padding:0.5em 0 0;
+	font-size:3.5em;
+	padding:0.25em 0 0;
 }
 
 h2{
-  font-size:2.5em;
+  font-size:2.0em;
   font-weight:normal;
   letter-spacing:0.01em;
-  text-transform:uppercase;
 }
 
 h3{
 	/* The slogan text */
 	font-family:forte,"Myriad Pro","Helvetica Neue",Helvetica,Arial,Sans-Serif;
-	font-size:2em;
+	font-size:1.5em;
 	font-weight:normal;
 	margin:0 0 1em;
 }
@@ -97,7 +91,7 @@ div.nav{
 	padding:0 5px;
 	position:absolute;
 	right:0;
-	top:4em;
+	top:2em;
 
 	border:1px solid #FCFCFC;
 
@@ -127,12 +121,11 @@ div.nav ul li a:visited{
 	color:#565656;
 	display:block;
 	float:left;
-	font-size:1.25em;
+	font-size:1em;
 	font-weight:bold;
 	margin:5px 2px;
 	padding:7px 10px 4px;
 	text-shadow:0 1px 1px white;
-	text-transform:uppercase;
 }
 
 div.nav ul li a:hover{
@@ -163,7 +156,7 @@ div.article{
 
 /*****************************/
 .RTopic {
-  font-size : 2.5em;
+  font-size : 1.5em;
   margin-bottom: 0.25em;
 }
 

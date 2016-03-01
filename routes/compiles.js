@@ -25,5 +25,5 @@ exports.compile = function(req, res){
         });//exec(config.biyacc + " /tmp/" + rdirectory + "/expr.by...)
       }//else
     }); // end fs.writeFile("/tmp/" + rdirectory + "/expr.by...)
-  }) // end exec("mkdir /tmp/" + rdirectory ... )
-}
+  }); // end exec("mkdir /tmp/" + rdirectory ... )
+};
