@@ -4,15 +4,16 @@ Arith +> Expr
 Add x   y +> (x +> Expr) '+' (y +> Term);
 -- a@(Sub (Num #0) _)    +> (a +> Term);
 Sub x   y +> (x +> Expr) '-' (y +> Term);
-arith     +> (arith +> Term);
+exp       +> (exp +> Term);
 
 Arith +> Term
 Mul x y  +>  (x +> Term) '*' (y +> Factor);
 Div x y  +>  (x +> Term) '/' (y +> Factor);
-arith    +>  (arith +> Factor);
+exp      +>  (exp +> Factor);
 
 Arith +> Factor
-Sub (Num #0) y    +> '-' (y +> Factor);
-Num n             +> (n +> Int);
-arith             +> '(' (arith +> Expr) ')';
+Sub (Num #0) y  +> '-' (y +> Factor);
+Num i           +> (i +> Int);
+Var n           +> (n +> Name);
+exp             +> '(' (exp +> Expr) ')';
 

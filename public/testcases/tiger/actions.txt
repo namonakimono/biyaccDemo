@@ -1,17 +1,21 @@
+-- please put the update part into an additional parenthesis:
+-- legal:   arith +> (arith +> Exp);
+-- illegal: arith +> arith +> Exp;
+
+-- the syntax is somehow like the one in Haskell. Space (application) have the highest priority.
+-- please do not use redundant parenthesis in Left hand side of an action. we have not handled it properly.
+
 Actions
 
 Tiger +> Program
-arith  +>  (arith +> Exp);
+t     +>  (t +> Exp);
 
 Tiger +> Exp
-TigerIntLit i     +> (i +> Int);
-TigerStrLit s     +> (s +> String);
+t@(TigerIntLit i) +> (t +> PrimitiveOpt);
+t@(TigerStrLit s) +> (t +> PrimitiveOpt);
 TigerBreak        +> 'break';
 TigerTypeNil      +> 'nil';
 
-t@(TigerExpSeq _ _)      +>  (t +> SeqExp);
-t@(TigerEmptySeq)        +>  (t +> SeqExp);
-t@(TigerNegation _)      +>  (t +> Negation);
 t@(TigerCall _ _)        +>  (t +> CallExp);
 t@(TigerArrCreate _ _ _) +>  (t +> ArrCreate);
 t@(TigerRecCreate _ _)   +>  (t +> RecCreate);
@@ -20,28 +24,30 @@ t@(TigerWhile  _ _)      +>  (t +> WhileExp);
 t@(TigerFor _ _ _ _)     +>  (t +> ForExp);
 t@(TigerLet _ _)         +>  (t +> LetExp);
 
+t@(TigerExpSeq _ _)      +>  (t +> PrimitiveOpt);
+t@(TigerEmptySeq)        +>  (t +> PrimitiveOpt);
+t@(TigerNegation _)      +>  (t +> PrimitiveOpt);
 
 t@(TigerIfThenElse _ _ TigerSeqNil)       +>  (t +> IfThen);
 t@(TigerIfThenElse _ _ _)                 +>  (t +> IfThenElse);
 
-t@(TigerIfThenElse _ _ (TigerIntLit #0))  +>  (t +> (InfixExp -> Exp '&' Exp) );
-t@(TigerIfThenElse _ (TigerIntLit #1) _)  +>  (t +> (InfixExp -> Exp '|' Exp) );
+t@(TigerIfThenElse _ _ (TigerIntLit #0))  +>  (t +> (PrimitiveOpt -> Exp '&' Exp) );
+t@(TigerIfThenElse _ (TigerIntLit #1) _)  +>  (t +> (PrimitiveOpt -> (PrimitiveOpt1 -> Exp '|' Exp)) );
 
 t@(TigerIfThenElse (TigerEq _ _ ) _ _)    +>  (t +> Guard);
 
-
-t@(TigerLValueName _ )  +>  (t +> LValue);
-t@(TigerLValueOther _)  +>  (t +> LValue);
-t@(TigerMul _ _)  +>  (t +> InfixExp);
-t@(TigerDiv _ _)  +>  (t +> InfixExp);
-t@(TigerAdd _ _)  +>  (t +> InfixExp);
-t@(TigerSub _ _)  +>  (t +> InfixExp);
-t@(TigerEq  _ _)  +>  (t +> InfixExp);
-t@(TigerNEq _ _)  +>  (t +> InfixExp);
-t@(TigerGT  _ _)  +>  (t +> InfixExp);
-t@(TigerLT  _ _)  +>  (t +> InfixExp);
-t@(TigerGTE _ _)  +>  (t +> InfixExp);
-t@(TigerLTE _ _)  +>  (t +> InfixExp);
+t@(TigerLValueName _ )  +>  (t +> PrimitiveOpt);
+t@(TigerLValueOther _)  +>  (t +> PrimitiveOpt);
+t@(TigerMul _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerDiv _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerAdd _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerSub _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerEq  _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerNEq _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerGT  _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerLT  _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerGTE _ _)        +>  (t +> PrimitiveOpt);
+t@(TigerLTE _ _)        +>  (t +> PrimitiveOpt);
 
 
 -------
@@ -52,9 +58,6 @@ t@(TigerExpSeq e es)  +>  '(' (t +> ExpSeq) ')';
 Tiger +> ExpSeq
 TigerExpSeq e TigerSeqNil           +>  (e +> Exp);
 TigerExpSeq e es@(TigerExpSeq _ _)  +>  (e +> Exp) ';' (es +> ExpSeq);
--------
-Tiger +> Negation
-TigerNegation t  +>  '-' (t +> Exp) ;
 -------
 
 Tiger +> CallExp
@@ -87,7 +90,7 @@ Tiger +> ForExp
 TigerFor (TigerName n) lb ub e   +> 'for' (n +> Name) ':=' (lb +> Exp) 'to' (ub +> Exp) 'do' (e +> Exp);
 
 Tiger +> IfThen
-TigerIfThenElse i t TigerSeqNil  +> 'if' (i +> Exp) 'then' (t +> Exp);
+TigerIfThenElse i t TigerSeqNil  +> 'if' (i +> Exp) 'then' (t +> Exp) 'end';
 
 Tiger +> IfThenElse
 TigerIfThenElse  i t e  +>  'if' (i +> Exp) 'then' (t +> Exp) 'else' (e +> Exp);
@@ -114,8 +117,6 @@ TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse
     +>  (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
         (if2 +> CaseBs) ;
 --------
-
-
 
 Tiger +> LValue
 TigerLValueName  (TigerName n)  +>  (n +> Name);
@@ -168,18 +169,37 @@ Tiger +> FieldDec
 TigerFieldDec (TigerName n) (TigerName tyn)  +>  (n +> Name) ':' (tyn +> Name) ;
 --------
 
-Tiger +> InfixExp
-TigerMul l r   +>   (l +> Exp) '*'  (r +> Exp);
-TigerDiv l r   +>   (l +> Exp) '/'  (r +> Exp);
-TigerAdd l r   +>   (l +> Exp) '+'  (r +> Exp);
-TigerSub l r   +>   (l +> Exp) '-'  (r +> Exp);
+Tiger +> PrimitiveOpt
+TigerIfThenElse e1 (TigerIntLit #1) e2  +>  (e1 +> PrimitiveOpt) '|' (e2 +> PrimitiveOpt1);
+t                                       +>  (t  +> PrimitiveOpt1);
 
-TigerEq  l r   +>   (l +> Exp) '='  (r +> Exp);
-TigerNEq l r   +>   (l +> Exp) '<>' (r +> Exp);
-TigerGT  l r   +>   (l +> Exp) '>'  (r +> Exp);
-TigerLT  l r   +>   (l +> Exp) '<'  (r +> Exp);
-TigerGTE l r   +>   (l +> Exp) '>=' (r +> Exp);
-TigerLTE l r   +>   (l +> Exp) '<=' (r +> Exp);
+Tiger +> PrimitiveOpt1
+TigerIfThenElse e1 e2 (TigerIntLit #0)  +>  (e1 +> PrimitiveOpt1) '&' (e2 +> PrimitiveOpt2);
+t                                       +>  (t  +> PrimitiveOpt2);
 
-TigerIfThenElse e1 e2 (TigerIntLit #0)  +> (e1 +> Exp) '&' (e2 +> Exp);
-TigerIfThenElse e1 (TigerIntLit #1) e2  +> (e1 +> Exp) '|' (e2 +> Exp);
+Tiger +> PrimitiveOpt2
+TigerEq  l r   +>   (l +> PrimitiveOpt2) '='  (r +> PrimitiveOpt3);
+TigerNEq l r   +>   (l +> PrimitiveOpt2) '<>' (r +> PrimitiveOpt3);
+TigerGT  l r   +>   (l +> PrimitiveOpt2) '>'  (r +> PrimitiveOpt3);
+TigerLT  l r   +>   (l +> PrimitiveOpt2) '<'  (r +> PrimitiveOpt3);
+TigerGTE l r   +>   (l +> PrimitiveOpt2) '>=' (r +> PrimitiveOpt3);
+TigerLTE l r   +>   (l +> PrimitiveOpt2) '<=' (r +> PrimitiveOpt3);
+t              +>   (t +> PrimitiveOpt3);
+
+Tiger +> PrimitiveOpt3
+TigerAdd l r   +>  (l +> PrimitiveOpt3) '+'  (r +> PrimitiveOpt4);
+TigerSub l r   +>  (l +> PrimitiveOpt3) '-'  (r +> PrimitiveOpt4);
+t              +>  (t +> PrimitiveOpt4);
+
+Tiger +> PrimitiveOpt4
+TigerMul l r   +>  (l +> PrimitiveOpt4) '*'  (r +> PrimitiveOpt5);
+TigerDiv l r   +>  (l +> PrimitiveOpt4) '/'  (r +> PrimitiveOpt5);
+t              +>  (t +> PrimitiveOpt5) ;
+
+Tiger +> PrimitiveOpt5
+TigerNegation t         +>  '-' (t +> PrimitiveOpt5) ;
+t@(TigerLValueName  _)  +>  (t +> LValue);
+t@(TigerLValueOther _)  +>  (t +> LValue);
+TigerIntLit i           +>  (i +> Int);
+TigerStrLit t           +>  (t +> String);
+t                       +>  (t +> SeqExp);

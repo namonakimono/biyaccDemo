@@ -12,5 +12,6 @@ Term   -> Term '*' Factor
 
 Factor -> '-' Factor
         | Int
+        | Name
         | '(' Expr ')'
         ;

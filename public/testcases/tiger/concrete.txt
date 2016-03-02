@@ -1,22 +1,12 @@
 Concrete
 
-%right ';' ;
-%nonassoc 'of' ;
-%right 'then' 'else' 'do';
-%nonassoc ':=' ;
-%left '|' ;
-%left '&' ;
-%left '=' '<>' '>' '<' '>=' '<=' ;
-%left '+' '-' ;
-%left '*' '/' ;
 
 Program -> Exp ;
 
-Exp -> LValue    | 'nil'     | Int       | String
-     | SeqExp    | Negation  | CallExp   | InfixExp
-     | ArrCreate | RecCreate | Assignment
-     | WhileExp  | ForExp    | IfThen    | IfThenElse
-     | 'break'   | LetExp    | Guard
+Exp -> 'nil'   | CallExp    | PrimitiveOpt
+     | LetExp  | RecCreate  | ArrCreate
+     | ForExp  | WhileExp   | IfThen | IfThenElse
+     | 'break' | Assignment | Guard
      ;
 
 Decs  -> Dec Decs | Dec ;
@@ -47,22 +37,7 @@ SeqExp -> '(' ')' | '(' ExpSeq ')' ;
 ExpSeq  -> Exp ';' ExpSeq  | Exp;
 ExpList -> Exp ',' ExpList | Exp;
 
-Negation -> '-' Exp ;
 CallExp  -> Name '(' ExpList ')' | Name '(' ')';
-
-InfixExp -> Exp '*'  Exp
-          | Exp '/'  Exp
-          | Exp '+'  Exp
-          | Exp '-'  Exp
-          | Exp '='  Exp
-          | Exp '<>' Exp
-          | Exp '>'  Exp
-          | Exp '<'  Exp
-          | Exp '>=' Exp
-          | Exp '<=' Exp
-          | Exp '&'  Exp
-          | Exp '|'  Exp
-          ;
 
 ArrCreate -> Name '[' Exp ']' 'of' Exp ;
 RecCreate -> Name '{' FieldCreates '}' ;
@@ -70,14 +45,45 @@ FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
 FieldCreate  -> Name '=' Exp;
 Assignment -> LValue ':=' Exp;
 
+-- 'end' is used to handle the dangling-else problem
 IfThenElse -> 'if' Exp 'then' Exp 'else' Exp;
-IfThen     -> 'if' Exp 'then' Exp;
+IfThen     -> 'if' Exp 'then' Exp 'end';
 WhileExp   -> 'while' Exp 'do' Exp ;
 ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
 LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
 
---Switch       -> 'switch' Name 'of' CaseBs ;
+PrimitiveOpt  -> PrimitiveOpt '|'  PrimitiveOpt1
+              |  PrimitiveOpt1 ;
+
+PrimitiveOpt1 -> PrimitiveOpt1 '&' PrimitiveOpt2
+              |  PrimitiveOpt2;
+
+PrimitiveOpt2 -> PrimitiveOpt2 '='  PrimitiveOpt3
+              |  PrimitiveOpt2 '<>' PrimitiveOpt3
+              |  PrimitiveOpt2 '>'  PrimitiveOpt3
+              |  PrimitiveOpt2 '<'  PrimitiveOpt3
+              |  PrimitiveOpt2 '>=' PrimitiveOpt3
+              |  PrimitiveOpt2 '<=' PrimitiveOpt3
+              |  PrimitiveOpt3
+              ;
+
+PrimitiveOpt3 -> PrimitiveOpt3 '+'  PrimitiveOpt4
+              |  PrimitiveOpt3 '-'  PrimitiveOpt4
+              |  PrimitiveOpt4
+              ;
+
+PrimitiveOpt4 -> PrimitiveOpt4 '*'  PrimitiveOpt5
+              |  PrimitiveOpt4 '/'  PrimitiveOpt5
+              |  PrimitiveOpt5
+              ;
+
+PrimitiveOpt5 -> '-' PrimitiveOpt5
+              | Int
+              | String
+              | LValue
+              | SeqExp
+              ;
+
 Guard       -> 'guard' CaseBs 'end';
 CaseBs -> CaseB CaseBs | CaseB ;
 CaseB  -> Name '=' Int '->' Exp ; -- remember to change Name and Int to Exp
-
