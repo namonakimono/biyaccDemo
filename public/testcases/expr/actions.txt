@@ -2,7 +2,7 @@ Actions
 
 Arith +> Expr
 Add x   y +> (x +> Expr) '+' (y +> Term);
--- a@(Sub (Num #0) _)    +> (a +> Term);
+-- a@(Sub (Num 0) _)    +> (a +> Term);
 Sub x   y +> (x +> Expr) '-' (y +> Term);
 exp       +> (exp +> Term);
 
@@ -12,8 +12,8 @@ Div x y  +>  (x +> Term) '/' (y +> Factor);
 exp      +>  (exp +> Factor);
 
 Arith +> Factor
-Sub (Num #0) y  +> '-' (y +> Factor);
-Num i           +> (i +> Int);
-Var n           +> (n +> Name);
-exp             +> '(' (exp +> Expr) ')';
+Sub (Num 0) y  +> '-' (y +> Factor);
+Num i          +> (i +> Int);
+Var n          +> (n +> Name);
+exp            +> '(' (exp +> Expr) ')';
 

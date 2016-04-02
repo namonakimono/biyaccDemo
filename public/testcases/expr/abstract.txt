@@ -5,7 +5,7 @@ data Arith = Add Arith Arith
            | Mul Arith Arith
            | Div Arith Arith
            | Num Int
-           | Var Name
+           | Var String
   deriving (Show, Eq, Read)
 
 deriveBiGULGeneric ''Arith

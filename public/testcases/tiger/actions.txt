@@ -28,13 +28,13 @@ t@(TigerExpSeq _ _)      +>  (t +> PrimitiveOpt);
 t@(TigerEmptySeq)        +>  (t +> PrimitiveOpt);
 t@(TigerNegation _)      +>  (t +> PrimitiveOpt);
 
-t@(TigerIfThenElse _ _ TigerSeqNil)       +>  (t +> IfThen);
-t@(TigerIfThenElse _ _ _)                 +>  (t +> IfThenElse);
+t@(TigerIfThenElse _ _ TigerSeqNil)      +>  (t +> IfThen);
+t@(TigerIfThenElse _ _ _)                +>  (t +> IfThenElse);
 
-t@(TigerIfThenElse _ _ (TigerIntLit #0))  +>  (t +> (PrimitiveOpt -> Exp '&' Exp) );
-t@(TigerIfThenElse _ (TigerIntLit #1) _)  +>  (t +> (PrimitiveOpt -> (PrimitiveOpt1 -> Exp '|' Exp)) );
+t@(TigerIfThenElse _ _ (TigerIntLit 0))  +>  (t +> (PrimitiveOpt -> Exp '&' Exp) );
+t@(TigerIfThenElse _ (TigerIntLit 1) _)  +>  (t +> (PrimitiveOpt -> (PrimitiveOpt1 -> Exp '|' Exp)) );
 
-t@(TigerIfThenElse (TigerEq _ _ ) _ _)    +>  (t +> Guard);
+t@(TigerIfThenElse (TigerEq _ _ ) _ _)   +>  (t +> Guard);
 
 t@(TigerLValueName _ )  +>  (t +> PrimitiveOpt);
 t@(TigerLValueOther _)  +>  (t +> PrimitiveOpt);
@@ -170,12 +170,12 @@ TigerFieldDec (TigerName n) (TigerName tyn)  +>  (n +> Name) ':' (tyn +> Name) ;
 --------
 
 Tiger +> PrimitiveOpt
-TigerIfThenElse e1 (TigerIntLit #1) e2  +>  (e1 +> PrimitiveOpt) '|' (e2 +> PrimitiveOpt1);
-t                                       +>  (t  +> PrimitiveOpt1);
+TigerIfThenElse e1 (TigerIntLit 1) e2  +>  (e1 +> PrimitiveOpt) '|' (e2 +> PrimitiveOpt1);
+t                                      +>  (t  +> PrimitiveOpt1);
 
 Tiger +> PrimitiveOpt1
-TigerIfThenElse e1 e2 (TigerIntLit #0)  +>  (e1 +> PrimitiveOpt1) '&' (e2 +> PrimitiveOpt2);
-t                                       +>  (t  +> PrimitiveOpt2);
+TigerIfThenElse e1 e2 (TigerIntLit 0)  +>  (e1 +> PrimitiveOpt1) '&' (e2 +> PrimitiveOpt2);
+t                                      +>  (t  +> PrimitiveOpt2);
 
 Tiger +> PrimitiveOpt2
 TigerEq  l r   +>   (l +> PrimitiveOpt2) '='  (r +> PrimitiveOpt3);

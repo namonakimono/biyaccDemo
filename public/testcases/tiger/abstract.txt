@@ -3,7 +3,7 @@ Abstract
 data Tiger =
     TigerStrLit String
   | TigerIntLit Int
-  | TigerName   Name
+  | TigerName   String
   | TigerEmptySeq    -- '(' ')'
   | TigerSeqNil      -- handle all nil condition for ExpList, ExpSeq, Decs, etc
   | TigerTypeNil     -- 'nil'
