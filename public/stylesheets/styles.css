@@ -161,13 +161,7 @@ div.article{
 }
 
 #abstract_contents{
-  /*margin-top: 1em;*/
-/*  margin-left: 10em;
-  margin-right: 10em;*/
   font-size:1em;
-  /*word-wrap: break-word;*/
-  /*word-break: break-all;*/
-  /*white-space:wrap;*/
   text-align: justify;
 }
 
@@ -252,6 +246,10 @@ div.footer a.up{
     margin-top: 10px;
     margin-bottom: 10px;
 }
+/*
+#tdtd{
+  text-align: center;
+}*/
 
 #tdtd textarea {
     margin-top: 2px;
@@ -266,6 +264,10 @@ div.footer a.up{
     color:#333333;
     padding:3px;
 }
+/*
+#sdtd{
+  text-align: center;
+}*/
 
 #sdtd textarea {
     margin-top: 2px;
@@ -280,6 +282,10 @@ div.footer a.up{
     color:#333333;
     padding:3px;
 }
+/*
+#uQuery{
+  text-align: center;
+}*/
 
 .UpdateQuery {
     margin-top: 2px;
@@ -298,13 +304,6 @@ div.footer a.up{
     padding:3px;
 }
 
-
-/*.ResultSource {
-    float: left;
-    margin-top: 2px;
-    margin-right: 20px;
-}*/
-
 .ResultSource textarea {
   font-family: Consolas;
   font-size: 1.25em;
@@ -319,12 +318,6 @@ div.footer a.up{
   color:#333333;
   padding:3px;
 }
-
-/*.Target {
-    float: right;
-    margin-top: 2px;
-    margin-right: 20px;
-}*/
 
 .Target textarea {
   font-family: Consolas;
@@ -436,51 +429,6 @@ input[type=submit] #submitTo {
 }
 
 
-.hnav {
-    border:1px solid #ccc;
-    border-width:1px 0;
-    list-style:none;
-    margin:0;
-    padding:0;
-    margin-bottom: 10px;
-}
-
-.hnav ul {
-    height: auto;
-    padding-top: 0px;
-    margin: 0px;
-}
-
-.hnav li {
-    display:inline-block;
-    padding:10px;
-}
-
-
-.bnav {
-    float: left;
-    border:1px solid #ccc;
-    border-width:1px 0;
-    list-style:none;
-    margin:0;
-    margin-top: 10px;
-    padding-top:10px;
-    margin-bottom: 10px;
-}
-
-.bnav ul {
-    height: auto;
-    padding-top: 0px;
-    margin: 0px;
-}
-
-.bnav li {
-    display:inline-block;
-    padding:10px;
-}
-
-
-
 .ConsoleLog0 {
     margin: 0px;
     margin-top: 2px;
@@ -496,12 +444,4 @@ input[type=submit] #submitTo {
     color:#333333;
     padding:3px;
     font-family:tahoma, arial, sans-serif;
-}
-
-.StepDescription {
-    margin: 10px 0px 0px 0px;
-}
-
-.NotGood {
-   margin: 10px 0px 0px 0px;
 }
