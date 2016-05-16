@@ -34,7 +34,7 @@ t@(TigerIfThenElse _ _ _)                +>  (t +> IfThenElse);
 t@(TigerIfThenElse _ _ (TigerIntLit 0))  +>  (t +> (PrimitiveOpt -> Exp '&' Exp) );
 t@(TigerIfThenElse _ (TigerIntLit 1) _)  +>  (t +> (PrimitiveOpt -> (PrimitiveOpt1 -> Exp '|' Exp)) );
 
-t@(TigerIfThenElse (TigerEq _ _ ) _ _)   +>  (t +> Guard);
+t@(TigerIfThenElse (TigerEq _ _ ) _ _)    +>  (t +> Guard);
 
 t@(TigerLValueName _ )  +>  (t +> PrimitiveOpt);
 t@(TigerLValueOther _)  +>  (t +> PrimitiveOpt);
@@ -100,21 +100,21 @@ TigerLet decls exps     +> 'let' (decls +> Decs) 'in' (exps +> ExpSeq) 'end' ;
 --------
 
 Tiger +> Guard
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 TigerSeqNil
+TigerIfThenElse (TigerEq lv (TigerIntLit i)) e1 TigerSeqNil
   +>  'guard' (CaseBs ->
-                (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
+                (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
               ) 'end';
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
+TigerIfThenElse (TigerEq lv (TigerIntLit i)) e1 if2@(TigerIfThenElse _ _ _)
   +>  'guard' (CaseBs ->
-                (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
+                (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
                 (if2 +> CaseBs)
               ) 'end';
 
 Tiger +> CaseBs
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 TigerSeqNil
-    +>  (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp) ) ;
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
-    +>  (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
+TigerIfThenElse (TigerEq lv (TigerIntLit i)) e1 TigerSeqNil
+    +>  (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp) ) ;
+TigerIfThenElse (TigerEq lv (TigerIntLit i)) e1 if2@(TigerIfThenElse _ _ _)
+    +>  (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
         (if2 +> CaseBs) ;
 --------
 
@@ -203,3 +203,4 @@ t@(TigerLValueOther _)  +>  (t +> LValue);
 TigerIntLit i           +>  (i +> Int);
 TigerStrLit t           +>  (t +> String);
 t                       +>  (t +> SeqExp);
+

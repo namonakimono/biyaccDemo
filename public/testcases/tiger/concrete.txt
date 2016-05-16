@@ -1,5 +1,6 @@
 Concrete
 
+-- %right 'then' 'else' 'do';
 
 Program -> Exp ;
 
@@ -86,4 +87,4 @@ PrimitiveOpt5 -> '-' PrimitiveOpt5
 
 Guard       -> 'guard' CaseBs 'end';
 CaseBs -> CaseB CaseBs | CaseB ;
-CaseB  -> Name '=' Int '->' Exp ; -- remember to change Name and Int to Exp
+CaseB  -> LValue '=' Int '->' Exp ; -- remember to change Name and Int to Exp
