@@ -1,66 +1,66 @@
 Abstract
 
-data Tiger =
-    TigerStrLit String
-  | TigerIntLit Int
-  | TigerName   Name
-  | TigerEmptySeq    -- '(' ')'
-  | TigerSeqNil      -- handle all nil condition for ExpList, ExpSeq, Decs, etc
-  | TigerTypeNil     -- 'nil'
-  | TigerBreak
+data TVar = TSimpleVar TSymbol
+          | TFieldVar (TVar,TSymbol)
+          | TSubscriptVar (TVar,TExp)
+  deriving (Eq,Show,Read)
+
+data TExp = TVarExp TVar
+          | TNilExp
+          | TIntExp Int
+          | TStringExp String
+          | TCallExp TSymbol [TExp]
+          | TOpExp TExp TOper TExp         -- left : exp, oper : oper, right : exp
+          | TRecordExp [TFieldCre] TSymbol -- fields:[(TSymbol,TExp)], typ:Tsymbol
+          | TSeqExp [TExp]
+          | TAssignExp TVar TExp
+          | TIfExp TExp TExp (Maybe TExp)  -- test:exp, then':exp, else':exp option
+          | TWhileExp TExp TExp
+          | TForExp TSymbol Bool TExp TExp TExp -- var:Tsymbol, escape:bool ref, lo:exp, hi:exp,  body:exp
+          | TBreakExp
+          | TLetExp [TDec] TExp
+          | TArrayExp TSymbol TExp TExp
+  deriving (Eq,Show,Read)
+
+data TDec = TFunctionDec TFundec
+          | TVarDec TSymbol Bool (Maybe TSymbol) TExp -- name:TSymbol, escape:bool ref, typ:Tsymbol option, init:Texp
+          | TTypeDec TTyDec
+  deriving (Eq,Show,Read)
+
+data TTy = TNameTy TSymbol
+         | TRecordTy [TFieldDec]
+         | TArrayTy TSymbol
+  deriving (Eq,Show,Read)
+
+data TOper = TPlusOp | TMinusOp | TTimesOp | TDivideOp | TEqOp | TNeqOp | TLtOp | TLeOp | TGtOp | TGeOp
+  deriving (Eq,Show,Read)
 
 
-  | TigerExpSeq        Tiger Tiger   -- SeqExp and ExpSeq (lifted)
-  | TigerExpList       Tiger Tiger   -- ExpList -> Exp ',' ExpList | Exp;
-  | TigerNegation      Tiger
-  | TigerCall          Tiger Tiger
-  | TigerArrCreate     Tiger Tiger Tiger
-  | TigerRecCreate     Tiger Tiger
-  | TigerFieldCreates  Tiger Tiger Tiger -- lifted problematic
-  | TigerAssign        Tiger Tiger
-  | TigerWhile         Tiger Tiger
-  | TigerFor           Tiger Tiger Tiger Tiger
-  | TigerIfThenElse    Tiger Tiger Tiger
-  | TigerLet           Tiger Tiger
+data TFieldCre = TFieldCre (TSymbol,TExp)
+  deriving (Eq,Show,Read)
+
+data TFieldDec = TFieldDec TSymbol Bool TSymbol
+  deriving (Eq,Show,Read) -- name: Tsymbol, escape: bool ref, typ: Tsymbol
+
+data TFundec = TFundec TSymbol [TFieldDec] (Maybe TSymbol) TExp
+  deriving (Eq,Show,Read)
+
+data TTyDec = TTyDec (TSymbol,TTy)
+  deriving (Eq, Show, Read)
+
+type TSymbol = String
+
+deriveBiGULGeneric ''TVar
+deriveBiGULGeneric ''TExp
+deriveBiGULGeneric ''TDec
+deriveBiGULGeneric ''TTy
+deriveBiGULGeneric ''TOper
+deriveBiGULGeneric ''TFieldDec
+deriveBiGULGeneric ''TFundec
+deriveBiGULGeneric ''TTyDec
+deriveBiGULGeneric ''TFieldCre
 
 
-  | TigerDecs Tiger Tiger
-  | TigerDecTyDec   Tiger
-  | TigerDecVarDec  Tiger
-  | TigerDecFunDec  Tiger
-  | TigerTyDec      Tiger Tiger
-  | TigerTyName     Tiger
-  | TigerTyArrTy    Tiger
-  | TigerTyRecTy    Tiger
-  | TigerArrTy      Tiger
-  | TigerRecTy      Tiger
-  | TigerVarDec     Tiger Tiger Tiger
-  | TigerFunDec     Tiger Tiger Tiger Tiger
-  | TigerFieldDecs  Tiger Tiger
-  | TigerFieldDec   Tiger Tiger
-
-  | TigerLValueName  Tiger
-  | TigerLValueOther Tiger
-  | TigerOtherLValNameExp   Tiger Tiger  -- Name '[' Exp ']'
-  | TigerOtherLValSubscript Tiger Tiger -- lifted
-  | TigerOtherLValFieldExp  Tiger Tiger -- lifted
---  | TigerSubscript Tiger Tiger
---  | TigerFieldExp  Tiger Tiger
-
-
-  | TigerMul  Tiger Tiger
-  | TigerDiv  Tiger Tiger
-  | TigerAdd  Tiger Tiger
-  | TigerSub  Tiger Tiger
-  | TigerEq   Tiger Tiger
-  | TigerNEq  Tiger Tiger -- not equal, <>
-  | TigerGT   Tiger Tiger
-  | TigerLT   Tiger Tiger
-  | TigerGTE  Tiger Tiger -- >=
-  | TigerLTE  Tiger Tiger -- <=
-  deriving (Show, Eq, Read)
-
-deriveBiGULGeneric ''Tiger
 
 Concrete
 
@@ -76,11 +76,10 @@ Concrete
 
 Program -> Exp ;
 
-Exp -> LValue    | 'nil'     | Int       | String
-     | SeqExp    | Negation  | CallExp   | InfixExp
-     | ArrCreate | RecCreate | Assignment
-     | WhileExp  | ForExp    | IfThen    | IfThenElse
-     | 'break'   | LetExp    | Guard
+Exp -> LValue | 'break'    | 'nil' | Int | String
+     | SeqExp | Negation   | CallExp     | InfixExp
+     | ArrExp | Assignment | WhileExp    | ForExp
+     | IfThen | IfThenElse | RecExp      | LetExp
      ;
 
 Decs  -> Dec Decs | Dec ;
@@ -102,10 +101,11 @@ VarDec -> 'var' Name          ':=' Exp
         | 'var' Name ':' Name ':=' Exp
         ;
 
+--LValue -> Name | LValue '[' Exp ']' | LValue '.' Name ;
+
 LValue -> Name | OtherLValue ;
-OtherLValue -> Name '[' Exp ']' | Subscript | FieldExp;
-Subscript -> OtherLValue '[' Exp ']';
-FieldExp  -> LValue '.' Name;
+OtherLValue -> Name '[' Exp ']' | OtherLValue '[' Exp ']' | LValue '.' Name;
+
 
 SeqExp -> '(' ')' | '(' ExpSeq ')' ;
 ExpSeq  -> Exp ';' ExpSeq  | Exp;
@@ -128,8 +128,8 @@ InfixExp -> Exp '*'  Exp
           | Exp '|'  Exp
           ;
 
-ArrCreate -> Name '[' Exp ']' 'of' Exp ;
-RecCreate -> Name '{' FieldCreates '}' ;
+ArrExp -> Name '[' Exp ']' 'of' Exp ;
+RecExp -> Name '{' FieldCreates '}' ;
 FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
 FieldCreate  -> Name '=' Exp;
 Assignment -> LValue ':=' Exp;
@@ -140,220 +140,174 @@ WhileExp   -> 'while' Exp 'do' Exp ;
 ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
 LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
 
---Switch       -> 'switch' Name 'of' CaseBs ;
-Guard       -> 'guard' CaseBs 'end';
-CaseBs -> CaseB CaseBs | CaseB ;
-CaseB  -> Name '=' Int '->' Exp ; -- remember to change Name and Int to Exp
-
 
 -- please put the update part into an additional parenthesis:
--- legal:   arith +> (arith +> Exp);
--- illegal: arith +> arith +> Exp;
+-- legal:   e   +>   (e +> Exp);
+-- illegal: e   +>    e +> Exp;
 
 -- the syntax is somehow like the one in Haskell. Space (application) have the highest priority.
 -- please do not use redundant parenthesis in Left hand side of an action. we have not handled it properly.
 
 Actions
 
-Tiger +> Program
-arith  +>  (arith +> Exp);
+TExp +> Program
+t    +>  (t +> Exp);
 
-Tiger +> Exp
-TigerIntLit i     +> (i +> Int);
-TigerStrLit s     +> (s +> String);
-TigerBreak        +> 'break';
-TigerTypeNil      +> 'nil';
+TExp +> Exp
+TVarExp tvar          +> (tvar +> LValue) ;
+TNilExp               +> 'nil'            ;
+TBreakExp             +> 'break'          ;
+TIntExp i             +> (i +> Int)       ;
+TStringExp s          +> (s +> String)    ;
 
-t@(TigerExpSeq _ _)      +>  (t +> SeqExp);
-t@(TigerEmptySeq)        +>  (t +> SeqExp);
-t@(TigerNegation _)      +>  (t +> Negation);
-t@(TigerCall _ _)        +>  (t +> CallExp);
-t@(TigerArrCreate _ _ _) +>  (t +> ArrCreate);
-t@(TigerRecCreate _ _)   +>  (t +> RecCreate);
-t@(TigerAssign _ _)      +>  (t +> Assignment);
-t@(TigerWhile  _ _)      +>  (t +> WhileExp);
-t@(TigerFor _ _ _ _)     +>  (t +> ForExp);
-t@(TigerLet _ _)         +>  (t +> LetExp);
+t@(TSeqExp _)         +> (t +> SeqExp)     ;
+t@(TCallExp _ _)      +> (t +> CallExp)    ;
+t@(TArrayExp _ _ _)   +> (t +> ArrExp)     ;
+t@(TRecordExp _ _)    +> (t +> RecExp)     ;
+t@(TAssignExp _ _)    +> (t +> Assignment) ;
+t@(TWhileExp _ _)     +> (t +> WhileExp)   ;
+t@(TForExp _ _ _ _ _) +> (t +> ForExp)     ;
 
+t@(TOpExp (TIntExp 0) TMinusOp _)  +> (t +> Negation) ;
+t@(TOpExp _ _ _)                   +> (t +> InfixExp) ;
 
-t@(TigerIfThenElse _ _ TigerSeqNil)       +>  (t +> IfThen);
-t@(TigerIfThenElse _ _ _)                 +>  (t +> IfThenElse);
+t@(TIfExp _ _ (Just (TIntExp 0)))  +> (t +> InfixExp)   ;  -- &
+t@(TIfExp _ (TIntExp 1) _)         +> (t +> InfixExp)   ;  -- |
+t@(TIfExp _ _ Nothing)             +> (t +> IfThen)     ;
+t@(TIfExp _ _ (Just _))            +> (t +> IfThenElse) ;
 
-t@(TigerIfThenElse _ _ (TigerIntLit #0))  +>  (t +> (InfixExp -> Exp '&' Exp) );
-t@(TigerIfThenElse _ (TigerIntLit #1) _)  +>  (t +> (InfixExp -> Exp '|' Exp) );
+t@(TLetExp _ (TSeqExp _))          +> (t +> LetExp) ;
 
-t@(TigerIfThenElse (TigerEq _ _ ) _ _)    +>  (t +> Guard);
+------------
+TExp +> WhileExp
+TWhileExp tCond tExp    +> 'while' (tCond +> Exp) 'do' (tExp +> Exp) ;
 
+TExp +> ForExp
+TForExp tSym True tLow tHigh tBody  +>
+  'for' (tSym +> Name) ':=' (tLow +> Exp) 'to' (tHigh +> Exp) 'do' (tBody +> Exp) ;
 
-t@(TigerLValueName _ )  +>  (t +> LValue);
-t@(TigerLValueOther _)  +>  (t +> LValue);
-t@(TigerMul _ _)  +>  (t +> InfixExp);
-t@(TigerDiv _ _)  +>  (t +> InfixExp);
-t@(TigerAdd _ _)  +>  (t +> InfixExp);
-t@(TigerSub _ _)  +>  (t +> InfixExp);
-t@(TigerEq  _ _)  +>  (t +> InfixExp);
-t@(TigerNEq _ _)  +>  (t +> InfixExp);
-t@(TigerGT  _ _)  +>  (t +> InfixExp);
-t@(TigerLT  _ _)  +>  (t +> InfixExp);
-t@(TigerGTE _ _)  +>  (t +> InfixExp);
-t@(TigerLTE _ _)  +>  (t +> InfixExp);
+TExp +> LetExp
+TLetExp tDecs (TSeqExp tExps)  +> 'let' (tDecs +> Decs) 'in' (tExps +> ExpSeq) 'end' ;
 
+TExp +> ArrExp
+TArrayExp tSym tExp1 tExp2  +>  (tSym +> Name) '[' (tExp1 +> Exp) ']' 'of' (tExp2 +> Exp) ;
 
--------
-Tiger +> SeqExp
-TigerEmptySeq         +>  '(' ')';
-t@(TigerExpSeq e es)  +>  '(' (t +> ExpSeq) ')';
+TExp +> CallExp
+TCallExp tSym []       +>    (tSym +> Name)   '(' ')'  ;
+TCallExp tSym t@(_:_)  +>    (tSym +> Name) '(' (t +> ExpList) ')' ;
 
-Tiger +> ExpSeq
-TigerExpSeq e TigerSeqNil           +>  (e +> Exp);
-TigerExpSeq e es@(TigerExpSeq _ _)  +>  (e +> Exp) ';' (es +> ExpSeq);
--------
-Tiger +> Negation
-TigerNegation t  +>  '-' (t +> Exp) ;
--------
+[TExp] +> ExpList
+[e]              +>  (e +> Exp) ;
+(e1: es@(_:_))   +>  (e1 +> Exp) ',' (es +> ExpList) ; -- should be at least two elements
 
-Tiger +> CallExp
-TigerCall (TigerName funname) TigerSeqNil  +>  (funname +> Name) '(' ')';
-TigerCall (TigerName funname) varlist      +>  (funname +> Name) '(' (varlist +> ExpList) ')';
+TExp +> SeqExp
+TSeqExp []        +> '(' ')'  ;
+TSeqExp t@(_:_)   +> '(' (t +> ExpSeq) ')' ;
 
-Tiger +> ExpList
-TigerExpList e TigerSeqNil            +>  (e +> Exp);
-TigerExpList e es@(TigerExpList _ _)  +>  (e +> Exp) ',' (es +> ExpList);
---------
+[TExp] +> ExpSeq
+[e]            +> (e +> Exp) ;
+(e1: es@(_:_)) +> (e1 +> Exp) ';' (es +> ExpSeq) ;
 
-Tiger +> ArrCreate
-TigerArrCreate (TigerName n) e1 e2  +>  (n +> Name) '[' (e1 +> Exp) ']' 'of' (e2 +> Exp);
+---------------
+TExp +> RecExp
+TRecordExp tFCs tSymbol   +>  (tSymbol +> Name) '{' (tFCs +> FieldCreates) '}' ;
 
-Tiger +> RecCreate
-TigerRecCreate (TigerName n) fc     +>  (n +> Name) '{' (fc +> FieldCreates) '}';
-
-Tiger +> FieldCreates
-TigerFieldCreates (TigerName n) e TigerSeqNil                   +>  (FieldCreate -> (n +> Name) '=' (e +> Exp));
-TigerFieldCreates (TigerName n) e fs@(TigerFieldCreates _ _ _)  +>  (FieldCreate -> (n +> Name) '=' (e +> Exp)) ',' (fs +> FieldCreates);
---------
-
-Tiger +> Assignment
-TigerAssign var e    +>  (var +> LValue) ':=' (e +> Exp);
-
-Tiger +> WhileExp
-TigerWhile cond loop +>  'while' (cond +> Exp) 'do' (loop +> Exp) ;
-
-Tiger +> ForExp
-TigerFor (TigerName n) lb ub e   +> 'for' (n +> Name) ':=' (lb +> Exp) 'to' (ub +> Exp) 'do' (e +> Exp);
-
-Tiger +> IfThen
-TigerIfThenElse i t TigerSeqNil  +> 'if' (i +> Exp) 'then' (t +> Exp);
-
-Tiger +> IfThenElse
-TigerIfThenElse  i t e  +>  'if' (i +> Exp) 'then' (t +> Exp) 'else' (e +> Exp);
-
-Tiger +> LetExp
-TigerLet decls exps     +> 'let' (decls +> Decs) 'in' (exps +> ExpSeq) 'end' ;
---------
-
-Tiger +> Guard
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 TigerSeqNil
-  +>  'guard' (CaseBs ->
-                (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
-              ) 'end';
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
-  +>  'guard' (CaseBs ->
-                (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
-                (if2 +> CaseBs)
-              ) 'end';
-
-Tiger +> CaseBs
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 TigerSeqNil
-    +>  (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp) ) ;
-TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
-    +>  (CaseB -> (n +> Name) '=' (i +> Int) '->' (e1 +> Exp))
-        (if2 +> CaseBs) ;
---------
+[TFieldCre] +> FieldCreates
+[fc]             +> (fc +> FieldCreate) ;
+(fc1: fcs@(_:_)) +> (fc1 +> FieldCreate) ',' (fcs +> FieldCreates) ;
 
 
+TFieldCre +> FieldCreate
+TFieldCre (tSym,tExp)  +>   (tSym +> Name) '=' (tExp +> Exp);
+-----------------
 
-Tiger +> LValue
-TigerLValueName  (TigerName n)  +>  (n +> Name);
-TigerLValueOther o              +>  (o +> OtherLValue);
+TExp +> Assignment
+TAssignExp tVar tExp   +>   (tVar +> LValue) ':=' (tExp +> Exp);
 
-Tiger +> OtherLValue
-TigerOtherLValNameExp (TigerName n) e      +>  (n +> Name) '[' (e +> Exp) ']';
-TigerOtherLValSubscript o e                +>  (Subscript -> (o +> OtherLValue) '[' (e +> Exp) ']');
-TigerOtherLValFieldExp lval (TigerName n)  +>  (FieldExp  -> (lval +> LValue) '.' (n +> Name) );
---------
-
-Tiger +> Decs
-TigerDecs d TigerSeqNil         +>  (d +> Dec) ;
-TigerDecs d ds@(TigerDecs _ _)  +>  (d +> Dec) (ds +> Decs);
-
-Tiger +> Dec
-TigerDecTyDec  td  +>  (td +> TyDec);
-TigerDecVarDec vd  +>  (vd +> VarDec);
-TigerDecFunDec fd  +>  (fd +> FunDec);
-
-Tiger +> TyDec
-TigerTyDec (TigerName n) ty +> 'type' (n +> Name) '=' (ty +> Ty) ;
-
-Tiger +> VarDec
-TigerVarDec (TigerName n)  TigerTypeNil  e +> 'var' (n +> Name)                  ':=' (e +> Exp);
-TigerVarDec (TigerName n) (TigerName ty) e +> 'var' (n +> Name) ':' (ty +> Name) ':=' (e +> Exp);
-
-Tiger +> FunDec
-TigerFunDec (TigerName n) TigerSeqNil TigerTypeNil   e   +>   'function' (n +> Name) '('                     ')'                  '=' (e +> Exp);
-TigerFunDec (TigerName n) TigerSeqNil (TigerName ty) e   +>   'function' (n +> Name) '('                     ')' ':' (ty +> Name) '=' (e +> Exp);
-TigerFunDec (TigerName n) decs        TigerTypeNil   e   +>   'function' (n +> Name) '(' (decs +> FieldDecs) ')'                  '=' (e +> Exp);
-TigerFunDec (TigerName n) decs        (TigerName ty) e   +>   'function' (n +> Name) '(' (decs +> FieldDecs) ')' ':' (ty +> Name) '=' (e +> Exp);
-
-Tiger +> Ty
-TigerTyName (TigerName n) +> (n +> Name);
-TigerTyArrTy arrty        +> (arrty +> ArrTy);
-TigerTyRecTy recty        +> (recty +> RecTy);
-
-Tiger +> ArrTy
-TigerArrTy (TigerName n)  +> 'array' 'of' (n +> Name) ;
-
-Tiger +> RecTy
-TigerRecTy fd +> '{' (fd +> FieldDecs) '}' ;
-
-Tiger +> FieldDecs
-TigerFieldDecs d TigerSeqNil              +>  (d +> FieldDec);
-TigerFieldDecs d ds@(TigerFieldDecs _ _)  +>  (d +> FieldDec) ',' (ds +> FieldDecs);
-
-Tiger +> FieldDec
-TigerFieldDec (TigerName n) (TigerName tyn)  +>  (n +> Name) ':' (tyn +> Name) ;
---------
-
-Tiger +> InfixExp
-TigerMul l r   +>   (l +> Exp) '*'  (r +> Exp);
-TigerDiv l r   +>   (l +> Exp) '/'  (r +> Exp);
-TigerAdd l r   +>   (l +> Exp) '+'  (r +> Exp);
-TigerSub l r   +>   (l +> Exp) '-'  (r +> Exp);
-
-TigerEq  l r   +>   (l +> Exp) '='  (r +> Exp);
-TigerNEq l r   +>   (l +> Exp) '<>' (r +> Exp);
-TigerGT  l r   +>   (l +> Exp) '>'  (r +> Exp);
-TigerLT  l r   +>   (l +> Exp) '<'  (r +> Exp);
-TigerGTE l r   +>   (l +> Exp) '>=' (r +> Exp);
-TigerLTE l r   +>   (l +> Exp) '<=' (r +> Exp);
-
-TigerIfThenElse e1 e2 (TigerIntLit #0)  +> (e1 +> Exp) '&' (e2 +> Exp);
-TigerIfThenElse e1 (TigerIntLit #1) e2  +> (e1 +> Exp) '|' (e2 +> Exp);
+-----------------
+TVar +> LValue
+TSimpleVar tSym      +>  (tSym +> Name) ;
+t@(TSubscriptVar _)  +>  (t +> OtherLValue) ;
+t@(TFieldVar _)      +>  (t +> OtherLValue) ;
 
 
+TVar +> OtherLValue
+TSubscriptVar (TSimpleVar tSym, tExp)  +> (tSym +> Name) '[' (tExp +> Exp) ']' ;
+TSubscriptVar (tVar,tExp)              +> (tVar +> OtherLValue) '[' (tExp +> Exp) ']' ;
+TFieldVar     (tVar,tSym)              +> (tVar +> LValue) '.' (tSym +> Name) ;
 
--- backup code
--- TigerIfThenElse e1 e2 (TigerIntLit #0) +>   (InfixExp -> (e1 +> Exp) '&' (e2 +> Exp));
--- TigerIfThenElse e1 (TigerIntLit #1) e2 +>   (InfixExp -> (e1 +> Exp) '|' (e2 +> Exp));
 
---TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 TigerSeqNil
---    +>   'guard' (n +> Name) 'of' (CaseBs -> (CaseB -> (i +> Int) '->' (e1 +> Exp)) )  ;
---TigerIfThenElse (TigerEq (TigerName n) (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
---    +>   'guard' (n +> Name) 'of' (CaseBs -> (CaseB -> (i +> Int) '->' (e1 +> Exp) ',;' (if2 +> CaseBs)) )  ;
+------------------
 
---TigerIfThenElse (TigerEq _ (TigerIntLit i) ) e1 TigerSeqNil
---    +>   (CaseB -> (i +> Int) '->' (e1 +> Exp)) ;
---TigerIfThenElse (TigerEq _ (TigerIntLit i) ) e1 if2@(TigerIfThenElse _ _ _)
---    +>   (CaseB -> (i +> Int) '->' (e1 +> Exp)) ',;' (if2 +> CaseBs);
+TExp +> IfThen
+TIfExp tCond tExp1 Nothing       +> 'if' (tCond +> Exp) 'then' (tExp1 +> Exp);
 
---TigerAnd l r   +>   (l +> Exp) '&'  (r +> Exp);
---TigerOr  l r   +>   (l +> Exp) '|'  (r +> Exp);
+TExp +> IfThenElse
+TIfExp tCond tExp1 (Just tExp2)  +> 'if' (tCond +> Exp) 'then' (tExp1 +> Exp) 'else' (tExp2 +> Exp);
+
+
+------decs--------------
+
+[TDec] +> Decs
+[dec]               +> (dec +> Dec) ;
+(dec1: decs@(_:_))  +> (dec1 +> Dec) (decs +> Decs) ;
+
+
+TDec +> Dec
+TFunctionDec fdec  +>     (fdec +> FunDec) ;
+TTypeDec tdec      +>     (tdec +> TyDec) ;
+TVarDec tSym True Nothing tExp       +>
+  (VarDec -> 'var' (tSym +> Name)                     ':=' (tExp +> Exp)) ;
+TVarDec tSym True (Just tSym2) tExp  +>
+  (VarDec -> 'var' (tSym +> Name) ':' (tSym2 +> Name) ':=' (tExp +> Exp)) ;
+
+TFundec +> FunDec
+TFundec tSym tf@(_:_) Nothing tExp
+  +> 'function' (tSym +> Name) '(' (tf +> FieldDecs) ')'                     '=' (tExp +> Exp) ;
+TFundec tSym [] Nothing tExp
+  +> 'function' (tSym +> Name) '('                   ')'                     '=' (tExp +> Exp) ;
+TFundec tSym tf@(_:_) (Just tSym2) tExp
+  +> 'function' (tSym +> Name) '(' (tf +> FieldDecs) ')' ':' (tSym2 +> Name) '=' (tExp +> Exp) ;
+TFundec tSym [] (Just tSym2) tExp
+  +> 'function' (tSym +> Name) '('                   ')' ':' (tSym2 +> Name) '=' (tExp +> Exp) ;
+
+TTyDec +> TyDec
+TTyDec (tSym,ty)     +> 'type' (tSym +> Name) '=' (ty +> Ty) ;
+
+---------Type---------
+TTy +> Ty
+TNameTy tSym     +> (tSym +> Name) ;
+t@(TRecordTy _)  +> (t +> RecTy);
+t@(TArrayTy _)   +> (t +> ArrTy);
+
+TTy +> RecTy
+TRecordTy tFieldds +> '{' (tFieldds +> FieldDecs) '}' ;
+
+TTy +> ArrTy
+TArrayTy tSym      +>  'array' 'of' (tSym +> Name) ;
+
+[TFieldDec] +> FieldDecs
+[tf@(TFieldDec tSym1 True tSym2)] +> (tf +> FieldDec) ;
+(tf1: tfs@(_:_))                  +> (tf1 +> FieldDec) ',' (tfs +> FieldDecs) ;
+
+TFieldDec +> FieldDec
+TFieldDec tSym1 True tSym2  +>  (tSym1 +> Name) ':' (tSym2 +> Name) ;
+
+----------
+TExp +> Negation
+TOpExp (TIntExp 0) TMinusOp tExp  +>  '-' (tExp +> Exp) ;
+
+TExp +> InfixExp
+TOpExp  l  TTimesOp   r   +>   (l +> Exp) '*'  (r +> Exp) ;
+TOpExp  l  TDivideOp  r   +>   (l +> Exp) '/'  (r +> Exp) ;
+TOpExp  l  TPlusOp    r   +>   (l +> Exp) '+'  (r +> Exp) ;
+TOpExp  l  TMinusOp   r   +>   (l +> Exp) '-'  (r +> Exp) ;
+TOpExp  l  TEqOp      r   +>   (l +> Exp) '='  (r +> Exp) ;
+TOpExp  l  TNeqOp     r   +>   (l +> Exp) '<>' (r +> Exp) ;    -- not equal
+TOpExp  l  TLtOp      r   +>   (l +> Exp) '<'  (r +> Exp) ;
+TOpExp  l  TLeOp      r   +>   (l +> Exp) '<=' (r +> Exp) ;
+TOpExp  l  TGtOp      r   +>   (l +> Exp) '>'  (r +> Exp) ;
+TOpExp  l  TGeOp      r   +>   (l +> Exp) '>=' (r +> Exp) ;
+
+TIfExp tCond tExp1 (Just (TIntExp 0))   +> (tCond +> Exp) '&' (tExp1 +> Exp) ;
+TIfExp tCond (TIntExp 1) (Just tExp2)   +> (tCond +> Exp) '|' (tExp2 +> Exp) ;

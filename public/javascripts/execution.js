@@ -1,4 +1,5 @@
-var sourceStr = "(-2) * ((2+3) /  (0 - 4))"
+var arithEgSrc = "// some comments\n(-2 /* more comments */ ) * ((2+3) /  (0 - 4))"
+var tigerEgSrc = "/* define valid mutually recursive functions */\nlet\n\nfunction do_nothing1(a: int, b: string):int=\n  (do_nothing2(a+1);0)\n\nfunction do_nothing2(d: int):string =\n  (do_nothing1(d, \"str\");\" \")\n\nin\n  do_nothing1(0, \"str2\")\nend\n"
 var viewAST = "please run forward transformation first"
 var rdirectory = Math.random().toString(36).substring(7);
 
@@ -25,11 +26,13 @@ function exeUpdate() {
       console.log(data.success);
       if(data.success  == "success"){
         $('#step5').remove();
+        $('#compileSubmit').remove();
         //this one is for unsuccessful situation added.
         $('#consoleLog0').remove();
         //add a new sec
-        $('<li id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p> </li>').insertAfter('#step4');
-        $('<div class="ResultSource" id="updatedSource"> <p>Source</p>  <textarea class="code" id="sourceText"> </textarea> </div>').insertAfter("#step5 > p");
+        $('<div id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p></div>').insertAfter('#step4');
+
+        $('<div class="ResultSource" id="updatedSource"><p>Source</p><textarea class="code" id="sourceText"> </textarea></div>').insertAfter("#step5");
 
         $('<div class="Target" id="target"> <p>View</p>  <textarea class="code" id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
         $('<hr id="hrline" style="height:10px; width=800px; display:none">').insertAfter('#target');
@@ -41,16 +44,17 @@ function exeUpdate() {
         //according to the selected option to get the data;
         if ($('select option[value="expr"]').attr('selected')){
           console.log("output arithmetic expression");
+          document.getElementById("sourceText").value= arithEgSrc;
           document.getElementById("targetText").value= viewAST;
-          document.getElementById("sourceText").value= sourceStr;
         }
 
         else if ($('select option[value="tiger"]').attr('selected')){
           console.log("output tiger");
-          $("#actions").load("./testcases/tiger/queens.tig", function(data){
-          document.getElementById("sourceText").value = data;});
-          document.getElementById("targetText").value= viewAST;
-          // document.getElementById("sourceText").value= sourceStr;
+          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
+          // $("#actions").load("./testcases/tiger/mergesort.tig", function(data){
+          // document.getElementById("sourceText").value = tigerEgSrc;});
+          document.getElementById("sourceText").value = tigerEgSrc;
+          document.getElementById("targetText").value = viewAST;
         }
         else{
           console.log("output empty");

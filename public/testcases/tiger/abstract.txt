@@ -1,63 +1,61 @@
 Abstract
 
-data Tiger =
-    TigerStrLit String
-  | TigerIntLit Int
-  | TigerName   String
-  | TigerEmptySeq    -- '(' ')'
-  | TigerSeqNil      -- handle all nil condition for ExpList, ExpSeq, Decs, etc
-  | TigerTypeNil     -- 'nil'
-  | TigerBreak
+data TVar = TSimpleVar TSymbol
+          | TFieldVar (TVar,TSymbol)
+          | TSubscriptVar (TVar,TExp)
+  deriving (Eq,Show,Read)
+
+data TExp = TVarExp TVar
+          | TNilExp
+          | TIntExp Int
+          | TStringExp String
+          | TCallExp TSymbol [TExp]
+          | TOpExp TExp TOper TExp         -- left : exp, oper : oper, right : exp
+          | TRecordExp [TFieldCre] TSymbol -- fields:[(TSymbol,TExp)], typ:Tsymbol
+          | TSeqExp [TExp]
+          | TAssignExp TVar TExp
+          | TIfExp TExp TExp (Maybe TExp)  -- test:exp, then':exp, else':exp option
+          | TWhileExp TExp TExp
+          | TForExp TSymbol Bool TExp TExp TExp -- var:Tsymbol, escape:bool ref, lo:exp, hi:exp,  body:exp
+          | TBreakExp
+          | TLetExp [TDec] TExp
+          | TArrayExp TSymbol TExp TExp
+  deriving (Eq,Show,Read)
+
+data TDec = TFunctionDec TFundec
+          | TVarDec TSymbol Bool (Maybe TSymbol) TExp -- name:TSymbol, escape:bool ref, typ:Tsymbol option, init:Texp
+          | TTypeDec TTyDec
+  deriving (Eq,Show,Read)
+
+data TTy = TNameTy TSymbol
+         | TRecordTy [TFieldDec]
+         | TArrayTy TSymbol
+  deriving (Eq,Show,Read)
+
+data TOper = TPlusOp | TMinusOp | TTimesOp | TDivideOp | TEqOp | TNeqOp | TLtOp | TLeOp | TGtOp | TGeOp
+  deriving (Eq,Show,Read)
 
 
-  | TigerExpSeq        Tiger Tiger   -- SeqExp and ExpSeq (lifted)
-  | TigerExpList       Tiger Tiger   -- ExpList -> Exp ',' ExpList | Exp;
-  | TigerNegation      Tiger
-  | TigerCall          Tiger Tiger
-  | TigerArrCreate     Tiger Tiger Tiger
-  | TigerRecCreate     Tiger Tiger
-  | TigerFieldCreates  Tiger Tiger Tiger -- lifted problematic
-  | TigerAssign        Tiger Tiger
-  | TigerWhile         Tiger Tiger
-  | TigerFor           Tiger Tiger Tiger Tiger
-  | TigerIfThenElse    Tiger Tiger Tiger
-  | TigerLet           Tiger Tiger
+data TFieldCre = TFieldCre (TSymbol,TExp)
+  deriving (Eq,Show,Read)
 
+data TFieldDec = TFieldDec TSymbol Bool TSymbol
+  deriving (Eq,Show,Read) -- name: Tsymbol, escape: bool ref, typ: Tsymbol
 
-  | TigerDecs Tiger Tiger
-  | TigerDecTyDec   Tiger
-  | TigerDecVarDec  Tiger
-  | TigerDecFunDec  Tiger
-  | TigerTyDec      Tiger Tiger
-  | TigerTyName     Tiger
-  | TigerTyArrTy    Tiger
-  | TigerTyRecTy    Tiger
-  | TigerArrTy      Tiger
-  | TigerRecTy      Tiger
-  | TigerVarDec     Tiger Tiger Tiger
-  | TigerFunDec     Tiger Tiger Tiger Tiger
-  | TigerFieldDecs  Tiger Tiger
-  | TigerFieldDec   Tiger Tiger
+data TFundec = TFundec TSymbol [TFieldDec] (Maybe TSymbol) TExp
+  deriving (Eq,Show,Read)
 
-  | TigerLValueName  Tiger
-  | TigerLValueOther Tiger
-  | TigerOtherLValNameExp   Tiger Tiger  -- Name '[' Exp ']'
-  | TigerOtherLValSubscript Tiger Tiger -- lifted
-  | TigerOtherLValFieldExp  Tiger Tiger -- lifted
---  | TigerSubscript Tiger Tiger
---  | TigerFieldExp  Tiger Tiger
+data TTyDec = TTyDec (TSymbol,TTy)
+  deriving (Eq, Show, Read)
 
+type TSymbol = String
 
-  | TigerMul  Tiger Tiger
-  | TigerDiv  Tiger Tiger
-  | TigerAdd  Tiger Tiger
-  | TigerSub  Tiger Tiger
-  | TigerEq   Tiger Tiger
-  | TigerNEq  Tiger Tiger -- not equal, <>
-  | TigerGT   Tiger Tiger
-  | TigerLT   Tiger Tiger
-  | TigerGTE  Tiger Tiger -- >=
-  | TigerLTE  Tiger Tiger -- <=
-  deriving (Show, Eq, Read)
-
-deriveBiGULGeneric ''Tiger
+deriveBiGULGeneric ''TVar
+deriveBiGULGeneric ''TExp
+deriveBiGULGeneric ''TDec
+deriveBiGULGeneric ''TTy
+deriveBiGULGeneric ''TOper
+deriveBiGULGeneric ''TFieldDec
+deriveBiGULGeneric ''TFundec
+deriveBiGULGeneric ''TTyDec
+deriveBiGULGeneric ''TFieldCre

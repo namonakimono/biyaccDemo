@@ -1,13 +1,21 @@
 Concrete
 
--- %right 'then' 'else' 'do';
+%right ';' ;
+%nonassoc 'of' ;
+%right 'then' 'else' 'do';
+%nonassoc ':=' ;
+%left '|' ;
+%left '&' ;
+%left '=' '<>' '>' '<' '>=' '<=' ;
+%left '+' '-' ;
+%left '*' '/' ;
 
 Program -> Exp ;
 
-Exp -> 'nil'   | CallExp    | PrimitiveOpt
-     | LetExp  | RecCreate  | ArrCreate
-     | ForExp  | WhileExp   | IfThen | IfThenElse
-     | 'break' | Assignment | Guard
+Exp -> LValue | 'break'    | 'nil' | Int | String
+     | SeqExp | Negation   | CallExp     | InfixExp
+     | ArrExp | Assignment | WhileExp    | ForExp
+     | IfThen | IfThenElse | RecExp      | LetExp
      ;
 
 Decs  -> Dec Decs | Dec ;
@@ -29,62 +37,41 @@ VarDec -> 'var' Name          ':=' Exp
         | 'var' Name ':' Name ':=' Exp
         ;
 
+--LValue -> Name | LValue '[' Exp ']' | LValue '.' Name ;
+
 LValue -> Name | OtherLValue ;
-OtherLValue -> Name '[' Exp ']' | Subscript | FieldExp;
-Subscript -> OtherLValue '[' Exp ']';
-FieldExp  -> LValue '.' Name;
+OtherLValue -> Name '[' Exp ']' | OtherLValue '[' Exp ']' | LValue '.' Name;
+
 
 SeqExp -> '(' ')' | '(' ExpSeq ')' ;
 ExpSeq  -> Exp ';' ExpSeq  | Exp;
 ExpList -> Exp ',' ExpList | Exp;
 
+Negation -> '-' Exp ;
 CallExp  -> Name '(' ExpList ')' | Name '(' ')';
 
-ArrCreate -> Name '[' Exp ']' 'of' Exp ;
-RecCreate -> Name '{' FieldCreates '}' ;
+InfixExp -> Exp '*'  Exp
+          | Exp '/'  Exp
+          | Exp '+'  Exp
+          | Exp '-'  Exp
+          | Exp '='  Exp
+          | Exp '<>' Exp
+          | Exp '>'  Exp
+          | Exp '<'  Exp
+          | Exp '>=' Exp
+          | Exp '<=' Exp
+          | Exp '&'  Exp
+          | Exp '|'  Exp
+          ;
+
+ArrExp -> Name '[' Exp ']' 'of' Exp ;
+RecExp -> Name '{' FieldCreates '}' ;
 FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
 FieldCreate  -> Name '=' Exp;
 Assignment -> LValue ':=' Exp;
 
--- 'end' is used to handle the dangling-else problem
 IfThenElse -> 'if' Exp 'then' Exp 'else' Exp;
-IfThen     -> 'if' Exp 'then' Exp 'end';
+IfThen     -> 'if' Exp 'then' Exp;
 WhileExp   -> 'while' Exp 'do' Exp ;
 ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
 LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
-
-PrimitiveOpt  -> PrimitiveOpt '|'  PrimitiveOpt1
-              |  PrimitiveOpt1 ;
-
-PrimitiveOpt1 -> PrimitiveOpt1 '&' PrimitiveOpt2
-              |  PrimitiveOpt2;
-
-PrimitiveOpt2 -> PrimitiveOpt2 '='  PrimitiveOpt3
-              |  PrimitiveOpt2 '<>' PrimitiveOpt3
-              |  PrimitiveOpt2 '>'  PrimitiveOpt3
-              |  PrimitiveOpt2 '<'  PrimitiveOpt3
-              |  PrimitiveOpt2 '>=' PrimitiveOpt3
-              |  PrimitiveOpt2 '<=' PrimitiveOpt3
-              |  PrimitiveOpt3
-              ;
-
-PrimitiveOpt3 -> PrimitiveOpt3 '+'  PrimitiveOpt4
-              |  PrimitiveOpt3 '-'  PrimitiveOpt4
-              |  PrimitiveOpt4
-              ;
-
-PrimitiveOpt4 -> PrimitiveOpt4 '*'  PrimitiveOpt5
-              |  PrimitiveOpt4 '/'  PrimitiveOpt5
-              |  PrimitiveOpt5
-              ;
-
-PrimitiveOpt5 -> '-' PrimitiveOpt5
-              | Int
-              | String
-              | LValue
-              | SeqExp
-              ;
-
-Guard       -> 'guard' CaseBs 'end';
-CaseBs -> CaseB CaseBs | CaseB ;
-CaseB  -> LValue '=' Int '->' Exp ; -- remember to change Name and Int to Exp
