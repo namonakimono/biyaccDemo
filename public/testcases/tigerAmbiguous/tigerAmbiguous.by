@@ -1,3 +1,136 @@
+Abstract
+
+data TVar = TSimpleVar TSymbol
+          | TFieldVar (TVar,TSymbol)
+          | TSubscriptVar (TVar,TExp)
+  deriving (Eq,Show,Read)
+
+data TExp = TVarExp TVar
+          | TNilExp
+          | TIntExp Int
+          | TStringExp String
+          | TCallExp TSymbol [TExp]
+          | TOpExp TExp TOper TExp         -- left : exp, oper : oper, right : exp
+          | TRecordExp [TFieldCre] TSymbol -- fields:[(TSymbol,TExp)], typ:Tsymbol
+          | TSeqExp [TExp]
+          | TAssignExp TVar TExp
+          | TIfExp TExp TExp (Maybe TExp)  -- test:exp, then':exp, else':exp option
+          | TWhileExp TExp TExp
+          | TForExp TSymbol Bool TExp TExp TExp -- var:Tsymbol, escape:bool ref, lo:exp, hi:exp,  body:exp
+          | TBreakExp
+          | TLetExp [TDec] TExp
+          | TArrayExp TSymbol TExp TExp
+  deriving (Eq,Show,Read)
+
+data TDec = TFunctionDec TFundec
+          | TVarDec TSymbol Bool (Maybe TSymbol) TExp -- name:TSymbol, escape:bool ref, typ:Tsymbol option, init:Texp
+          | TTypeDec TTyDec
+  deriving (Eq,Show,Read)
+
+data TTy = TNameTy TSymbol
+         | TRecordTy [TFieldDec]
+         | TArrayTy TSymbol
+  deriving (Eq,Show,Read)
+
+data TOper = TPlusOp | TMinusOp | TTimesOp | TDivideOp | TEqOp | TNeqOp | TLtOp | TLeOp | TGtOp | TGeOp
+  deriving (Eq,Show,Read)
+
+
+data TFieldCre = TFieldCre (TSymbol,TExp)
+  deriving (Eq,Show,Read)
+
+data TFieldDec = TFieldDec TSymbol Bool TSymbol
+  deriving (Eq,Show,Read) -- name: Tsymbol, escape: bool ref, typ: Tsymbol
+
+data TFundec = TFundec TSymbol [TFieldDec] (Maybe TSymbol) TExp
+  deriving (Eq,Show,Read)
+
+data TTyDec = TTyDec (TSymbol,TTy)
+  deriving (Eq, Show, Read)
+
+type TSymbol = String
+
+
+Concrete
+%nonassoc 'then'  ;
+%nonassoc 'else'  ;
+%right ';' ;
+%nonassoc 'of' ;
+%right 'do'    ;
+%nonassoc ':=' ;
+%left '|' ;
+%left '&' ;
+%left '=' '<>' '>' '<' '>=' '<=' ;
+%left '+' '-' ;
+%left '*' '/' ;
+
+Program -> Exp ;
+
+Exp -> LValue | 'break'    | 'nil' | Int | String
+     | SeqExp | Negation   | CallExp     | InfixExp
+     | ArrExp | Assignment | WhileExp    | ForExp
+     | IfThen | IfThenElse | RecExp      | LetExp
+     ;
+
+Decs  -> Dec Decs | Dec ;
+Dec   -> TyDec | VarDec | FunDec ;
+TyDec -> 'type' Name '=' Ty ;
+Ty    -> Name | ArrTy | RecTy ;
+ArrTy -> 'array' 'of' Name ;
+RecTy -> '{' '}'  | '{' FieldDecs '}' ;
+
+FieldDecs -> FieldDec ',' FieldDecs | FieldDec ;
+FieldDec  -> Name ':' Name ;
+
+FunDec -> 'function' Name '(' FieldDecs ')'          '=' Exp
+        | 'function' Name '('           ')'          '=' Exp
+        | 'function' Name '(' FieldDecs ')' ':' Name '=' Exp
+        | 'function' Name '('           ')' ':' Name '=' Exp
+        ;
+
+VarDec -> 'var' Name          ':=' Exp
+        | 'var' Name ':' Name ':=' Exp
+        ;
+
+LValue -> Name | OtherLValue ;
+OtherLValue -> Name '[' Exp ']' | OtherLValue '[' Exp ']' | LValue '.' Name;
+
+
+SeqExp -> '(' ')' | '(' ExpSeq ')' ;
+ExpSeq  -> Exp ';' ExpSeq  | Exp ;
+ExpList -> Exp ',' ExpList | Exp ;
+
+Negation -> '-' Exp ;
+CallExp  -> Name '(' ExpList ')' | Name '(' ')';
+
+InfixExp -> Exp '*'  Exp
+          | Exp '/'  Exp
+          | Exp '+'  Exp
+          | Exp '-'  Exp
+          | Exp '='  Exp
+          | Exp '<>' Exp
+          | Exp '>'  Exp
+          | Exp '<'  Exp
+          | Exp '>=' Exp
+          | Exp '<=' Exp
+          | Exp '&'  Exp
+          | Exp '|'  Exp
+          ;
+
+ArrExp -> Name '[' Exp ']' 'of' Exp ;
+RecExp -> Name '{' '}'
+        | Name '{' FieldCreates '}' ;
+FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
+FieldCreate  -> Name '=' Exp;
+Assignment -> LValue ':=' Exp;
+
+IfThenElse -> 'if' Exp 'then' Exp 'else' Exp;
+IfThen     -> 'if' Exp 'then' Exp;
+WhileExp   -> 'while' Exp 'do' Exp ;
+ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
+LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
+
+
 -- please put the update part into an additional parenthesis:
 -- legal:   e   +>   (e +> Exp);
 -- illegal: e   +>    e +> Exp;
@@ -54,8 +187,8 @@ TCallExp tSym []       +>    (tSym +> Name)   '(' ')'  ;
 TCallExp tSym t@(_:_)  +>    (tSym +> Name) '(' (t +> ExpList) ')' ;
 
 [TExp] +> ExpList
-[e]              +>  (e +> Exp) ;
-(e1: es@(_:_))   +>  (e1 +> Exp) ',' (es +> ExpList) ; -- should be at least two elements
+[e]             +>  (e +> Exp) ;
+(e: es@(_:_))   +>  (e +> Exp) ',' (es +> ExpList) ; -- should be at least two elements
 
 TExp +> SeqExp
 TSeqExp []        +> '(' ')'  ;
@@ -63,15 +196,16 @@ TSeqExp t@(_:_)   +> '(' (t +> ExpSeq) ')' ;
 
 [TExp] +> ExpSeq
 [e]            +> (e +> Exp) ;
-(e1: es@(_:_)) +> (e1 +> Exp) ';' (es +> ExpSeq) ;
+(e: es@(_:_))  +> (e +> Exp) ';' (es +> ExpSeq) ;
 
 ---------------
 TExp +> RecExp
-TRecordExp tFCs tSymbol   +>  (tSymbol +> Name) '{' (tFCs +> FieldCreates) '}' ;
+TRecordExp [] tSym          +>  (tSym +> Name) '{' '}' ;
+TRecordExp tFCs@(_:_) tSym  +>  (tSym +> Name) '{' (tFCs +> FieldCreates) '}' ;
 
 [TFieldCre] +> FieldCreates
 [fc]             +> (fc +> FieldCreate) ;
-(fc1: fcs@(_:_)) +> (fc1 +> FieldCreate) ',' (fcs +> FieldCreates) ;
+(fc: fcs@(_:_))  +> (fc +> FieldCreate) ',' (fcs +> FieldCreates) ;
 
 
 TFieldCre +> FieldCreate
@@ -93,21 +227,18 @@ TSubscriptVar (TSimpleVar tSym, tExp)  +> (tSym +> Name) '[' (tExp +> Exp) ']' ;
 TSubscriptVar (tVar,tExp)              +> (tVar +> OtherLValue) '[' (tExp +> Exp) ']' ;
 TFieldVar     (tVar,tSym)              +> (tVar +> LValue) '.' (tSym +> Name) ;
 
-
 ------------------
-
 TExp +> IfThen
 TIfExp tCond tExp1 Nothing       +> 'if' (tCond +> Exp) 'then' (tExp1 +> Exp);
 
 TExp +> IfThenElse
 TIfExp tCond tExp1 (Just tExp2)  +> 'if' (tCond +> Exp) 'then' (tExp1 +> Exp) 'else' (tExp2 +> Exp);
 
-
-------decs--------------
+---------decs-----------
 
 [TDec] +> Decs
 [dec]               +> (dec +> Dec) ;
-(dec1: decs@(_:_))  +> (dec1 +> Dec) (decs +> Decs) ;
+(dec: decs@(_:_))  +> (dec +> Dec) (decs +> Decs) ;
 
 
 TDec +> Dec
@@ -138,14 +269,15 @@ t@(TRecordTy _)  +> (t +> RecTy);
 t@(TArrayTy _)   +> (t +> ArrTy);
 
 TTy +> RecTy
-TRecordTy tFieldds +> '{' (tFieldds +> FieldDecs) '}' ;
+TRecordTy []             +> '{' '}' ;
+TRecordTy tFieldDs@(_:_) +> '{' (tFieldDs +> FieldDecs) '}' ;
 
 TTy +> ArrTy
 TArrayTy tSym      +>  'array' 'of' (tSym +> Name) ;
 
 [TFieldDec] +> FieldDecs
-[tf@(TFieldDec tSym1 True tSym2)] +> (tf +> FieldDec) ;
-(tf1: tfs@(_:_))                  +> (tf1 +> FieldDec) ',' (tfs +> FieldDecs) ;
+[tf@(TFieldDec _ True _)] +> (tf +> FieldDec) ;
+(tf1: tfs@(_:_))          +> (tf1 +> FieldDec) ',' (tfs +> FieldDecs) ;
 
 TFieldDec +> FieldDec
 TFieldDec tSym1 True tSym2  +>  (tSym1 +> Name) ':' (tSym2 +> Name) ;
@@ -165,6 +297,5 @@ TOpExp  l  TLtOp      r   +>   (l +> Exp) '<'  (r +> Exp) ;
 TOpExp  l  TLeOp      r   +>   (l +> Exp) '<=' (r +> Exp) ;
 TOpExp  l  TGtOp      r   +>   (l +> Exp) '>'  (r +> Exp) ;
 TOpExp  l  TGeOp      r   +>   (l +> Exp) '>=' (r +> Exp) ;
-
 TIfExp tCond tExp1 (Just (TIntExp 0))   +> (tCond +> Exp) '&' (tExp1 +> Exp) ;
 TIfExp tCond (TIntExp 1) (Just tExp2)   +> (tCond +> Exp) '|' (tExp2 +> Exp) ;

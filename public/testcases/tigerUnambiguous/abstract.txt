@@ -1,0 +1,51 @@
+Abstract
+
+data TVar = TSimpleVar TSymbol
+          | TFieldVar (TVar,TSymbol)
+          | TSubscriptVar (TVar,TExp)
+  deriving (Eq,Show,Read)
+
+data TExp = TVarExp TVar
+          | TNilExp
+          | TIntExp Int
+          | TStringExp String
+          | TCallExp TSymbol [TExp]
+          | TOpExp TExp TOper TExp         -- left : exp, oper : oper, right : exp
+          | TRecordExp [TFieldCre] TSymbol -- fields:[(TSymbol,TExp)], typ:Tsymbol
+          | TSeqExp [TExp]
+          | TAssignExp TVar TExp
+          | TIfExp TExp TExp (Maybe TExp)  -- test:exp, then':exp, else':exp option
+          | TWhileExp TExp TExp
+          | TForExp TSymbol Bool TExp TExp TExp -- var:Tsymbol, escape:bool ref, lo:exp, hi:exp,  body:exp
+          | TBreakExp
+          | TLetExp [TDec] TExp
+          | TArrayExp TSymbol TExp TExp
+  deriving (Eq,Show,Read)
+
+data TDec = TFunctionDec TFundec
+          | TVarDec TSymbol Bool (Maybe TSymbol) TExp -- name:TSymbol, escape:bool ref, typ:Tsymbol option, init:Texp
+          | TTypeDec TTyDec
+  deriving (Eq,Show,Read)
+
+data TTy = TNameTy TSymbol
+         | TRecordTy [TFieldDec]
+         | TArrayTy TSymbol
+  deriving (Eq,Show,Read)
+
+data TOper = TPlusOp | TMinusOp | TTimesOp | TDivideOp | TEqOp | TNeqOp | TLtOp | TLeOp | TGtOp | TGeOp
+  deriving (Eq,Show,Read)
+
+
+data TFieldCre = TFieldCre (TSymbol,TExp)
+  deriving (Eq,Show,Read)
+
+data TFieldDec = TFieldDec TSymbol Bool TSymbol
+  deriving (Eq,Show,Read) -- name: Tsymbol, escape: bool ref, typ: Tsymbol
+
+data TFundec = TFundec TSymbol [TFieldDec] (Maybe TSymbol) TExp
+  deriving (Eq,Show,Read)
+
+data TTyDec = TTyDec (TSymbol,TTy)
+  deriving (Eq, Show, Read)
+
+type TSymbol = String

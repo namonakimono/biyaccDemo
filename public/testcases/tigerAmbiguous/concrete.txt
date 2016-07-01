@@ -1,8 +1,9 @@
 Concrete
-
+%nonassoc 'then'  ;
+%nonassoc 'else'  ;
 %right ';' ;
 %nonassoc 'of' ;
-%right 'then' 'else' 'do';
+%right 'do'    ;
 %nonassoc ':=' ;
 %left '|' ;
 %left '&' ;
@@ -23,7 +24,7 @@ Dec   -> TyDec | VarDec | FunDec ;
 TyDec -> 'type' Name '=' Ty ;
 Ty    -> Name | ArrTy | RecTy ;
 ArrTy -> 'array' 'of' Name ;
-RecTy -> '{' FieldDecs '}' ;
+RecTy -> '{' '}'  | '{' FieldDecs '}' ;
 
 FieldDecs -> FieldDec ',' FieldDecs | FieldDec ;
 FieldDec  -> Name ':' Name ;
@@ -33,19 +34,18 @@ FunDec -> 'function' Name '(' FieldDecs ')'          '=' Exp
         | 'function' Name '(' FieldDecs ')' ':' Name '=' Exp
         | 'function' Name '('           ')' ':' Name '=' Exp
         ;
+
 VarDec -> 'var' Name          ':=' Exp
         | 'var' Name ':' Name ':=' Exp
         ;
-
---LValue -> Name | LValue '[' Exp ']' | LValue '.' Name ;
 
 LValue -> Name | OtherLValue ;
 OtherLValue -> Name '[' Exp ']' | OtherLValue '[' Exp ']' | LValue '.' Name;
 
 
 SeqExp -> '(' ')' | '(' ExpSeq ')' ;
-ExpSeq  -> Exp ';' ExpSeq  | Exp;
-ExpList -> Exp ',' ExpList | Exp;
+ExpSeq  -> Exp ';' ExpSeq  | Exp ;
+ExpList -> Exp ',' ExpList | Exp ;
 
 Negation -> '-' Exp ;
 CallExp  -> Name '(' ExpList ')' | Name '(' ')';
@@ -65,7 +65,8 @@ InfixExp -> Exp '*'  Exp
           ;
 
 ArrExp -> Name '[' Exp ']' 'of' Exp ;
-RecExp -> Name '{' FieldCreates '}' ;
+RecExp -> Name '{' '}'
+        | Name '{' FieldCreates '}' ;
 FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
 FieldCreate  -> Name '=' Exp;
 Assignment -> LValue ':=' Exp;

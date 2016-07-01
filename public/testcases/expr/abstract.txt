@@ -7,6 +7,3 @@ data Arith = Add Arith Arith
            | Num Int
            | Var String
   deriving (Show, Eq, Read)
-
-deriveBiGULGeneric ''Arith
-

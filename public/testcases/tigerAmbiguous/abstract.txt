@@ -49,13 +49,3 @@ data TTyDec = TTyDec (TSymbol,TTy)
   deriving (Eq, Show, Read)
 
 type TSymbol = String
-
-deriveBiGULGeneric ''TVar
-deriveBiGULGeneric ''TExp
-deriveBiGULGeneric ''TDec
-deriveBiGULGeneric ''TTy
-deriveBiGULGeneric ''TOper
-deriveBiGULGeneric ''TFieldDec
-deriveBiGULGeneric ''TFundec
-deriveBiGULGeneric ''TTyDec
-deriveBiGULGeneric ''TFieldCre

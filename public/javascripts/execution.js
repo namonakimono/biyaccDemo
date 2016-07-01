@@ -48,9 +48,17 @@ function exeUpdate() {
           document.getElementById("targetText").value= viewAST;
         }
 
-        else if ($('select option[value="tiger"]').attr('selected')){
-          console.log("output tiger");
-          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
+        else if ($('select option[value="tigerAmbi"]').attr('selected')){
+          console.log("tiger with ambiguous grammar choosed");
+          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerAmbiEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
+          // $("#actions").load("./testcases/tiger/mergesort.tig", function(data){
+          // document.getElementById("sourceText").value = tigerEgSrc;});
+          document.getElementById("sourceText").value = tigerEgSrc;
+          document.getElementById("targetText").value = viewAST;
+        }
+        else if ($('select option[value="tigerUnambi"]').attr('selected')){
+          console.log("tiger with unambiguous grammar choosed");
+          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerUnambiEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
           // $("#actions").load("./testcases/tiger/mergesort.tig", function(data){
           // document.getElementById("sourceText").value = tigerEgSrc;});
           document.getElementById("sourceText").value = tigerEgSrc;
