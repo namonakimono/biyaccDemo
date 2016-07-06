@@ -1,5 +1,8 @@
 Concrete
 
+%commentLine  '//'       ;
+%commentBlock '/*'  '*/' ;
+
 Program -> Exp ;
 
 Exp -> LetExp  | RecExp     | ArrExp | PrimitiveOpt

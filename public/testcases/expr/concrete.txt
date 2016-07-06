@@ -1,5 +1,8 @@
 Concrete
 
+%commentLine  '//'       ;
+%commentBlock '/*'  '*/' ;
+
 Expr   -> Expr '+' Term
         | Expr '-' Term
         | Term

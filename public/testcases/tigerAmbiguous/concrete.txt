@@ -1,4 +1,8 @@
 Concrete
+
+%commentLine  '//'       ;
+%commentBlock '/*'  '*/' ;
+
 %nonassoc 'then'  ;
 %nonassoc 'else'  ;
 %right ';' ;
