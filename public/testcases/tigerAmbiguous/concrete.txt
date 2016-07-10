@@ -21,6 +21,7 @@ Exp -> LValue | 'break'    | 'nil' | Int | String
      | SeqExp | Negation   | CallExp     | InfixExp
      | ArrExp | Assignment | WhileExp    | ForExp
      | IfThen | IfThenElse | RecExp      | LetExp
+     | Guard
      ;
 
 Decs  -> Dec Decs | Dec ;
@@ -80,3 +81,7 @@ IfThen     -> 'if' Exp 'then' Exp;
 WhileExp   -> 'while' Exp 'do' Exp ;
 ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
 LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
+
+Guard  -> 'guard' CaseBs 'end' ;
+CaseBs -> CaseB CaseBs | CaseB ;
+CaseB  -> LValue '=' Int '->' Exp ;

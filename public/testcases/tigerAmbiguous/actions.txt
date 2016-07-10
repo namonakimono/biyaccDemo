@@ -35,6 +35,7 @@ t@(TIfExp _ _ (Just _))            +> (t +> IfThenElse) ;
 
 t@(TLetExp _ (TSeqExp _))          +> (t +> LetExp) ;
 
+t@(TIfExp (TOpExp (TVarExp _) TEqOp (TIntExp _)) _ _)  +> (t +> Guard) ;
 ------------
 TExp +> WhileExp
 TWhileExp tCond tExp    +> 'while' (tCond +> Exp) 'do' (tExp +> Exp) ;
@@ -166,3 +167,22 @@ TOpExp  l  TGtOp      r   +>   (l +> Exp) '>'  (r +> Exp) ;
 TOpExp  l  TGeOp      r   +>   (l +> Exp) '>=' (r +> Exp) ;
 TIfExp tCond tExp1 (Just (TIntExp 0))   +> (tCond +> Exp) '&' (tExp1 +> Exp) ;
 TIfExp tCond (TIntExp 1) (Just tExp2)   +> (tCond +> Exp) '|' (tExp2 +> Exp) ;
+
+-------------
+TExp +> Guard
+TIfExp (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 Nothing
+  +>  'guard' (CaseBs ->
+                (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
+              ) 'end';
+TIfExp (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 (Just if2@(TIfExp _ _ _))
+  +>  'guard' (CaseBs ->
+                (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
+                (if2 +> CaseBs)
+              ) 'end';
+
+TExp +> CaseBs
+TIfExp (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 Nothing
+    +>  (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp) ) ;
+TIfExp (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 (Just if2@(TIfExp _ _ _))
+    +>  (CaseB -> (lv +> LValue) '=' (i +> Int) '->' (e1 +> Exp))
+        (if2 +> CaseBs) ;
