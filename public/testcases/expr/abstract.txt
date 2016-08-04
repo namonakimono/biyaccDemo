@@ -4,6 +4,6 @@ data Arith = Add Arith Arith
            | Sub Arith Arith
            | Mul Arith Arith
            | Div Arith Arith
-           | Num Int
+           | Num Natural
            | Var String
   deriving (Show, Eq, Read)
