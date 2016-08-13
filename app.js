@@ -40,9 +40,10 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/bx', bx.bx);
-app.get('/compile', compiles.compile);
+app.post('/bx', bx.bx);
+// app.get('/compile', compiles.compile);
 app.post('/compile', compiles.compile);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

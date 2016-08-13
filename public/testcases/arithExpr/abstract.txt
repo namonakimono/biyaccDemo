@@ -7,3 +7,4 @@ data Arith = Add Arith Arith
            | Num Natural
            | Var String
   deriving (Show, Eq, Read)
+

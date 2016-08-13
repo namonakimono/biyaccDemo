@@ -49,3 +49,4 @@ data TTyDec = TTyDec (TSymbol,TTy)
   deriving (Eq, Show, Read)
 
 type TSymbol = String
+

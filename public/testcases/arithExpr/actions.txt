@@ -16,4 +16,3 @@ Sub (Num 0) y  +> '-' (y +> Factor);
 Num i          +> (i +> Int);
 Var n          +> (n +> Name);
 exp            +> '(' (exp +> Expr) ')';
-
