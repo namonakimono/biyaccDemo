@@ -27,7 +27,7 @@ exports.compile = function(req, res){
           isPlatformSupported = true;
         } else
         if (platform == "linux") {
-          md5Command = 'md5sum' + " " + byFile + ' | awk "{print $1}"';
+          md5Command = "md5sum" + " " + byFile + " | awk '{print $1}'";
           isPlatformSupported = true;
         } else {
           console.log("(on server) service for other system not implemented!!!" +
@@ -36,6 +36,7 @@ exports.compile = function(req, res){
         }
 
         if (isPlatformSupported) {
+	  console.log("CHECKOUT1");
           exec(md5Command, function (error, stdout, stderr) {
             if (error) {
               console.error('exec error when checking md5 for biyacc file: ${error}');
@@ -43,6 +44,8 @@ exports.compile = function(req, res){
             }
             switch (langChoice) {
               case "arithExpr":
+	        console.log(stdout);
+	        console.log(stdout == "049125af86b481184035ff33a6ea5ea0\n");
                 if (stdout == "049125af86b481184035ff33a6ea5ea0\n") {
                   res.send({success: "success", msg: "unmodified arithExpr example detected." +
                     "use previous generated executable file!", fileModified: false });
