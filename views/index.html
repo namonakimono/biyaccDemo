@@ -104,12 +104,14 @@
 
             <li id="step4">
               Compilation <br/>
-              <div class="StepDescription">
+              <div class="StepDescription" id="div-before-compilation-button">
                 <p>Please click the compile button. The compilation may take up to half a minute. (especially for big examples such as Tiger)<br>
                    If the code is compiled successfully, boxes showing source, view and log will be shown. <br>
                    If not, the error message will be shown in a console.</p>
               </div>
-              <input id="compileSubmit" type="submit" value="Compile" onclick="exeUpdate()"/>
+              <button id="compileSubmit" type="button" class="btn btn-info" style="margin:auto; display:block" onclick="exeUpdate()">
+                Click here to compile
+              </button>
               <br/>
             </li>
           </ul>

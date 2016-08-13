@@ -13,7 +13,7 @@ function exeUpdate() {
     alert("Please check whether actions are filled in.");
     return;
   }
-  // console.log(langChoice);
+
   $.ajax({
     url: "/compile",
     type: 'post',
@@ -25,46 +25,62 @@ function exeUpdate() {
         langChoice:     langChoice
     },
     success: function(data){
-
       if(data.success  == "success"){
         isFileModified = data.fileModified;
-
-        $('#step5').remove();
+        // $('#step5').remove();
+        
         $('#compileSubmit').remove();
         //this one is for unsuccessful situation added.
-        $('#consoleLog0').remove();
-        //add a new sec
-        $('<div id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p></div>').insertAfter('#step4');
+        // $('#consoleLog0').remove();
+        // rechoose another language
+        $('<div><button id="rechoose-lang" class="btn btn-info" style="margin:auto; display:block" onclick="rechooseLang()">' +
+            'Click here to try another example</button></div>').insertAfter('#div-before-compilation-button');
 
+        // execution info
+        $('<div id="step5">Execution<p class="NotGood">You can execute either forward transformation or backward transformation.</p></div>').insertAfter('#rechoose-lang');
+
+        //program text area
         $('<div class="ResultSource" id="updatedSource"><p>Source</p><textarea class="code" id="sourceText"> </textarea></div>').insertAfter("#step5");
 
+        // AST area
         $('<div class="Target" id="target"> <p>View</p>  <textarea class="code" id="targetText"> </textarea> </div>').insertAfter('#updatedSource');
         $('<hr id="hrline" style="height:10px; width=800px; display:none">').insertAfter('#target');
-        $('<div class="FBButton" id="fbButton""><input style="float:left" type="submit" value="Forward Transformation" onclick="forward(rdirectory, isFileModified, langChoice)"/><input style="float:left" type="submit" value="Backward Transformation" onclick="backward(rdirectory, isFileModified, langChoice)"/></div>').insertAfter('#hrline');
-        //todo: add Console info
+
+        // forward and backward transformation button
+        $('<div class="FBButton" id="fbButton"">' +
+            '<input style="float:left" type="submit" value="Forward Transformation" onclick="forward(rdirectory, isFileModified, langChoice)"/>' +
+            '<input style="float:left" type="submit" value="Backward Transformation" onclick="backward(rdirectory, isFileModified, langChoice)"/>' +
+            '</div>').insertAfter('#hrline');
+
+        // console showing information
         $('<hr id="conhrline" style="height:10px; width=800px; display:none">').insertAfter('#fbButton');
         $('<div class="ConsoleLog" id="consoleLog"><p>Console:</p> <textarea id="consoleText"></textarea></div>').insertAfter('#conhrline');
 
         //according to the selected option to get the data;
         if ($('select option[value="arithExpr"]').attr('selected')){
-          console.log("output arithmetic expression");
           document.getElementById("sourceText").value= arithEgSrc;
           document.getElementById("targetText").value= viewAST;
         }
 
         else if ($('select option[value="tigerAmbi"]').attr('selected')){
-          console.log("tiger with ambiguous grammar choosed");
-          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerAmbiEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
-          // $("#actions").load("./testcases/tiger/mergesort.tig", function(data){
-          // document.getElementById("sourceText").value = tigerEgSrc;});
+          $('<div class="styled-select" id ="tigerChoice">' +
+             '<select name="tigerExampleChoice" onchange="chooseTigerAmbiEg(value)">' +
+               '<option value="tiger_mutu_rec_fun">Mutually recursive functions</option>' +
+               '<option value="tiger_rec_types">Recursive types</option>' +
+               '<option value="tiger_queens">8 Queens</option>' +
+               '<option value="tiger_mergesort">Mergesort</option>' +
+             '</select></div>').insertAfter("#updatedSource > p");
           document.getElementById("sourceText").value = tigerEgSrc;
           document.getElementById("targetText").value = viewAST;
         }
         else if ($('select option[value="tigerUnambi"]').attr('selected')){
-          console.log("tiger with unambiguous grammar choosed");
-          $('<div class="styled-select" id ="tigerChoice"><select name="tigerExampleChoice" onchange="chooseTigerUnambiEg(value)"><option value="tiger_mutu_rec_fun">Mutually recursive functions</option><option value="tiger_rec_types">Recursive types</option><option value="tiger_queens">8 Queens</option><option value="tiger_mergesort">Mergesort</option></select></div>').insertAfter("#updatedSource > p");
-          // $("#actions").load("./testcases/tiger/mergesort.tig", function(data){
-          // document.getElementById("sourceText").value = tigerEgSrc;});
+          $('<div class="styled-select" id ="tigerChoice">' +
+              '<select name="tigerExampleChoice" onchange="chooseTigerUnambiEg(value)">' +
+                '<option value="tiger_mutu_rec_fun">Mutually recursive functions</option>' +
+                '<option value="tiger_rec_types">Recursive types</option>' +
+                '<option value="tiger_queens">8 Queens</option>' +
+                '<option value="tiger_mergesort">Mergesort</option>' +
+              '</select></div>').insertAfter("#updatedSource > p");
           document.getElementById("sourceText").value = tigerEgSrc;
           document.getElementById("targetText").value = viewAST;
         }
@@ -77,7 +93,9 @@ function exeUpdate() {
       }// end if (data.success  == "success")
       else {
         $('#consoleLog0').remove();
-        $('<div class="ConsoleLog0" id="consoleLog0" style="float:right; width:500px; margin-right: 20px"><p>Console:</p> <textarea id="consoleText"></textarea></div>').insertAfter('#compileSubmit');
+        $('<div class="ConsoleLog0" id="consoleLog0" style="float:right; width:500px; margin-right: 20px">' +
+            '<p>Console:</p> <textarea id="consoleText"></textarea>' +
+          '</div>').insertAfter('#compileSubmit');
         document.getElementById('consoleText').value = data.msg;
       }
     }

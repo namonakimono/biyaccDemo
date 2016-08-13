@@ -93,3 +93,17 @@ function chooseTigerUnambiEg(value) {
     document.getElementById("targetText").value = viewAST;
   }
 }
+
+function rechooseLang(){
+  $('#step5').remove();
+  $('#compileSubmit').remove();
+  $('#rechoose-lang').remove();
+  $('#updatedSource').remove();
+  $('#target').remove();
+  $('#hrline').remove();
+  $('#fbButton').remove();
+  $('#conhrline').remove();
+  $('#consoleLog').remove();
+  $('<button id="compileSubmit" type="button" class="btn btn-info" style="margin:auto; display:block"' +
+      ' onclick="exeUpdate()">Click here to compile</button>').insertAfter("#div-before-compilation-button");
+}

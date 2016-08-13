@@ -13,7 +13,6 @@ exports.bx = function (req, res){
   const langChoice = req.body.langChoice;
 
   fs.writeFile("/tmp/" + rdirectory + "/code.txt", sourceString, function(err){
-    console.log("CHECKPOINT2");
     if(err){console.log("generating code.txt failed"); console.log(err);}
     else {
       const prefixDir = "/tmp/" + rdirectory + "/";
@@ -43,7 +42,6 @@ exports.bx = function (req, res){
       else if (flag == "b") {
         switch (langChoice) {
           case "arithExpr":
-            console.log("BXCOMMAND: " + bxCommand);
             bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
                                      : "ByExExpr put" + " " + inOptFile;
             break;
@@ -66,7 +64,6 @@ exports.bx = function (req, res){
       }
       // ends for set execution command
 
-      console.log("BXCOMMAND: " + bxCommand);
       if(flag == "f") { // forward transformation
         exec(bxCommand, {timeout:10000}, function(err){
           if(err){
