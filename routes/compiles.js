@@ -49,13 +49,13 @@ exports.compile = function(req, res){
                   return;
                 }
               case "tigerAmbi":
-                if (stdout == "a8d0ebf4e638521099bd2a732d7d7ca8\n") {
+                if (stdout == "f1c4de17d66d7200fd330cb6a324771b\n") {
                   res.send({success: "success", msg: "unmodified tigerAmbiguous example detected." +
                     "use previous generated executable file!", fileModified: false });
                   return;
                 }
               case "tigerUnambi":
-                if (stdout == "d16f3c2c75dab8a190a71bd5513fb341\n") {
+                if (stdout == "4c16112238dc2d8c813f0f7a32349795\n") {
                   res.send({success: "success", msg: "unmodified tigerUnambiguous example detected." +
                     "use previous generated executable file!", fileModified: false });
                   return;
