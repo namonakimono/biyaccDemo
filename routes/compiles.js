@@ -1,7 +1,6 @@
 const fs = require('fs');
 const sys = require('sys');
 const exec = require('child_process').exec;
-const config = require('../config');
 const platform = process.platform
 
 exports.compile = function(req, res){
@@ -64,26 +63,26 @@ exports.compile = function(req, res){
             }
 
             console.log("2 fall back to generate new executable biyacc file");
-            exec(config.biyacc + " /tmp/" + rdirectory + "/testcase.by "    + "/tmp/" + rdirectory + "/testcase", function(err){
+            exec("biyacc /tmp/" + rdirectory + "/testcase.by "    + "/tmp/" + rdirectory + "/testcase", function(err){
               if(err){console.log(err); res.send({success: "fail", msg: err.toString() });}
               else {
                 console.log("executable generated");
                 res.send({success: "success", msg: "an executable file is successfully generated !", fileModified: true });
               }
-            });//exec(config.biyacc + " /tmp/" + rdirectory + "/testcase.by...)
+            });//exec("biyacc /tmp/" + rdirectory + "/testcase.by...)
 
           }) // exec
         } // if isPlatformSupported
 
         // (server) platform not supported
         else {
-          exec(config.biyacc + " /tmp/" + rdirectory + "/testcase.by "    + "/tmp/" + rdirectory + "/testcase", function(err){
+          exec("biyacc /tmp/" + rdirectory + "/testcase.by "    + "/tmp/" + rdirectory + "/testcase", function(err){
             if(err){console.log(err); res.send({success: "fail", msg: err.toString() });}
             else {
               console.log("executable generated");
               res.send({success: "success", msg: "an executable file is successfully generated !" });
             }
-          });//exec(config.biyacc + " /tmp/" + rdirectory + "/testcase.by...)
+          });//exec("biyacc /tmp/" + rdirectory + "/testcase.by...)
         }
 
       }//else { console.log("biyacc file generated"); ...

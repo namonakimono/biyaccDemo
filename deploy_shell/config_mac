@@ -1,6 +1,0 @@
-// for mac os
-module.exports = {
-    biyacc :   '/Users/zhuzirun/Library/Haskell/bin/biyacc',
-    byStr2CST: '/Users/zhuzirun/Library/Haskell/bin/byStr2CST',
-    ghc :      '/Library/Frameworks/GHC.framework/Versions/Current/usr/bin/ghc'
-}

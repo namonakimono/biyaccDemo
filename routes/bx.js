@@ -1,7 +1,6 @@
 const fs = require('fs');
 const sys = require('sys');
 const exec = require('child_process').exec;
-const config = require('../config');
 
 exports.bx = function (req, res){
   const rdirectory = req.body.rdirectory;
