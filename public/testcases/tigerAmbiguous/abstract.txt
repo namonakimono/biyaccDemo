@@ -1,4 +1,4 @@
-Abstract
+#Abstract
 
 data TVar = TSimpleVar TSymbol
           | TFieldVar (TVar,TSymbol)
@@ -49,4 +49,3 @@ data TTyDec = TTyDec (TSymbol,TTy)
   deriving (Show, Eq, Read)
 
 type TSymbol = String
-

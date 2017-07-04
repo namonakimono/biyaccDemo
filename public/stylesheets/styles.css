@@ -12,6 +12,9 @@ body{
 	font-family: Georgia, Helvetica, Arial, sans-serif;
 }
 
+.small-caps {
+  font-variant: small-caps;
+}
 
 /* fixed width font for code class*/
 .code {

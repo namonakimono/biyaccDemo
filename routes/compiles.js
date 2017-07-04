@@ -42,7 +42,7 @@ exports.compile = function(req, res){
             }
             switch (langChoice) {
               case "arithExpr":
-                if (stdout == "049125af86b481184035ff33a6ea5ea0\n") {
+                if (stdout == "40496d38d7d8c6bcd9f32e22d9f4093f\n") {
                   res.send({success: "success", msg: "unmodified arithExpr example detected." +
                     "use previous generated executable file!", fileModified: false });
                   return;
@@ -54,7 +54,7 @@ exports.compile = function(req, res){
                   return;
                 }
               case "tigerUnambi":
-                if (stdout == "4c16112238dc2d8c813f0f7a32349795\n") {
+                if (stdout == "82822f4c4ae9651c9b61994260050d41\n") {
                   res.send({success: "success", msg: "unmodified tigerUnambiguous example detected." +
                     "use previous generated executable file!", fileModified: false });
                   return;

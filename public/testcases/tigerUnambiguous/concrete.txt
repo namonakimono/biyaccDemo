@@ -1,59 +1,73 @@
-Concrete
-
-%commentLine  '//'       ;
-%commentBlock '/*'  '*/' ;
+#Concrete
 
 Program -> Exp ;
 
 Exp -> LetExp  | RecExp     | ArrExp | PrimitiveOpt
      | ForExp  | WhileExp   | IfThen | IfThenElse
-     | 'break' | Assignment | Guard
+     | "break" | Assignment | Guard
      ;
 
-Decs  -> Dec Decs | Dec ;
-Dec   -> TyDec | VarDec | FunDec ;
-TyDec -> 'type' Name '=' Ty ;
-Ty    -> Name | ArrTy | RecTy ;
-ArrTy -> 'array' 'of' Name ;
-RecTy -> '{' '}'  | '{' FieldDecs '}' ;
+Decs -> {Dec}+ ;
 
-FieldDecs -> FieldDec ',' FieldDecs | FieldDec ;
+Dec  -> TyDec
+      | VarDec
+      | FunDec
+      ;
+
+TyDec -> "type" Name '=' Ty ;
+
+Ty    -> Name | ArrTy | RecTy ;
+
+ArrTy -> "array" "of" Name ;
+
+RecTy -> '{' '}'
+       | '{' FieldDecs '}' ;
+
+FieldDecs -> FieldDec {',' FieldDec}* ;
+
 FieldDec  -> Name ':' Name ;
 
-FunDec -> 'function' Name '(' FieldDecs ')'          '=' Exp
-        | 'function' Name '('           ')'          '=' Exp
-        | 'function' Name '(' FieldDecs ')' ':' Name '=' Exp
-        | 'function' Name '('           ')' ':' Name '=' Exp
+FunDec -> "function" Name '(' FieldDecs ')'          '=' Exp
+        | "function" Name '('           ')'          '=' Exp
+        | "function" Name '(' FieldDecs ')' ':' Name '=' Exp
+        | "function" Name '('           ')' ':' Name '=' Exp
         ;
 
-VarDec -> 'var' Name          ':=' Exp
-        | 'var' Name ':' Name ':=' Exp
+VarDec -> "var" Name          ":=" Exp
+        | "var" Name ':' Name ":=" Exp
         ;
 
 LValue -> Name | OtherLValue ;
 OtherLValue -> Name '[' Exp ']' | OtherLValue '[' Exp ']' | LValue '.' Name ;
 
-SeqExp -> '(' ')' | '(' ExpSeq ')' ;
-ExpSeq  -> Exp ';' ExpSeq  | Exp;
-ExpList -> Exp ',' ExpList | Exp;
+SeqExp -> '(' ')'
+        | '(' ExpSeq ')'
+        ;
 
-CallExp  -> Name '(' ExpList ')' | Name '(' ')';
+ExpSeq  -> Exp {';' Exp}* ;
 
-ArrExp -> Name '[' Exp ']' 'of' Exp ;
+ExpList -> Exp {',' Exp}* ;
+
+CallExp  -> Name '(' ExpList ')'
+          | Name '(' ')';
+
+ArrExp -> Name '[' Exp ']' "of" Exp ;
+
 RecExp -> Name '{' '}'
         | Name '{' FieldCreates '}' ;
 
-FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
+FieldCreates -> FieldCreate {',' FieldCreate}* ;
+
 FieldCreate  -> Name '=' Exp ;
 
-Assignment -> LValue ':=' Exp ;
+Assignment -> LValue ":=" Exp ;
 
--- 'end' is used to handle the dangling-else problem
-IfThenElse -> 'if' Exp 'then' Exp 'else' Exp ;
-IfThen     -> 'if' Exp 'then' Exp 'end';
-WhileExp   -> 'while' Exp 'do' Exp ;
-ForExp     -> 'for' Name ':=' Exp 'to' Exp 'do' Exp ;
-LetExp     -> 'let' Decs 'in' ExpSeq 'end' ;
+-- "end" is used to handle the dangling-else problem
+IfThenElse -> "if" Exp "then" Exp "else" Exp ;
+IfThen     -> "if" Exp "then" Exp "end";
+WhileExp   -> "while" Exp "do" Exp ;
+ForExp     -> "for" Name ":=" Exp "to" Exp "do" Exp ;
+LetExp     -> "let" Decs "in" ExpSeq "end" ;
 
 PrimitiveOpt  -> PrimitiveOpt '|'  PrimitiveOpt1
               |  PrimitiveOpt1 ;
@@ -62,11 +76,11 @@ PrimitiveOpt1 -> PrimitiveOpt1 '&' PrimitiveOpt2
               |  PrimitiveOpt2 ;
 
 PrimitiveOpt2 -> PrimitiveOpt2 '='  PrimitiveOpt3
-              |  PrimitiveOpt2 '<>' PrimitiveOpt3
+              |  PrimitiveOpt2 "<>" PrimitiveOpt3
               |  PrimitiveOpt2 '>'  PrimitiveOpt3
               |  PrimitiveOpt2 '<'  PrimitiveOpt3
-              |  PrimitiveOpt2 '>=' PrimitiveOpt3
-              |  PrimitiveOpt2 '<=' PrimitiveOpt3
+              |  PrimitiveOpt2 ">=" PrimitiveOpt3
+              |  PrimitiveOpt2 "<=" PrimitiveOpt3
               |  PrimitiveOpt3
               ;
 
@@ -81,15 +95,19 @@ PrimitiveOpt4 -> PrimitiveOpt4 '*'  PrimitiveOpt5
               ;
 
 PrimitiveOpt5 -> '-' PrimitiveOpt5
-              | Int
+              | Numeric
               | String
               | LValue
               | SeqExp
               | CallExp
-              | 'nil'
+              | "nil"
               ;
 
-Guard  -> 'guard' CaseBs 'end' ;
+Guard  -> "guard" CaseBs "end" ;
 CaseBs -> CaseB CaseBs | CaseB ;
-CaseB  -> LValue '=' Int '->' Exp ;
+CaseB  -> LValue '=' Numeric "->" Exp ;
+
+#Directives
+LineComment:   "//"       ;
+BlockComment:  "/*"  "*/" ;
 

@@ -1,7 +1,4 @@
-Concrete
-
-%commentLine  '//'       ;
-%commentBlock '/*'  '*/' ;
+#Concrete
 
 Expr   -> Expr '+' Term
         | Expr '-' Term
@@ -14,8 +11,12 @@ Term   -> Term '*' Factor
         ;
 
 Factor -> '-' Factor
-        | Int
+        | Numeric
         | Name
         | '(' Expr ')'
         ;
+
+#Directives
+LineComment:  "//"       ;
+BlockComment: "/*"  "*/" ;
 
