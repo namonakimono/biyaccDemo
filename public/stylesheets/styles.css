@@ -437,10 +437,8 @@ input[type=submit] #submitTo {
 }
 
 .ConsoleLog0 textarea {
-    width : 500px;
-    height: 200px;
-    max-height:  350px;
-    max-width:  3200px;
+    width : 800px;
+    height: 400px;
     overflow-y: scroll;
     border:1px solid #d1c7ac;
     color:#333333;

@@ -93,8 +93,8 @@ function exeUpdate() {
       }// end if (data.success  == "success")
       else {
         $('#consoleLog0').remove();
-        $('<div class="ConsoleLog0" id="consoleLog0" style="float:right; width:500px; margin-right: 20px">' +
-            '<p>Console:</p> <textarea id="consoleText"></textarea>' +
+        $('<div class="ConsoleLog0" id="consoleLog0" style="width:800px; margin-right: 20px">' +
+            '<p>Console:</p> <textarea class="code" id="consoleText"></textarea>' +
           '</div>').insertAfter('#compileSubmit');
         document.getElementById('consoleText').value = data.msg;
       }
