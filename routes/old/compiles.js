@@ -41,32 +41,53 @@ exports.compile = function(req, res){
 
             switch (langChoice) {
               case "expr":
-                if (stdout == "9088ffa61b9db93eb63117c73723c84d\n") {
-                  res.send({success: "success", msg: "unmodified example detected." +
-                    "use previous generated executable file!", fileModified: false });
+                if (stdout == "e2363f93ac2fb2c8229dac94c4fc1846\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
                   return;
                 }
 
-              case "tiger":
-                if (stdout == "d57c635642f89370139a099a81d3bac2\n") {
-                  res.send({success: "success", msg: "unmodified example detected." +
-                    "use previous generated executable file!", fileModified: false });
+              case "tigerUnambi":
+                if (stdout == "fb7d39950748a5537070904bfc5f3d00\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
                   return;
                 }
 
-              case "exprAmb":
-                if (stdout == "df8fe490806fd2e01d5c139fc3c245a9\n") {
-                  res.send({success: "success", msg: "unmodified example detected." +
-                    "use previous generated executable file!", fileModified: false });
+              case "exprKleene":
+                if (stdout == "2ec2f6a18884370fe96eb98c587bf1bb\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
                   return;
                 }
 
-              case "tigerAmb":
-                if (stdout == "20037ed4eb3178014a696e267e837d2d\n") {
-                  res.send({success: "success", msg: "unmodified example detected." +
-                    "use previous generated executable file!", fileModified: false });
+              case "exprNonlinear":
+                if (stdout == "37447ae0467b61f5b10d75d1308dbe57\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
                   return;
                 }
+
+              case "exprAdapt":
+                if (stdout == "5c6454d0c78ca422238e986dd100ff3f\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
+                  return;
+                }
+
+              case "exprAmbi":
+                if (stdout == "52f44656213aa326c73b653b2c1f7784\n") {
+                  res.send({success: "success", msg: "Unmodified example detected." +
+                    "Use previous generated executable file!", fileModified: false });
+                  return;
+                }
+
+              // case "tigerUnambiKleene":
+              //   if (stdout == "82822f4c4ae9651c9b61994260050d41\n") {
+              //     res.send({success: "success", msg: "Unmodified example detected." +
+              //       "Use previous generated executable file!", fileModified: false });
+              //     return;
+              //   }
 
               default: break;
             }

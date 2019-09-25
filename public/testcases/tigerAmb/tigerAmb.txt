@@ -1,0 +1,593 @@
+-- We adapt the grammar so that the AST does not have any parenthesis structure and parenthesis structure in the CSTs will be dropped in the parse direction.
+-- This allows us to fix an incorrect CSTs regarding filters by adding parenthesis structure.
+
+#Abstract
+
+type TSymbol = String
+
+data Tuple a b = Tuple a b
+data BBool = TTrue | FFalse
+
+data MMaybe a = NNothing | JJust a
+
+data List a = Nil | Cons a (List a)
+
+data TVar = TSimpleVar TSymbol
+          | TFieldVar (Tuple TVar TSymbol)
+          | TSubscriptVar (Tuple TVar TExp)
+
+data TExp = TVarExp TVar
+          | TNilExp
+          | TIntExp Int
+          | TStringExp String
+          | TCallExp TSymbol (List TExp)
+
+          -- left : exp, oper : oper, right : exp
+          | TOpExp TExp TOper TExp
+
+          -- fields:[(TSymbol,TExp)], typ:Tsymbol
+          | TRecordExp (List (Tuple TSymbol TExp)) TSymbol
+          | TExpSeq (List TExp)
+          | TAssignExp TVar TExp
+
+          -- test:exp, then':exp, else':exp option
+          | TCond TExp TExp (MMaybe TExp)
+          | TWhileExp TExp TExp
+
+          -- var:Tsymbol, escape:bool ref, lo:exp, hi:exp,  body:exp
+          | TForExp TSymbol BBool TExp TExp TExp
+          | TBreakExp
+          | TLetExp (List TDec) TExp
+          | TArrayExp TSymbol TExp TExp
+
+data TDec = TFunctionDec TFundec
+          -- name:TSymbol, escape:bool ref, typ:Tsymbol option, init:Texp
+          | TVarDec TSymbol BBool (MMaybe TSymbol) TExp
+          | TTypeDec (Tuple TSymbol TTy)
+
+data TTy = TNameTy TSymbol
+         | TRecordTy (List TFieldDec)
+         | TArrayTy TSymbol
+
+data TOper = TPlusOp | TMinusOp | TTimesOp | TDivideOp
+           | TEqOp | TNeqOp | TLtOp | TLeOp | TGtOp | TGeOp
+
+
+-- name: Tsymbol, escape: bool ref, typ: Tsymbol
+data TFieldDec = TFieldDec TSymbol BBool TSymbol
+
+data TFundec = TFundec TSymbol (List TFieldDec) (MMaybe TSymbol) TExp
+
+
+
+
+#Concrete
+
+Program -> Exp ;
+
+Exp -> LetExp  | RecExp     | ArrExp | Prmtv
+     | ForExp  | WhileExp   | IfThen | IfThenElse
+     | "break" | Assignment | Guard
+     ;
+
+Decs  -> Dec Decs | Dec ;
+Dec   -> TyDec | VarDec | FunDec ;
+TyDec -> "type" Identifier '=' Ty ;
+Ty    -> Identifier | ArrTy | RecTy ;
+ArrTy -> "array" "of" Identifier ;
+RecTy -> '{' '}'  | '{' FieldDecs '}' ;
+
+FieldDecs -> FieldDec ',' FieldDecs | FieldDec ;
+FieldDec  -> Identifier ':' Identifier ;
+
+FunDec -> "function" Identifier '(' FieldDecs ')'                '=' Exp
+        | "function" Identifier '('           ')'                '=' Exp
+        | "function" Identifier '(' FieldDecs ')' ':' Identifier '=' Exp
+        | "function" Identifier '('           ')' ':' Identifier '=' Exp
+        ;
+
+VarDec -> "var" Identifier                ":=" Exp
+        | "var" Identifier ':' Identifier ":=" Exp
+        ;
+
+LValue -> Identifier | OtherLValue ;
+
+OtherLValue -> Identifier '[' Exp ']'
+            | OtherLValue '[' Exp ']'
+            | LValue '.' Identifier ;
+
+SeqExp  ->
+    '{'        '}'
+  | '{' ExpSeq '}' ;
+
+ExpSeq  -> Exp ';' ExpSeq | Exp ;
+
+ExpList -> Exp ',' ExpList | Exp;
+
+CallExp  -> Identifier '(' ExpList ')' | Identifier '(' ')';
+
+ArrExp -> Identifier '[' Exp ']' "of" Exp ;
+RecExp -> Identifier '{' '}'
+        | Identifier '{' FieldCreates '}' ;
+
+FieldCreates -> FieldCreate ',' FieldCreates | FieldCreate ;
+FieldCreate  -> Identifier '=' Exp ;
+
+Assignment -> LValue ":=" Exp ;
+
+IfThenElse -> [ITE] "if" Exp "then" Exp "else" Exp ;
+IfThen     -> [IT]  "if" Exp "then" Exp;
+WhileExp   -> "while" Exp "do" Exp ;
+ForExp     -> "for" Identifier ":=" Exp "to" Exp "do" Exp ;
+LetExp     -> "let" Decs "in" ExpSeq "end" ;
+
+Prmtv -> [Or] Prmtv '|'  Prmtv
+       | [And] Prmtv '&' Prmtv
+
+       | [Equal]  Prmtv '='  Prmtv
+       | [NEqual] Prmtv "<>" Prmtv
+       | [Great]  Prmtv '>'  Prmtv
+       | [Less]   Prmtv '<'  Prmtv
+       | [GTE]    Prmtv ">=" Prmtv
+       | [LTE]    Prmtv "<=" Prmtv
+
+       | [Plus]  Prmtv '+'  Prmtv
+       | [Minus] Prmtv '-'  Prmtv
+       | [Times] Prmtv '*'  Prmtv
+       | [Div]   Prmtv '/'  Prmtv
+       | [Neg] '-' Prmtv
+       | Numeric
+       | String
+       | LValue
+       | CallExp
+       | SeqExp
+       | "nil"
+       | [Paren] '(' Exp ')' {# Bracket #}
+       ;
+
+Guard  -> "guard" CaseBs "end" ;
+CaseBs -> CaseB CaseBs | CaseB ;
+CaseB  -> LValue '=' Numeric "->" Exp ;
+
+
+#Directives
+
+LineComment:  "//"      ;
+BlockComment: "/*" "*/" ;
+
+
+-- do not swap the LHS and RHS, the current parser does not support that syntax.
+Priority:
+Times  >  Plus   ;
+Times  >  Minus  ;
+Div    >  Plus   ;
+Div    >  Minus  ;
+
+
+Plus   >  LTE    ;
+Plus   >  GTE    ;
+Plus   >  Less   ;
+Plus   >  Great  ;
+Plus   >  NEqual ;
+Plus   >  Equal  ;
+Minus  >  LTE    ;
+Minus  >  GTE    ;
+Minus  >  Less   ;
+Minus  >  Great  ;
+Minus  >  NEqual ;
+Minus  >  Equal  ;
+
+
+LTE    >  And ;
+GTE    >  And ;
+Less   >  And ;
+Great  >  And ;
+NEqual >  And ;
+Equal  >  And ;
+
+And  >  Or ;
+
+
+Associativity:
+Left: Times, Div, Plus, Minus, NEqual, Great, Less, GTE, LTE, Or;
+Right: And, Equal;
+
+
+#Actions
+
+-- The syntax is like that of Haskell. Space (application) have the highest priority.
+-- Please do not use redundant parenthesis in Left-hand side of an action; we do not handle this case.
+
+
+-- Please put the update part into brackets
+-- Legal:   e  +>  [e +> Exp];
+-- Illegal: e  +>   e +> Exp;
+
+-- Use round parentheses for source-side deep pattern matchings (look-ahead)
+-- Example: t@(TCond _ _ (JJust (TIntExp 0)))   +>
+--              [t +> (Prmtv -> Prmtv '&' Prmtv)]
+
+
+TExp +> Program
+t    +>  [t +> Exp] ;
+;;
+
+TExp +> Exp
+TBreakExp         +>  "break"      ;
+t@(TVarExp _)     +>  [t +> Prmtv] ;
+t@(TIntExp _)     +>  [t +> Prmtv] ;
+t@(TStringExp _)  +>  [t +> Prmtv] ;
+t@(TNilExp)       +>  [t +> Prmtv] ;
+t@(TCallExp _ _)  +>  [t +> Prmtv] ;
+t@(TOpExp _ _ _)  +>  [t +> Prmtv] ;
+t@(TArrayExp _ _ _)        +>  [t +> ArrExp]     ;
+t@(TRecordExp _ _)         +>  [t +> RecExp]     ;
+t@(TAssignExp _ _)         +>  [t +> Assignment] ;
+t@(TWhileExp _ _)          +>  [t +> WhileExp]   ;
+t@(TForExp _ _ _ _ _)      +>  [t +> ForExp]     ;
+t@(TLetExp _ (TExpSeq _))  +>  [t +> LetExp]     ;
+
+t@(TCond _ _ NNothing)             +>  [t +> IfThen]     ;
+t@(TCond _ _ (JJust _))            +>  [t +> IfThenElse] ;
+t@(TCond _ _ (JJust (TIntExp 0)))  +>  [t +> (Prmtv -> Prmtv '&' Prmtv)] ;
+t@(TCond _ (TIntExp 1) _)          +>  [t +> (Prmtv -> Prmtv '|' Prmtv)] ;
+t@(TCond (TOpExp (TVarExp _) TEqOp (TIntExp _)) _ _)  +>  [t +> Guard] ;
+t@(TExpSeq _)       +>  [t +> (Prmtv -> SeqExp)] ;
+
+;;
+
+
+-------
+
+TExp +> SeqExp
+TExpSeq Nil               +>  '{'                   '}'  ;
+TExpSeq tExps@(Cons _ _)  +>  '{' [tExps +> ExpSeq] '}' ;
+;;
+
+List TExp +> ExpSeq
+Cons e Nil            +> [e +> Exp]                  ;
+Cons e es@(Cons _ _)  +> [e +> Exp] ';' [es +> ExpSeq] ;
+;;
+
+TExp +> CallExp
+TCallExp tSym Nil           +>    [tSym +> Identifier]  '(' ')' ;
+TCallExp tSym t@(Cons _ _)  +>    [tSym +> Identifier]  '(' [t +> ExpList] ')' ;
+;;
+
+List TExp +> ExpList
+Cons e Nil              +>  [e +> Exp] ;
+-- should be at least two elements
+Cons e es@(Cons _ _)    +>  [e +> Exp] ',' [es +> ExpList] ;
+;;
+--------
+
+TExp +> ArrExp
+TArrayExp tSym tExp1 tExp2  +>  [tSym +> Identifier] '[' [tExp1 +> Exp] ']' "of" [tExp2 +> Exp] ;
+;;
+
+TExp +> RecExp
+TRecordExp Nil tSym              +>  [tSym +> Identifier] '{' '}' ;
+TRecordExp tFCs@(Cons _ _) tSym  +>  [tSym +> Identifier] '{' [tFCs +> FieldCreates] '}' ;
+;;
+
+List (Tuple TSymbol TExp) +> FieldCreates
+Cons fc Nil             +>  [fc +> FieldCreate] ;
+Cons fc fcs@(Cons _ _)  +>  [fc +> FieldCreate] ',' [fcs +> FieldCreates] ;
+;;
+
+Tuple TSymbol TExp +> FieldCreate
+Tuple tSym tExp  +>   [tSym +> Identifier] '=' [tExp +> Exp] ;
+;;
+--------
+
+TExp +> Assignment
+TAssignExp tVar tExp   +>   [tVar +> LValue] ":=" [tExp +> Exp] ;
+;;
+
+TExp +> WhileExp
+TWhileExp tCond tExp   +> "while" [tCond +> Exp] "do" [tExp +> Exp] ;
+;;
+
+TExp +> ForExp
+TForExp tSym TTrue tLow tHigh tBody  +>
+  "for" [tSym +> Identifier] ":=" [tLow +> Exp] "to" [tHigh +> Exp] "do" [tBody +> Exp] ;
+;;
+
+TExp +> IfThen
+TCond tCond tExp1 NNothing  +> "if" [tCond +> Exp] "then" [tExp1 +> Exp];
+;;
+
+TExp +> IfThenElse
+TCond tCond tExp1 (JJust tExp2)  +> "if" [tCond +> Exp] "then" [tExp1 +> Exp] "else" [tExp2 +> Exp];
+;;
+
+TExp +> LetExp
+TLetExp tDecs (TExpSeq tExps)  +> "let" [tDecs +> Decs] "in" [tExps +> ExpSeq] "end" ;
+;;
+--------
+
+TVar +> LValue
+TSimpleVar tSym      +>  [tSym +> Identifier] ;
+t@(TSubscriptVar _)  +>  [t +> OtherLValue] ;
+t@(TFieldVar _)      +>  [t +> OtherLValue] ;
+;;
+
+TVar +> OtherLValue
+TSubscriptVar (Tuple (TSimpleVar tSym) tExp)  +> [tSym +> Identifier] '[' [tExp +> Exp] ']' ;
+TSubscriptVar (Tuple tVar tExp)               +> [tVar +> OtherLValue] '[' [tExp +> Exp] ']' ;
+TFieldVar     (Tuple tVar tSym)               +> [tVar +> LValue] '.' [tSym +> Identifier] ;
+;;
+--------
+
+List TDec +> Decs
+Cons dec Nil              +>  [dec +> Dec] ;
+Cons dec decs@(Cons _ _)  +>  [dec +> Dec] [decs +> Decs] ;
+;;
+
+TDec +> Dec
+TFunctionDec fdec  +>  [fdec +> FunDec] ;
+TTypeDec (Tuple tSym ty)  +>  (TyDec -> "type" [tSym +> Identifier] '=' [ty +> Ty]) ;
+
+TVarDec tSym TTrue NNothing tExp       +>
+  (VarDec -> "var" [tSym +> Identifier]                     ":=" [tExp +> Exp]) ;
+TVarDec tSym TTrue (JJust tSym2) tExp  +>
+  (VarDec -> "var" [tSym +> Identifier] ':' [tSym2 +> Identifier] ":=" [tExp +> Exp]) ;
+;;
+
+
+TFundec +> FunDec
+TFundec tSym tf@(Cons _ _) NNothing tExp
+  +> "function" [tSym +> Identifier] '(' [tf +> FieldDecs] ')'                     '=' [tExp +> Exp] ;
+TFundec tSym Nil NNothing tExp
+  +> "function" [tSym +> Identifier] '('                   ')'                     '=' [tExp +> Exp] ;
+TFundec tSym tf@(Cons _ _) (JJust tSym2) tExp
+  +> "function" [tSym +> Identifier] '(' [tf +> FieldDecs] ')' ':' [tSym2 +> Identifier] '=' [tExp +> Exp] ;
+TFundec tSym Nil (JJust tSym2) tExp
+  +> "function" [tSym +> Identifier] '('                   ')' ':' [tSym2 +> Identifier] '=' [tExp +> Exp] ;
+;;
+
+
+-- TTyDec +> TyDec
+-- TTyDec (Tuple tSym ty)     +> "type" [tSym +> Identifier] '=' [ty +> Ty] ;
+-- ;;
+
+
+---------Type---------
+TTy +> Ty
+TNameTy tSym     +> [tSym +> Identifier] ;
+t@(TRecordTy _)  +> [t +> RecTy];
+t@(TArrayTy _)   +> [t +> ArrTy];
+;;
+
+TTy +> RecTy
+TRecordTy Nil                  +>  '{' '}' ;
+TRecordTy tFieldDs@(Cons _ _)  +>  '{' [tFieldDs +> FieldDecs] '}' ;
+;;
+
+TTy +> ArrTy
+TArrayTy tSym  +>  "array" "of" [tSym +> Identifier] ;
+;;
+
+List TFieldDec +> FieldDecs
+Cons tf@(TFieldDec _ TTrue _) Nil  +>  [tf  +> FieldDec] ;
+Cons tf1 tfs@(Cons _ _)            +>  [tf1 +> FieldDec] ',' [tfs +> FieldDecs] ;
+;;
+
+TFieldDec +> FieldDec
+TFieldDec tSym1 TTrue tSym2  +>  [tSym1 +> Identifier] ':' [tSym2 +> Identifier] ;
+;;
+
+-------primitive------
+TExp +> Prmtv
+TCond tCond (TIntExp 1) (JJust tExp2)  +>  [tCond +> Prmtv] '|' [tExp2 +> Prmtv] ;
+TCond tCond tExp1 (JJust (TIntExp 0))  +>  [tCond +> Prmtv] '&' [tExp1 +> Prmtv] ;
+
+TOpExp  l  TEqOp   r    +>   [l +> Prmtv] '='  [r +> Prmtv] ;
+TOpExp  l  TNeqOp  r    +>   [l +> Prmtv] "<>" [r +> Prmtv] ;
+TOpExp  l  TLtOp   r    +>   [l +> Prmtv] '<'  [r +> Prmtv] ;
+TOpExp  l  TLeOp   r    +>   [l +> Prmtv] "<=" [r +> Prmtv] ;
+TOpExp  l  TGtOp   r    +>   [l +> Prmtv] '>'  [r +> Prmtv] ;
+TOpExp  l  TGeOp   r    +>   [l +> Prmtv] ">=" [r +> Prmtv] ;
+
+TOpExp  l  TPlusOp  r   +>  [l +> Prmtv] '+'  [r +> Prmtv] ;
+TOpExp  l  TMinusOp r   +>  [l +> Prmtv] '-'  [r +> Prmtv] ;
+
+TOpExp  l  TTimesOp  r  +>  [l +> Prmtv] '*'  [r +> Prmtv] ;
+TOpExp  l  TDivideOp r  +>  [l +> Prmtv] '/'  [r +> Prmtv] ;
+
+TOpExp (TIntExp 0) TMinusOp r +> '-' [r +> Prmtv] ;
+
+TVarExp v        +>  [v +> LValue ] ;
+TIntExp i        +>  [i +> Numeric] ;
+TStringExp s     +>  [s +> String ] ;
+TNilExp          +>  "nil" ;
+t@(TCallExp _ _) +>  [t +> CallExp] ;
+t@(TExpSeq _)    +>  [t +> SeqExp ] ;
+t                +>  '(' [t +> Exp ] ')' ;
+;;
+
+
+---------- introduce Guard expression  --------
+TExp +> Guard
+TCond (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 NNothing
+  +>  "guard" (CaseBs ->
+                (CaseB -> [lv +> LValue] '=' [i +> Numeric] "->" [e1 +> Exp])
+              ) "end" ;
+TCond (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 (JJust if2@(TCond _ _ _))
+  +>  "guard" (CaseBs ->
+                (CaseB -> [lv +> LValue] '=' [i +> Numeric] "->" [e1 +> Exp])
+                [if2 +> CaseBs]
+              ) "end" ;
+;;
+
+
+TExp +> CaseBs
+TCond (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 NNothing
+    +>  (CaseB -> [lv +> LValue] '=' [i +> Numeric] "->" [e1 +> Exp]) ;
+TCond (TOpExp (TVarExp lv) TEqOp (TIntExp i)) e1 (JJust if2@(TCond _ _ _))
+    +>  (CaseB -> [lv +> LValue] '=' [i +> Numeric] "->" [e1 +> Exp])
+        [if2 +> CaseBs] ;
+
+;;
+--------
+
+#OtherFilters
+-- [ funName : funType ]. Since filters are on CSTs, the type is just the nontemrinal
+[ fDanglingElse :: BiFilter IfThenElse ]
+
+
+fDanglingElse (ITE t1 exp1 t3 exp2 t5 exp3) =
+  case checkRightSpine exp2 of
+    True  -> Nothing
+    False -> Just (ITE t1 exp1 t3 (addPar exp2) t5 exp3)
+
+checkRightSpine t =
+  let spineStrs = getRSpineCons t
+  in  and $ map (\str -> str /= "IT") spineStrs
+
+
+class GetRSpineCons t where
+  getRSpineCons :: t -> [String]
+
+instance GetRSpineCons Exp where
+  getRSpineCons (Exp1 r) = ["Exp1"] ++ getRSpineCons r
+  getRSpineCons (Exp2 r) = ["Exp2"] ++ getRSpineCons r
+  getRSpineCons (Exp3 r) = ["Exp3"] ++ getRSpineCons r
+  getRSpineCons (Exp4 r) = ["Exp4"] ++ getRSpineCons r
+  getRSpineCons (Exp5 r) = ["Exp5"] ++ getRSpineCons r
+  getRSpineCons (Exp6 r) = ["Exp6"] ++ getRSpineCons r
+  getRSpineCons (Exp7 r) = ["Exp7"] ++ getRSpineCons r
+  getRSpineCons (Exp8 r) = ["Exp8"] ++ getRSpineCons r
+  getRSpineCons (Exp9 _) = ["Exp9"]
+  getRSpineCons (Exp10 r) = ["Exp10"] ++ getRSpineCons r
+  getRSpineCons (Exp11 r) = ["Exp11"] ++ getRSpineCons r
+
+instance GetRSpineCons Decs where
+  getRSpineCons (Decs1 _ r) = ["Decs1"] ++ getRSpineCons r
+  getRSpineCons (Decs2 r)   = ["Decs2"] ++ getRSpineCons r
+
+instance GetRSpineCons Dec where
+  getRSpineCons (Dec1 r) = ["Dec1"] ++ getRSpineCons r
+  getRSpineCons (Dec2 r) = ["Dec2"] ++ getRSpineCons r
+  getRSpineCons (Dec3 r) = ["Dec3"] ++ getRSpineCons r
+
+instance GetRSpineCons TyDec where
+  getRSpineCons (TyDec1 _ _ _ r) = ["TyDec1"] ++ getRSpineCons r
+
+instance GetRSpineCons Ty where
+  getRSpineCons (Ty1 _) = ["Ty1"]
+  getRSpineCons (Ty2 r) = ["Ty2"] ++ getRSpineCons r
+  getRSpineCons (Ty3 r) = ["Ty3"] ++ getRSpineCons r
+
+instance GetRSpineCons ArrTy where
+  getRSpineCons (ArrTy1 _ _ _) = ["ArrTy1"]
+
+instance GetRSpineCons RecTy where
+  getRSpineCons (RecTy1 _ _)   = ["RecTy1"]
+  getRSpineCons (RecTy2 _ _ _) = ["RecTy2"]
+
+instance GetRSpineCons FieldDecs where
+  getRSpineCons (FieldDecs1 _ _ r) = ["FieldDecs1"] ++ getRSpineCons r
+  getRSpineCons (FieldDecs2 r)     = ["FieldDecs2"] ++ getRSpineCons r
+
+instance GetRSpineCons FieldDec where
+  getRSpineCons (FieldDec1 _ _ _) = ["FieldDec1"]
+
+instance GetRSpineCons FunDec where
+  getRSpineCons (FunDec1 _ _ _ _ _ _ r)     = ["FunDec1"] ++ getRSpineCons r
+  getRSpineCons (FunDec2 _ _ _ _ _ r)       = ["FunDec2"] ++ getRSpineCons r
+  getRSpineCons (FunDec3 _ _ _ _ _ _ _ _ r) = ["FunDec3"] ++ getRSpineCons r
+  getRSpineCons (FunDec4 _ _ _ _ _ _ _ r)   = ["FunDec4"] ++ getRSpineCons r
+
+instance GetRSpineCons VarDec where
+  getRSpineCons (VarDec1 _ _ _ r)     = ["VarDec1"] ++ getRSpineCons r
+  getRSpineCons (VarDec2 _ _ _ _ _ r) = ["VarDec2"] ++ getRSpineCons r
+
+instance GetRSpineCons LValue where
+  getRSpineCons (LValue1 _) = ["LValue1"]
+  getRSpineCons (LValue2 r) = ["LValue2"] ++ getRSpineCons r
+
+instance GetRSpineCons OtherLValue where
+  getRSpineCons (OtherLValue1 _ _ _ _) = ["OtherLValue1"]
+  getRSpineCons (OtherLValue2 _ _ _ _) = ["OtherLValue2"]
+  getRSpineCons (OtherLValue3 _ _ _)   = ["OtherLValue3"]
+
+instance GetRSpineCons SeqExp where
+  getRSpineCons (SeqExp1 _ _)     = ["SeqExp1"]
+  getRSpineCons (SeqExp2 _ _ _)   = ["SeqExp2"]
+
+instance GetRSpineCons ExpSeq where
+  getRSpineCons (ExpSeq1 _ _ r) = ["ExpSeq1"] ++ getRSpineCons r
+  getRSpineCons (ExpSeq2 r)   = ["ExpSeq2"] ++ getRSpineCons r
+
+instance GetRSpineCons ExpList where
+  getRSpineCons (ExpList1 _ _ r) = ["ExpList1"] ++ getRSpineCons r
+  getRSpineCons (ExpList2 r)     = ["ExpList2"] ++ getRSpineCons r
+
+instance GetRSpineCons CallExp where
+  getRSpineCons (CallExp1 _ _ _ _) = ["CallExp1"]
+  getRSpineCons (CallExp2 _ _ _)   = ["CallExp2"]
+
+instance GetRSpineCons ArrExp where
+  getRSpineCons (ArrExp1 _ _ _ _ _ r) = ["ArrExp1"] ++ getRSpineCons r
+
+instance GetRSpineCons RecExp where
+  getRSpineCons (RecExp1 _ _ _)   = ["RecExp1"]
+  getRSpineCons (RecExp2 _ _ _ _) = ["RecExp2"]
+
+instance GetRSpineCons FieldCreates where
+  getRSpineCons (FieldCreates1 _ _ r) = ["FieldCreates1"] ++ getRSpineCons r
+  getRSpineCons (FieldCreates2 r)     = ["FieldCreates2"] ++ getRSpineCons r
+
+instance GetRSpineCons FieldCreate where
+  getRSpineCons (FieldCreate1 _ _ r) = ["FieldCreate1"] ++ getRSpineCons r
+
+instance GetRSpineCons Assignment where
+  getRSpineCons (Assignment1 _ _ r) = ["Assignment1"] ++ getRSpineCons r
+
+instance GetRSpineCons IfThenElse where
+  getRSpineCons (ITE _ _ _ _ _ r) = ["ITE"] ++ getRSpineCons r
+
+instance GetRSpineCons IfThen where
+  getRSpineCons (IT _ _ _ r) = ["IT"] ++ getRSpineCons r
+
+instance GetRSpineCons ForExp where
+  getRSpineCons (ForExp1 _ _ _ _ _ _ _ r) = ["ForExp1"] ++ getRSpineCons r
+
+instance GetRSpineCons WhileExp where
+  getRSpineCons (WhileExp1 _ _ _ r) = ["WhileExp1"] ++ getRSpineCons r
+
+instance GetRSpineCons LetExp where
+  getRSpineCons (LetExp1 _ _ _ _ _) = ["LetExp1"]
+
+instance GetRSpineCons Prmtv where
+  getRSpineCons (Or _ _ r)     = ["Or"] ++ getRSpineCons r
+  getRSpineCons (And _ _ r)    = ["And"] ++ getRSpineCons r
+  getRSpineCons (Equal _ _ r)  = ["Equal"] ++ getRSpineCons r
+  getRSpineCons (NEqual _ _ r) = ["NEqual"] ++ getRSpineCons r
+  getRSpineCons (Great _ _ r)  = ["Great"] ++ getRSpineCons r
+  getRSpineCons (Less _ _ r)   = ["Less"] ++ getRSpineCons r
+  getRSpineCons (GTE _ _ r)    = ["GTE"] ++ getRSpineCons r
+  getRSpineCons (LTE _ _ r)    = ["LTE"] ++ getRSpineCons r
+  getRSpineCons (Plus _ _ r)   = ["Plus"] ++ getRSpineCons r
+  getRSpineCons (Minus _ _ r)  = ["Minus"] ++ getRSpineCons r
+  getRSpineCons (Times _ _ r)  = ["Times"] ++ getRSpineCons r
+  getRSpineCons (Div _ _ r)    = ["Div"] ++ getRSpineCons r
+  getRSpineCons (Neg _ r)      = ["Neg"] ++ getRSpineCons r
+  getRSpineCons (Prmtv14 _)    = ["Prmtv14"]
+  getRSpineCons (Prmtv15 _)    = ["Prmtv15"]
+  getRSpineCons (Prmtv16 r)    = ["Prmtv16"] ++ getRSpineCons r
+  getRSpineCons (Prmtv17 r)    = ["Prmtv17"] ++ getRSpineCons r
+  getRSpineCons (Prmtv18 r)    = ["Prmtv18"] ++ getRSpineCons r
+  getRSpineCons (Prmtv19 _)    = ["Prmtv19"]
+  getRSpineCons (Paren _ _ _)  = ["Paren"]
+
+instance GetRSpineCons Guard where
+  getRSpineCons (Guard1 _ _ _) = ["Guard1"]
+
+instance GetRSpineCons CaseBs where
+  getRSpineCons (CaseBs1 _ r) = ["CaseBs1"] ++ getRSpineCons r
+  getRSpineCons (CaseBs2   r) = ["CaseBs2"] ++ getRSpineCons r
+
+instance GetRSpineCons CaseB where
+  getRSpineCons (CaseB1 _ _ _ _ r) = ["CaseB1"] ++ getRSpineCons r

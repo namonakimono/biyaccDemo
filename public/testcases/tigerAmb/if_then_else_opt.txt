@@ -1,0 +1,8 @@
+let var y := 4
+    var x:int :=
+      if y > 4
+        then y*2
+        else  if y = 4
+              then y
+              else y + 4
+in  x * x   end

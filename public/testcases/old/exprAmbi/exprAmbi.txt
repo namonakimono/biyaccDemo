@@ -1,0 +1,90 @@
+-- NOTE THAT THIS FEATURE IS UNDER IMPLEMENTATION AND
+-- PUT WILL CREATE INCORRECT RESULTS REGARDING PARENTHESES
+
+
+#Abstract
+
+data Arith =
+    ArithList [Arith]
+  | Add Arith Arith
+  | Sub Arith Arith
+  | Mul Arith Arith
+  | Div Arith Arith
+  | And Arith Arith
+  | Num Int
+  | Var String
+  deriving (Show, Eq, Read)
+
+
+#Concrete
+
+Exprs -> Expr {',' Expr}+ ;
+
+Expr   -> Value
+        | Expr '+' Expr
+        | Expr '*' Expr
+        | Expr '&' Expr
+        | Expr '-' Expr
+        | '-' Expr
+        | Parens
+        ;
+
+Parens -> '(' Expr ')' {#- Bracket -#} ;
+
+Value  -> Numeric
+        | Name
+        ;
+
+
+
+#Directives
+
+LineComment:   "--"       ;
+BlockComment:  "{-" "-}"  ;
+
+-- first priority (preference), then associativity
+-- currently the '>>>' means preference. not higher priority
+-- if using bundle syntax (bracket), write only one production in a line
+
+Expr -> Expr '&' Expr >>>
+{ Expr -> Expr '+' Expr ;
+  Expr -> Expr '-' Expr ;}   ;
+
+{ Expr -> Expr '+' Expr ;
+  Expr -> Expr '-' Expr ; } >>>
+  Expr -> Expr '*' Expr     ;
+
+Expr -> Expr '*' Expr >>>
+  Expr -> '-' Expr    ;
+
+-- do not swap the LHS and RHS, the current parser does not support the syntax.
+(Expr '+' Expr) '+' Expr === Expr '+' Expr '+' Expr   ;
+
+(Expr '-' Expr) '-' Expr === Expr '-' Expr '-' Expr   ;
+
+(Expr '*' Expr) '*' Expr === Expr '*' Expr '*' Expr   ;
+
+Expr '&' (Expr '&' Expr) === Expr '&' Expr '&' Expr   ;
+
+
+#Actions
+
+Arith +> Exprs
+ArithList  (e:es)  +>  (e +> Expr) {',' (es ~*> Expr)}+ ;
+
+Arith +> Expr
+
+Add x y   +>  (x +> Expr) '+' (y +> Expr) ;
+
+Sub (Num 0) y   +>  '-' (y +> Expr);
+Sub x y         +>  (x +> Expr) '-' (y +> Expr) ;
+
+Mul x y         +>  (x +> Expr) '*' (y +> Expr) ;
+
+And x y         +>  (x +> Expr) '&' (y +> Expr) ;
+
+Num n           +>  (Value -> (n +> Numeric))  ;
+Var s           +>  (Value -> (s +> Name)) ;
+
+e               +>  (Parens -> '(' (e +> Expr) ')' )  ;
+

@@ -1,0 +1,10 @@
+let type intArray = array of int
+    var length :=
+      guard
+        choice = 1  ->  4
+        choice = 2  ->  8
+        choice = 3  ->  16
+      end
+    var row := intArray [length+length-1] of 0
+in  1
+end

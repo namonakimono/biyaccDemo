@@ -1,15 +1,13 @@
-*{
-	/* Universal reset: */
-	margin:0;
-	padding:0;
-}
-
 body{
 	/* Setting the default text color, size, page background and a font stack: */
-	font-size: 1.5em;
-	/*color:#fcfcfc;*/
-	/*background-color:#355664;*/
+	/*font-size: 1em;*/
+	/*color:#;*/
+	/*background-color:#;*/
 	font-family: Georgia, Helvetica, Arial, sans-serif;
+}
+
+.center {
+  margin: auto;
 }
 
 .small-caps {
@@ -18,8 +16,21 @@ body{
 
 /* fixed width font for code class*/
 .code {
-  font-size:1em;
+  font-size:1.25em;
   font-family: Consolas, Monaco, Menlo, Courier;
+  margin: auto;
+  display: block;
+  /*margin-top: 2px;*/
+  /*margin-right: 20px;*/
+  width : 1000px;
+  height: 600px;
+  max-height:  600px;
+  /*resize: none;*/
+  overflow-y: scroll;
+  /*background-repeat:repeat-x;*/
+  border:1px solid #d1c7ac;
+  color:#333333;
+  padding:5px;
 }
 
 /* Hyperlink Styles: */
@@ -145,8 +156,7 @@ div.nav, div.article, div.nav ul li a,div.figure{
 /* Article styles: */
 
 #page{
-	width:960px;
-	margin:0 auto;
+	margin:0 5% 5% 5%;
 	position:relative;
 }
 
@@ -248,33 +258,11 @@ div.footer a.up{
     margin-top: 10px;
     margin-bottom: 10px;
 }
-/*
-#tdtd{
-  text-align: center;
-}*/
-
-#tdtd textarea {
-    margin-top: 2px;
-    margin-right: 20px;
-    width : 800px;
-    height: 300px;
-    max-height:  300px;
-    resize: none;
-    overflow-y: scroll;
-    background-repeat:repeat-x;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
-}
-/*
-#sdtd{
-  text-align: center;
-}*/
 
 #sdtd textarea {
     margin-top: 2px;
     margin-right: 20px;
-    width : 800px;
+    width : 1000px;
     height: 300px;
     max-height:  300px;
     resize: none;
@@ -284,58 +272,6 @@ div.footer a.up{
     color:#333333;
     padding:3px;
 }
-/*
-#uQuery{
-  text-align: center;
-}*/
-
-.UpdateQuery {
-    margin-top: 2px;
-    margin-right: 20px;
-}
-.UpdateQuery textarea {
-    margin-top: 2px;
-    margin-right: 20px;
-    width : 800px;
-    height: 400px;
-    max-height:  400px;
-   /* resize: none;*/
-    overflow-y: scroll;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
-}
-
-.ResultSource textarea {
-  font-family: Consolas;
-  font-size: 1.25em;
-  /*float: left;*/
-  margin-top: 2px;
-  margin-right: 20px;
-  width : 800px;
-  height: 250px;
-  max-height:  400px;
-  overflow-y: scroll;
-  border:1px solid #d1c7ac;
-  color:#333333;
-  padding:3px;
-}
-
-.Target textarea {
-  font-family: Consolas;
-  font-size: 1.25em;
-  /*float: right;*/
-  margin-top: 2px;
-  margin-right: 20px;
-  width : 800px;
-  height: 300px;
-  max-height:  400px;
-  overflow-y: scroll;
-  border:1px solid #d1c7ac;
-  color:#333333;
-  padding:3px;
-}
-
 
 
 input[type=submit] {
@@ -384,7 +320,18 @@ input[type=submit] #submitTo {
    }
 
 
+#pppButtonG {
+  display: block;
+  margin: auto;
+  padding-top: 20px;
+}
 
+#pppButtonG button {
+  margin: auto;
+  margin-bottom: 20px;
+  width:16%;
+  display:block;
+}
 
 ::-webkit-scrollbar {
     width: 12px;
@@ -400,48 +347,3 @@ input[type=submit] #submitTo {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
 }
 
-.ForBackward {
-    float: left;
-    margin-top: 10px;
-}
-
-.FBButton {
-    float: left;
-    margin-top: 10px;
-    margin-left: 200px
-}
-
-
-.ConsoleLog {
-    float: left;
-    margin-top: 2px;
-    margin-right: 20px;
-}
-
-.ConsoleLog textarea {
-    float: left;
-    margin-right: 20px;
-    width : 800px;
-    height: 250px;
-    overflow-y: scroll;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
-    font-family:tahoma, arial, sans-serif;
-}
-
-
-.ConsoleLog0 {
-    margin: 0px;
-    margin-top: 2px;
-}
-
-.ConsoleLog0 textarea {
-    width : 800px;
-    height: 400px;
-    overflow-y: scroll;
-    border:1px solid #d1c7ac;
-    color:#333333;
-    padding:3px;
-    font-family:tahoma, arial, sans-serif;
-}

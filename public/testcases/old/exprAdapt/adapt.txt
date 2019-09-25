@@ -1,0 +1,76 @@
+-- Not easy to use. Need to think of a nicer syntax
+
+#Abstract
+
+data Arith =
+    Add Arith Arith
+  | Sub Arith Arith
+  | Mul Arith Arith
+  | Div Arith Arith
+  | Num Integer
+  | Var String
+  deriving (Show, Eq, Read)
+
+
+#Concrete
+
+-- now we can give names to the constructors of each case and
+-- use the constructors later for adaptation
+
+Expr   -> [EAdd] Expr '+' Term
+        | [ESub] Expr '-' Term
+        | Term
+        ;
+
+Term   -> Term '*' Factor
+        | Term '/' Factor
+        | Factor
+        ;
+
+Factor  -> Numeric
+         | String
+         | '-' Factor
+         | [Paren] '(' Expr ')' {#- Bracket -#}
+         ;
+
+#Directives
+
+LineComment:   "--"       ;
+BlockComment:  "{-" "-}"  ;
+
+#Actions
+
+Arith +> Expr
+Add x   y            +>  (x +> Expr) '+' (y +> Term);
+
+-- Use template Haskell's syntax:
+-- [p| source-pattern |] [p| view-pattern |]
+-- [f| adaptation function |]
+-- each Nonterminal has a null case as a "placeholder". For example, ExprNull and TermNull
+Adaptive:
+  [p| _ |] [p| Add _ _  |]
+  [f| \_ (Add l r) -> EAdd ExprNull "\n  \n  "  TermNull |] ;
+
+e@(Sub (Num 0) _)    +>   (e +> Term);
+Sub x   y            +>   (x +> Expr) '-' (y +> Term);
+e                    +>   (e +> Term);
+
+Adaptive:
+  [f| \s v -> case v of
+                Add _ _ ->
+                  case s of
+                    ESub _ _ _ -> True
+                    _          -> False
+                _       -> False  |]
+  [f| \(ESub el _ er) (Add l r) ->  EAdd el " \n " er |] ;
+
+Arith +> Term
+Mul x y  +>  (x +> Term) '*' (y +> Factor);
+Div x y  +>  (x +> Term) '/' (y +> Factor);
+e        +>  (e +> Factor);
+
+Arith +> Factor
+Var x          +>  (x +> String) ;
+Num n          +>  (n +> Numeric);
+Sub (Num 0) y  +>  '-' (y +> Factor);
+e              +>  '(' (e +> Expr) ')';

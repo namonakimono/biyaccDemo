@@ -1,0 +1,67 @@
+-- E.g.: 4^2 is converted to Mul (Num 4) (Num 4)
+
+#Abstract
+
+data Arith = Add Arith Arith
+           | Sub Arith Arith
+           | Mul Arith Arith
+           | Div Arith Arith
+           | Num Natural
+           | Var String
+  deriving (Show, Eq, Read)
+
+
+#Concrete
+
+Expr   -> [EAdd] Expr '+' Term
+        | Expr '-' Term
+        | Term
+        ;
+
+Term   -> Term '*' Factor
+        | Term '/' Factor
+        | Factor
+        ;
+
+Factor -> '-' Factor
+        | Expon
+        ;
+
+Expon   -> Expon "^2"
+        | Numeric
+        | Name
+        | '(' Expr ')'
+        ;
+
+#Directives
+LineComment:  "--"       ;
+BlockComment: "{-" "-}"  ;
+
+#Actions
+
+Arith +> Expr
+Add x   y  +>  (x +> Expr) '+' (y +> Term);
+Sub x   y  +>  (x +> Expr) '-' (y +> Term);
+e          +>  (e +> Term);
+
+Arith +> Term
+Mul x y  +>  (x +> Term) '*' (y +> Factor);
+Div x y  +>  (x +> Term) '/' (y +> Factor);
+e        +>  (e +> Factor);
+
+Arith +> Factor
+Sub (Num 0) y  +>  '-' (y +> Factor);
+e              +>  (e +> Expon);
+
+Arith +> Expon
+Mul x y  |   id x == y  +>  (x +> Expon) "^2" ;
+Num n                   +>  (n +> Numeric);
+Var s                   +>  (s +> Name);
+e                       +>  '(' (e +> Expr) ')';
+
+
+-- 1 for elimination. must be f a1 == a2
+-- 2 just for some more constraints. can be any function with arguments producing Boolean results
+
+-- data ViewConstraint = PureConstraints String
+--                     | VVarElimination FunName VarName VarName

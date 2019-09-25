@@ -1,0 +1,67 @@
+-- This biyacc program uses Kleene star (and Kleene plus) sytnax.
+-- In the put direction, elements in the list marked by kleene star syntax is
+-- automatically aligned using the minimum edit distance algorithm
+
+#Abstract
+
+data Arith = Add Arith Arith
+           | Sub Arith Arith
+           | Mul Arith Arith
+           | Div Arith Arith
+           | Num Natural
+           | Var String
+           | ArithList [Arith]
+  deriving (Show, Eq, Read)
+
+
+#Concrete
+
+Exprs -> Expr {';' Expr}* ;
+
+Expr   -> Expr '+' Term
+        | Expr '-' Term
+        | Term
+        ;
+
+Term   -> Term '*' Factor
+        | Term '/' Factor
+        | Factor
+        ;
+
+Factor -> '-' Factor
+        | Numeric
+        | Name
+        | '(' Expr ')'
+        ;
+
+
+#Directives
+LineComment : "--"       ;
+BlockComment: "{-" "-}"  ;
+
+
+#Actions
+
+-- Note that the AST ArithList should be non-empty
+-- Written in this way, the first expression is excluded for the alignment
+-- An alternative way (which has a slightly differnt syntax) is to use
+-- ArithList es  +>  {(es ~*> Expr) ';'}*
+
+Arith +> Exprs
+ArithList (e:es)  +>  (e +> Expr) {';' (es ~*> Expr)}* ;
+
+Arith +> Expr
+Add x   y  +>  (x +> Expr) '+' (y +> Term);
+Sub x   y  +>  (x +> Expr) '-' (y +> Term);
+arith      +>  (arith +> Term);
+
+Arith +> Term
+Mul x y  +>  (x +> Term) '*' (y +> Factor);
+Div x y  +>  (x +> Term) '/' (y +> Factor);
+arith    +>  (arith +> Factor);
+
+Arith +> Factor
+Sub (Num 0) y  +>  '-' (y +> Factor);
+Num n          +>  (n +> Numeric);
+Var s          +>  (s +> Name);
+arith          +>  '(' (arith +> Expr) ')';

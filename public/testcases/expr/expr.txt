@@ -1,0 +1,58 @@
+#Abstract
+
+data Arith =
+             Add Arith Arith
+           | Sub Arith Arith
+           | Mul Arith Arith
+           | Div Arith Arith
+           | Num Integer
+           | Var String
+
+#Concrete
+
+Expr   -> Expr '+' Term
+        | Expr '-' Term
+        | Term
+        ;
+
+Term   -> Term '*' Factor
+        | Term '/' Factor
+        | Factor
+        ;
+
+Factor  -> Numeric
+         | String
+         | '-' Factor
+         | '(' Expr ')'
+         ;
+
+
+-- These directives declaring comment symbols can be omitted.
+-- The default symbols are // for line comments and /* */ for block comments.
+#Directives
+
+LineComment:   "--"       ;
+BlockComment:  "{-" "-}"  ;
+
+#Actions
+
+Arith +> Expr
+Add x   y           +>  [x +> Expr] '+' [y +> Term] ;
+-- uncomment this line to prefer producing a negation rather than a subtraction
+-- e@(Sub (Num 0) _)   +>  [e +> Term]              ;
+Sub x   y           +>  [x +> Expr] '-' [y +> Term] ;
+e                   +>  [e +> Term]                 ;
+;;
+
+Arith +> Term
+Mul x y  +>  [x +> Term] '*' [y +> Factor] ;
+Div x y  +>  [x +> Term] '/' [y +> Factor] ;
+e        +>  [e +> Factor]                 ;
+;;
+
+Arith +> Factor
+Var x          +>  [x +> String]       ;
+Num n          +>  [n +> Numeric]      ;
+Sub (Num 0) y  +>  '-' [y +> Factor]   ;
+e              +>  '(' [e +> Expr] ')' ;
+;;

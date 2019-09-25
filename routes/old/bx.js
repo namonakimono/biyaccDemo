@@ -26,19 +26,34 @@ exports.bx = function (req, res){
                                      : "ByExpr get" + " " + inOptFile;
             break;
 
-          case "tiger":
+          case "tigerUnambi":
             bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
-                                     : "ByTiger get" + " " + inOptFile;
+                                     : "ByTigerUnambi get" + " " + inOptFile;
             break;
 
-          case "exprAmb":
+          case "exprKleene":
             bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
-                                     : "ByExprAmb get" + " " + inOptFile;
+                                     : "ByExprKleene get" + " " + inOptFile;
             break;
 
-          case "tigerAmb":
+          case "exprNonlinear":
             bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
-                                     : "ByTigerAmb get" + " " + inOptFile;
+                                     : "ByExprNonlinear get" + " " + inOptFile;
+            break;
+
+          case "exprAdapt":
+            bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
+                                     : "ByExprAdapt get" + " " + inOptFile;
+            break;
+
+          case "exprAmbi":
+            bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
+                                     : "ByExprAmbi get" + " " + inOptFile;
+            break;
+
+          case "tigerUnambiKleene":
+            bxCommand = fileModified ? prefixDir + "testcase get" + " " + inOptFile
+                                     : "ByTigerUnambiKleene get" + " " + inOptFile;
             break;
 
           default:
@@ -53,19 +68,34 @@ exports.bx = function (req, res){
                                      : "ByExpr put" + " " + inOptFile;
             break;
 
-          case "tiger":
+          case "tigerUnambi":
             bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
-                                     : "ByTiger put" + " " + inOptFile;
+                                     : "ByTigerUnambi put" + " " + inOptFile;
             break;
 
-          case "exprAmb":
+          case "exprKleene":
             bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
-                                     : "ByExprAmb put" + " " + inOptFile;
+                                     : "ByExprKleene put" + " " + inOptFile;
             break;
 
-          case "tigerAmb":
+          case "exprNonlinear":
             bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
-                                     : "ByTigerAmb put" + " " + inOptFile;
+                                     : "ByExprNonlinear put" + " " + inOptFile;
+            break;
+
+          case "exprAdapt":
+            bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
+                                     : "ByExprAdapt put" + " " + inOptFile;
+            break;
+
+          case "exprAmbi":
+            bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
+                                     : "ByExprAmbi put" + " " + inOptFile;
+            break;
+
+          case "tigerUnambiKleene":
+            bxCommand = fileModified ? prefixDir + "testcase put" + " " + inOptFile
+                                     : "ByTigerUnambiKleene put" + " " + inOptFile;
             break;
 
           default:
@@ -94,7 +124,7 @@ exports.bx = function (req, res){
               }
               else {
                 res.contentType('json');
-                res.send({resultXML: data, success: "success", msg: "Forward transformation successfully done\n" });
+                res.send({resultXML: data, success: "success", msg: "Forward transformation was successfully done\n" });
                 return;
               }
             });//end fs.readFile
@@ -122,7 +152,7 @@ exports.bx = function (req, res){
                   }
                   else {
                     res.contentType('json');
-                    res.send({resultXML: data, success: "success", msg: "Backward transformation successfully done\n" });
+                    res.send({resultXML: data, success: "success", msg: "Backward transformation was successfully done\n" });
                     return;
                   }
                 }); //end fs.readFile

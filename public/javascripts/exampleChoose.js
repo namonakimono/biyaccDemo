@@ -1,96 +1,97 @@
 // choose Expr or Tiger example.
 function chooseExample(value) {
-  if(value =="arithExpr"){
-    langChoice = "arithExpr";
-    $("#abstractSyntax").load("./testcases/arithExpr/abstract.txt", function(data){
-    document.getElementById("abstractSyntax").value = data;});
-    $("#concreteSyntax").load("./testcases/arithExpr/concrete.txt", function(data){
-    document.getElementById("concreteSyntax").value = data;});
-    $("#actions").load("./testcases/arithExpr/actions.txt", function(data){
-    document.getElementById("actions").value = data;});
+  switch (value) {
+    case "expr":
+      langChoice = "expr";
+      $("#program").load("./testcases/expr/expr.txt", function(data){
+        document.getElementById("program").value = data;});
 
-    $('select option[value="arithExpr"]').attr("selected", "selected");
-    $('select option[value="tiger"]').attr("selected", false);
-    $('select option[value="empty"]').attr("selected", false);
+      unselectBut("expr");
+      $('select option[value="expr"]').attr("selected", true);
+      return;
 
-  }
+    case "tiger":
+      langChoice = "tiger";
+      $("#program").load("./testcases/tiger/tiger.txt", function(data){
+        document.getElementById("program").value = data;});
 
-  if(value =="tigerAmbi"){
-    langChoice = "tigerAmbi";
-    $("#abstractSyntax").load("./testcases/tigerAmbiguous/abstract.txt", function(data){
-    document.getElementById("abstractSyntax").value = data;});
-    $("#concreteSyntax").load("./testcases/tigerAmbiguous/concrete.txt", function(data){
-    document.getElementById("concreteSyntax").value = data;});
-    $("#actions").load("./testcases/tigerAmbiguous/actions.txt", function(data){
-    document.getElementById("actions").value = data;});
+      unselectBut("tiger");
+      $('select option[value="tiger"]').attr("selected", true);
+      return;
 
-    $('select option[value="tigerAmbi"]').attr("selected", "selected");
-    $('select option[value="arithExpr"]').attr("selected", false);
-    $('select option[value="tigerUnambi"]').attr("selected", false);
-    $('select option[value="empty"]').attr("selected", false);
-  }
+    case "exprAmb":
+      langChoice = "exprAmb";
+      $("#program").load("./testcases/exprAmb/exprAmb.txt", function(data){
+        document.getElementById("program").value = data;});
 
-  if (value =="tigerUnambi"){
-    langChoice = "tigerUnambi";
-    $("#abstractSyntax").load("./testcases/tigerUnambiguous/abstract.txt", function(data){
-    document.getElementById("abstractSyntax").value = data;});
-    $("#concreteSyntax").load("./testcases/tigerUnambiguous/concrete.txt", function(data){
-    document.getElementById("concreteSyntax").value = data;});
-    $("#actions").load("./testcases/tigerUnambiguous/actions.txt", function(data){
-    document.getElementById("actions").value = data;});
+      unselectBut("exprAmb");
+      $('select option[value="exprAmb"]').attr("selected", true);
+      return;
 
-    $('select option[value="tigerUnambi"]').attr("selected", "selected");
-    $('select option[value="arithExpr"]').attr("selected", false);
-    $('select option[value="tigerAmbi"]').attr("selected", false);
-    $('select option[value="empty"]').attr("selected", false);
+    case "tigerAmb":
+      langChoice = "tigerAmb";
+      $("#program").load("./testcases/tigerAmb/tigerAmb.txt", function(data){
+        document.getElementById("program").value = data;});
+
+      unselectBut("tigerAmb");
+      $('select option[value="tigerAmb"]').attr("selected", "selected");
+      return;
   }
 }
 
-// Tiger has many test cases. This function choose the input test case
-function chooseTigerAmbiEg(value) {
+// Tiger has many test cases. This function chooses the input test case
+function chooseTiger(value) {
   if(value =="tiger_mergesort"){
-    $("#actions").load("./testcases/tigerAmbiguous/mergesort.tig", function(data){
+    $("#sourceText").load("./testcases/tiger/mergesort.txt", function(data){
+    console.log(data);
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
   if(value =="tiger_queens"){
-    $("#actions").load("./testcases/tigerAmbiguous/queens.tig", function(data){
+    $("#sourceText").load("./testcases/tiger/queens.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
   if(value =="tiger_mutu_rec_fun"){
-    $("#actions").load("./testcases/tigerAmbiguous/mutually_recursive_functions.tig", function(data){
+    $("#sourceText").load("./testcases/tiger/mutually_recursive_functions.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
   if(value =="tiger_rec_types"){
-    $("#actions").load("./testcases/tigerAmbiguous/valid_recursive_types.tig", function(data){
+    $("#sourceText").load("./testcases/tiger/valid_recursive_types.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
 }
 
-// Tiger has many test cases. This function choose the input test case
-function chooseTigerUnambiEg(value) {
+
+// TigerAmb has many test cases. This function chooses the input test case
+function chooseTigerAmb(value) {
   if(value =="tiger_mergesort"){
-    $("#actions").load("./testcases/tigerUnambiguous/mergesort.tig", function(data){
+    $("#sourceText").load("./testcases/tigerAmb/mergesort.txt", function(data){
+    console.log(data);
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
   if(value =="tiger_queens"){
-    $("#actions").load("./testcases/tigerUnambiguous/queens.tig", function(data){
+    $("#sourceText").load("./testcases/tigerAmb/queens.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
   if(value =="tiger_mutu_rec_fun"){
-    $("#actions").load("./testcases/tigerUnambiguous/mutually_recursive_functions.tig", function(data){
+    $("#sourceText").load("./testcases/tigerAmb/mutually_recursive_functions.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
   }
-  if(value =="tiger_rec_types"){
-    $("#actions").load("./testcases/tigerUnambiguous/valid_recursive_types.tig", function(data){
+  if(value =="tiger_if_then_else"){
+    $("#sourceText").load("./testcases/tigerAmb/if_then_else_opt.txt", function(data){
     document.getElementById("sourceText").value = data;});
-    document.getElementById("targetText").value = viewAST;
+    document.getElementById("viewText").value = "";
+  }
+  if(value =="general_if"){
+    $("#sourceText").load("./testcases/tigerAmb/general_if.txt", function(data){
+    document.getElementById("sourceText").value = data;});
+    document.getElementById("viewText").value = "";
   }
 }
 
@@ -99,11 +100,34 @@ function rechooseLang(){
   $('#compileSubmit').remove();
   $('#rechoose-lang').remove();
   $('#updatedSource').remove();
-  $('#target').remove();
+  $('#pppButtonG').remove();
+  $('#view').remove();
   $('#hrline').remove();
-  $('#fbButton').remove();
   $('#conhrline').remove();
   $('#consoleLog').remove();
-  $('<button id="compileSubmit" type="button" class="btn btn-info" style="margin:auto; display:block"' +
-      ' onclick="exeUpdate()">Click here to compile</button>').insertAfter("#div-before-compilation-button");
+  $('<button id="compileSubmit" type="button" class="btn btn-primary" style="margin:auto; display:block"' +
+      ' onclick="exeCompile()">Click here to compile</button>').insertAfter("#div-before-compilation-button");
+}
+
+
+function unselectBut(val) {
+  console.log(val)
+  if ("expr" != val) {
+    $('select option[value="expr"]').attr("selected", false);
+  }
+
+  if ("tiger" != val) {
+    $('select option[value="tiger"]').attr("selected", false);
+  }
+
+  if ("exprAmb" != val) {
+    $('select option[value="exprAmb"]').attr("selected", false);
+  }
+
+  if ("tigerAmb" != val) {
+    $('select option[value="tigerAmb"]').attr("selected", false);
+  }
+
+  return;
+  // $('select option[value="tigerAmb"]').attr("selected", false);
 }

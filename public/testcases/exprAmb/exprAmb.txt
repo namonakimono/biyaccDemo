@@ -1,0 +1,72 @@
+#Abstract
+
+data Arith =
+    Add  Arith Arith
+  | Sub  Arith Arith
+  | Mul  Arith Arith
+  | ADiv Arith Arith
+  | And  Arith Arith
+  | Num  Int
+  | Var String
+
+
+#Concrete
+
+Expr -> Val
+      | [Times] Expr '*' Expr
+      | [CDiv]  Expr '/' Expr
+      | [Plus]  Expr '+' Expr
+      | [Minus] Expr '-' Expr
+      | [LOr]   Expr '&' Expr
+      | [Neg]   '-' Expr
+      | Parens
+      ;
+
+Parens -> '(' Expr ')' {# Bracket #} ;
+
+Val  -> Numeric
+      | Identifier
+      ;
+
+
+
+#Directives
+
+LineComment:   "//"       ;
+BlockComment:  "/*" "*/"  ;
+
+
+-- do not swap the LHS and RHS, the current parser does not support that syntax.
+Priority:
+Expr -> Expr '*' Expr  >  Expr -> Expr '+' Expr   ;
+Expr -> Expr '*' Expr  >  Expr -> Expr '-' Expr   ;
+Expr -> Expr '/' Expr  >  Expr -> Expr '+' Expr   ;
+Expr -> Expr '/' Expr  >  Expr -> Expr '-' Expr   ;
+
+Expr -> Expr '+' Expr  >  Expr -> Expr '&' Expr   ;
+Expr -> Expr '-' Expr  >  Expr -> Expr '&' Expr   ;
+
+-- And BiYacc infers that
+-- Expr -> Expr '*' Expr  >  Expr -> Expr '&' Expr   ;
+-- Expr -> Expr '/' Expr  >  Expr -> Expr '&' Expr   ;
+
+Associativity:
+Left: Expr -> Expr '*' Expr , Expr -> Expr '/' Expr , Expr -> Expr '+' Expr , Expr -> Expr '-' Expr ;
+Right: Expr -> Expr '&' Expr ;
+
+
+#Actions
+
+Arith +> Expr
+Mul  x y        +>  [x +> Expr] '*' [y +> Expr] ;
+ADiv x y        +>  [x +> Expr] '/' [y +> Expr] ;
+Add  x y        +>  [x +> Expr] '+' [y +> Expr] ;
+Sub (Num 0) y   +>  '-' [y +> Expr] ;
+Sub x y         +>  [x +> Expr] '-' [y +> Expr] ;
+And x y         +>  [x +> Expr] '&' [y +> Expr] ;
+
+Var s           +>  (Val -> [s +> Identifier]) ;
+Num n           +>  (Val -> [n +> Numeric])  ;
+
+e               +>  (Parens -> '(' [e +> Expr] ')')  ;
+;;
