@@ -10,6 +10,7 @@
     "ejs": "*",
     "express": "3.4.5",
     "html": "*",
-    "jade": "*"
+    "jade": "*",
+    "forever": "*"
   }
 }
